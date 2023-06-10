@@ -71,13 +71,13 @@ const pic = ref<Array<string>>(new Array<string>());
 const ws = ref<WebSocket>();
 const wsReady = ref<boolean>(false);
 
-watch(log, (newVal, OldVal) => {
+watch(log.value, (newVal, OldVal) => {
     if (newVal.length >= 100) {
         log.value.splice(0, 1);
     }
-    var logDiv:HTMLElement|null = document.getElementById("textArae");
-    if(logDiv===null) return;
-    logDiv.scrollTop=logDiv.scrollHeight;
+    var logDiv: HTMLElement | null = document.getElementById("textArae");
+    if (logDiv === null) return;
+    logDiv.scrollTop = logDiv.scrollHeight;
 })
 
 const startMirai = async () => {
@@ -130,7 +130,7 @@ const start = async () => {
             linkAddresses: await nim.value.plugin.getQChatAddress({
                 ipType: 2,
             }),
-        });
+        })
 
         qChat.value.on("logined", handleLogined);
         qChat.value.on("message", handleMessage);
@@ -139,7 +139,7 @@ const start = async () => {
     } else {
         var msg = "机器人启动中！";
         log.value.push(msg);
-        msg="";
+        msg = "";
         var res1 = await axios({ url: "http://parkerbot.api/api/start" });
         if (useMirai.value) {
             if (res1.data.mirai) {
@@ -149,7 +149,7 @@ const start = async () => {
             }
         }
         setTimeout(() => {
-            if(msg) log.value.push(msg);
+            if (msg) log.value.push(msg);
             log.value.push("机器人已启动");
         }, 500);
     }

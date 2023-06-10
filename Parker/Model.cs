@@ -54,6 +54,8 @@ namespace ParkerBot
         public bool forwardQQ { get; set; }
         public string qq { get; set; } = string.Empty;
         public string appKey { get; set; } = string.Empty;
+        public string imgDomain { get; set; } = string.Empty;
+        public string mP4Domain { get; set; } = string.Empty;
     }
     public class BD
     {

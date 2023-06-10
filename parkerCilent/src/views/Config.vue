@@ -374,7 +374,7 @@ const rules = ref({
         trigger: ['blur', 'change']
     }],
 })
-watch(funcsChecked, (newVal, oldVal) => {
+watch(funcsChecked.value, (newVal, oldVal) => {
     if (newVal.length <= 0) {
         config.value.QQ.funcEnable1 = [];
         return;

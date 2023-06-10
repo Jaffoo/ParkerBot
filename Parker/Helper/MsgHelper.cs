@@ -152,6 +152,7 @@ namespace Helper
                     });
                     await _liteContext.SaveChangesAsync();
                     await _liteContext.DisposeAsync();
+                    await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
                 }
             });
         }
@@ -519,6 +520,7 @@ namespace Helper
                     });
                     await _liteContext.SaveChangesAsync();
                     await _liteContext.DisposeAsync();
+                    await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
                 }
             });
         }
@@ -560,6 +562,7 @@ namespace Helper
                     });
                     await _liteContext.SaveChangesAsync();
                     await _liteContext.DisposeAsync();
+                    await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
                 }
             });
         }
@@ -598,6 +601,7 @@ namespace Helper
                 });
                 await _liteContext.SaveChangesAsync();
                 await _liteContext.DisposeAsync();
+                await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
             }
         }
 
@@ -608,6 +612,7 @@ namespace Helper
                 if (_bot == null) return;
                 var group = _bot.Groups.Value.FirstOrDefault(t => t.Id == groupId);
                 await group.SendGroupMessageAsync(msg);
+                await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
             }
             catch (Exception ex)
             {
@@ -619,6 +624,7 @@ namespace Helper
                 });
                 await _liteContext.SaveChangesAsync();
                 await _liteContext.DisposeAsync();
+                await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
             }
         }
 
@@ -640,6 +646,7 @@ namespace Helper
                 });
                 await _liteContext.SaveChangesAsync();
                 await _liteContext.DisposeAsync();
+                await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
             }
         }
         public static async Task SendFriendMsg(string friendId, MessageChain msg)
@@ -661,6 +668,7 @@ namespace Helper
                 });
                 await _liteContext.SaveChangesAsync();
                 await _liteContext.DisposeAsync();
+                await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
             }
         }
     }

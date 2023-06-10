@@ -106,7 +106,7 @@ namespace Helper
                     {
                         //判断是否at所有人
                         msbBody = "直播啦！\n标题：" + attach["livePushInfo"]!["liveTitle"];
-                        mcb.Plain(msbBody).ImageFromBase64(Base64.UrlImgToBase64(attach["livePushInfo"]!["liveCover"]!.ToString()).Result);
+                        mcb.Plain(msbBody).ImageFromBase64(Base64.UrlImgToBase64(Const.ConfigModel.KD.imgDomain + attach["livePushInfo"]!["liveCover"]!.ToString()).Result);
                     }
                     else if (attach["messageType"]!.ToString() == "AUDIO")
                     {
@@ -178,6 +178,7 @@ namespace Helper
                     createDate = DateTime.Now,
                 });
                 await _liteContext.SaveChangesAsync();
+                await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
             }
         }
     }

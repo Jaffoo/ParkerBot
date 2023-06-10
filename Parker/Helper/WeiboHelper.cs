@@ -168,6 +168,7 @@ namespace Helper
                 });
                 await _context.SaveChangesAsync();
                 await _context.DisposeAsync();
+                await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
             }
         }
 
@@ -205,44 +206,19 @@ namespace Helper
                 });
                 await _context.SaveChangesAsync();
                 await _context.DisposeAsync();
+                await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
             }
         }
 
         public static async Task FatchFace(string url)
         {
-            if (await Baidu.IsFaceAndCount(url) == 1)
+            try
             {
-                var score = await Baidu.FaceMatch(url);
-                if (score != Audit) await MessageManager.SendFriendMessageAsync(Msg.Admin, $"人脸对比相似度：{score}");
-                if (score == Audit)
+                if (await Baidu.IsFaceAndCount(url) == 1)
                 {
-                    dbContext = new();
-                    await dbContext.Caches.AddAsync(new()
-                    {
-                        content = url,
-                        type = 1
-                    });
-                    await dbContext.SaveChangesAsync();
-                    await dbContext.DisposeAsync();
-                    await MessageManager.SendFriendMessageAsync(Msg.Admin, $"未启用人脸识别，加入待审核，目前有{Msg.Check.Count}张图片待审核");
-                    return;
-                }
-                if (score > Audit && score < Similarity)
-                {
-                    dbContext = new();
-                    await dbContext.Caches.AddAsync(new()
-                    {
-                        content = url,
-                        type = 1
-                    });
-                    await dbContext.SaveChangesAsync();
-                    await dbContext.DisposeAsync();
-                    await MessageManager.SendFriendMessageAsync(Msg.Admin, $"低相似度，加入待审核，目前有{Msg.Check.Count}张图片待审核");
-                    return;
-                }
-                if (score >= Similarity && score < 100)
-                {
-                    if (!FileHelper.Save(url))
+                    var score = await Baidu.FaceMatch(url);
+                    if (score != Audit) await MessageManager.SendFriendMessageAsync(Msg.Admin, $"人脸对比相似度：{score}");
+                    if (score == Audit)
                     {
                         dbContext = new();
                         await dbContext.Caches.AddAsync(new()
@@ -252,16 +228,57 @@ namespace Helper
                         });
                         await dbContext.SaveChangesAsync();
                         await dbContext.DisposeAsync();
-                        await MessageManager.SendFriendMessageAsync(Msg.Admin, $"保存失败，加入待审核，目前有{Msg.Check.Count}张图片待审核");
+                        await MessageManager.SendFriendMessageAsync(Msg.Admin, $"未启用人脸识别，加入待审核，目前有{Msg.Check.Count}张图片待审核");
+                        return;
                     }
-                    else
+                    if (score > Audit && score < Similarity)
                     {
-                        string msg = "高度相似，已保存本地";
-                        if (FileHelper.SaveAliyunDisk) msg += $"，正在上传至阿里云盘【{Const.ConfigModel.BD.albumName}】相册";
-                        await MessageManager.SendFriendMessageAsync(Msg.Admin, msg);
+                        dbContext = new();
+                        await dbContext.Caches.AddAsync(new()
+                        {
+                            content = url,
+                            type = 1
+                        });
+                        await dbContext.SaveChangesAsync();
+                        await dbContext.DisposeAsync();
+                        await MessageManager.SendFriendMessageAsync(Msg.Admin, $"低相似度，加入待审核，目前有{Msg.Check.Count}张图片待审核");
+                        return;
                     }
-                    return;
+                    if (score >= Similarity && score < 100)
+                    {
+                        if (!FileHelper.Save(url))
+                        {
+                            dbContext = new();
+                            await dbContext.Caches.AddAsync(new()
+                            {
+                                content = url,
+                                type = 1
+                            });
+                            await dbContext.SaveChangesAsync();
+                            await dbContext.DisposeAsync();
+                            await MessageManager.SendFriendMessageAsync(Msg.Admin, $"保存失败，加入待审核，目前有{Msg.Check.Count}张图片待审核");
+                        }
+                        else
+                        {
+                            string msg = "高度相似，已保存本地";
+                            if (FileHelper.SaveAliyunDisk) msg += $"，正在上传至阿里云盘【{Const.ConfigModel.BD.albumName}】相册";
+                            await MessageManager.SendFriendMessageAsync(Msg.Admin, msg);
+                        }
+                        return;
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                var _context = new LiteContext();
+                _context.Logs.Add(new Logs
+                {
+                    message = e.ToString(),
+                    createDate = DateTime.Now,
+                });
+                await _context.SaveChangesAsync();
+                await _context.DisposeAsync();
+                await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
             }
         }
     }

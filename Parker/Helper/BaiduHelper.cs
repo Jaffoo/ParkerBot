@@ -57,6 +57,7 @@ namespace Helper
                 });
                 _context.SaveChanges();
                 _context.Dispose();
+                await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
                 return 0;
             }
         }
@@ -107,6 +108,7 @@ namespace Helper
                 });
                 _context.SaveChanges();
                 _context.Dispose();
+                await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
                 return 0;
             }
         }
