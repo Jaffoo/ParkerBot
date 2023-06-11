@@ -1,0 +1,1 @@
+declare module '@yxim/nim-web-sdk/dist/SDK/NIM_Web_SDK.js';

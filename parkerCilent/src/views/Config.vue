@@ -113,6 +113,9 @@
                         <el-form-item label="IMtoken" prop="KD.token" :rules="rules.input">
                             <el-input v-model="config.KD.token"></el-input>
                         </el-form-item>
+                        <el-form-item label="房间Id" prop="KD.roomId" :rules="rules.input">
+                            <el-input v-model="config.KD.roomId"></el-input>
+                        </el-form-item>
                         <el-form-item>
                             <el-button @click="loginKD = true">登录口袋48</el-button>
                             <span style="color:red">*以上信息不知道可点此登录口袋自动获取</span>
@@ -315,6 +318,7 @@ const config = ref({
         serverId: '',
         qq: '',
         forwardQQ: false,
+        roomId:''
     },
     XHS: {
         url: '',

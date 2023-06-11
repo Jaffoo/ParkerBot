@@ -52,13 +52,14 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
-import { Setting, Check, Refresh } from '@element-plus/icons-vue';
+import { Setting, Check } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import axios from "axios";
 import QChatSDK from "nim-web-sdk-ng/dist/QCHAT_BROWSER_SDK";
 import NIMSDK from "nim-web-sdk-ng/dist/NIM_BROWSER_SDK";
 import type { SubscribeAllChannelResult } from "nim-web-sdk-ng/dist/QCHAT_BROWSER_SDK/QChatServerServiceInterface";
 import dayjs from 'dayjs';
+import NimChatroomSocket from '../component/Live'
 
 const baseConfig = ref({} as any);
 const mirai = ref({} as any);
@@ -172,12 +173,10 @@ const handleLogined = async function () {
     ws.value = new window.WebSocket("ws://localhost:6001");
     ws.value.onopen = () => {
         wsReady.value = true;
-        console.log("连接WebSocket服务器成功。");
         msg += "连接WebSocket服务器成功。";
     };
     ws.value.onclose = () => {
         wsReady.value = false;
-        console.log("连接WebSocket服务器失败。");
         msg += "连接WebSocket服务器失败。";
     };
     if (useMirai.value) {
@@ -196,13 +195,23 @@ const handleMessage = async function (msg: any) {
     msg.ext = JSON.parse(msg.ext as string);
     msg.channelName = await getChannel(msg.channelId);
     msg.time = dayjs(msg.time).format("YYYY-MM-DD HH:mm:ss");
-    console.log(msg);
     if (wsReady.value) {
         ws.value?.send(JSON.stringify(msg));
     }
+    //#region 直播
+    if(msg.channelName=="直播"){
+        const liveNim = new NimChatroomSocket({roomId:baseConfig.value.KD.roomId,onMessage:liveMsg})
+        liveNim.init(baseConfig.value.KD.appKey);
+    }
+    //#endregion
     var mess = `【${msg.channelName}|${msg.time}】${msg.ext.user.nickName}:${msg.body}`;
     log.value.push(mess);
 };
+
+const liveMsg = function(t:any,event:any){
+    console.log("liveMsgT",t);
+    console.log("liveMsgEvent",event);
+}
 
 const handleRoomSocketDisconnect = function (...context: any): void {
     log.value.push("登录连接状态已断开。");
