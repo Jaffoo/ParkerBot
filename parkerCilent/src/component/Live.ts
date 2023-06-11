@@ -1,9 +1,12 @@
 import NIM_SDK from '@yxim/nim-web-sdk/dist/SDK/NIM_Web_SDK.js';
 import type NIM_Web_Chatroom from '@yxim/nim-web-sdk/dist/SDK/NIM_Web_Chatroom';
+import type { LiveRoomMessage } from './messageType';
+
+type OnMessage = (t: NimChatroomSocket, event: Array<LiveRoomMessage>) => void | Promise<void>;
 
 interface NimChatroomSocketArgs {
   roomId: string;
-  onMessage: (t: any,event:any) => void;
+  onMessage: OnMessage;
 }
 
 interface NIMError {
@@ -15,7 +18,7 @@ interface NIMError {
 class NimChatroomSocket {
   public roomId: string;
   public nimChatroomSocket: NIM_Web_Chatroom | undefined; // 口袋48
-  public onMessage:  (t: any,event:any) => void;
+  public onMessage:  OnMessage;
   constructor(arg: NimChatroomSocketArgs) {
     this.roomId = arg.roomId; // 房间id
     this.onMessage = arg.onMessage;
@@ -23,7 +26,6 @@ class NimChatroomSocket {
 
   // 初始化
   init(appkey: string): void {
-    console.log(appkey)
     this.nimChatroomSocket = NIM_SDK.Chatroom.getInstance({
       appKey: atob(appkey),
       chatroomId: this.roomId,
@@ -43,9 +45,9 @@ class NimChatroomSocket {
   }
 
   // 事件监听
-  handleRoomSocketMessage: Function = (t: any, event: any)=> {
-    this.onMessage(t,event);
-  }
+  handleRoomSocketMessage: Function = (event: Array<LiveRoomMessage>): void => {
+    this.onMessage(this, event);
+  };
 
   // 进入房间失败
   handleRoomSocketError: Function = (err: NIMError, event: any): void => {

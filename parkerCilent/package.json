@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",
+    "@yxim/nim-web-sdk": "^9.11.0",
     "axios": "^1.4.0",
     "dayjs": "^1.11.7",
     "element-plus": "^2.3.4",
