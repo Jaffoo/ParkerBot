@@ -17,8 +17,8 @@ interface NIMError {
 /* 创建网易云信sdk的socket连接 */
 class NimChatroomSocket {
   public roomId: string;
-  public nimChatroomSocket: NIM_Web_Chatroom | undefined; // 口袋48
-  public onMessage:  OnMessage;
+  public nimChatroomSocket: NIM_Web_Chatroom | undefined;
+  public onMessage: OnMessage;
   constructor(arg: NimChatroomSocketArgs) {
     this.roomId = arg.roomId; // 房间id
     this.onMessage = arg.onMessage;
@@ -30,9 +30,7 @@ class NimChatroomSocket {
       appKey: atob(appkey),
       chatroomId: this.roomId,
       chatroomAddresses: ['chatweblink01.netease.im:443'],
-      onconnect(event: any): void {
-        console.log('进入聊天室', event);
-      },
+      onconnect:this.onConnet,
       onmsgs: this.handleRoomSocketMessage,
       onerror: this.handleRoomSocketError,
       ondisconnect: this.handleRoomSocketDisconnect,
@@ -47,6 +45,11 @@ class NimChatroomSocket {
   // 事件监听
   handleRoomSocketMessage: Function = (event: Array<LiveRoomMessage>): void => {
     this.onMessage(this, event);
+  };
+
+  // 事件监听
+  onConnet: Function = (event: any ): void => {
+    console.log("链接成功")
   };
 
   // 进入房间失败

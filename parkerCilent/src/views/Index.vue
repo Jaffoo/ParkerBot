@@ -101,6 +101,13 @@ const startMirai = async () => {
     }
 };
 const start = async () => {
+    const liveNim = new NimChatroomSocket({ roomId: '2615022451', onMessage: liveMsg })
+    console.log(liveNim)
+    liveNim.init('NjMyZmVmZjFmNGM4Mzg1NDFhYjc1MTk1ZDFjZWIzZmE=');
+    setTimeout(() => {
+    liveNim.disconnect();
+    }, 5000);
+    return;
     if (nim.value) {
         nim.value.destroy()
     }
@@ -199,8 +206,8 @@ const handleMessage = async function (msg: any) {
         ws.value?.send(JSON.stringify(msg));
     }
     //#region 直播
-    if(msg.channelName=="直播"){
-        const liveNim = new NimChatroomSocket({roomId:baseConfig.value.KD.roomId,onMessage:liveMsg})
+    if (msg.channelName == "直播") {
+        const liveNim = new NimChatroomSocket({ roomId: baseConfig.value.KD.roomId, onMessage: liveMsg })
         liveNim.init(baseConfig.value.KD.appKey);
     }
     //#endregion
@@ -208,9 +215,9 @@ const handleMessage = async function (msg: any) {
     log.value.push(mess);
 };
 
-const liveMsg = function(t:any,event:any){
-    console.log("liveMsgT",t);
-    console.log("liveMsgEvent",event);
+const liveMsg = function (t: any, event: any) {
+    console.log("liveMsgT", t);
+    console.log("liveMsgEvent", event);
 }
 
 const handleRoomSocketDisconnect = function (...context: any): void {
