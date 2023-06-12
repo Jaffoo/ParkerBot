@@ -148,7 +148,7 @@ namespace Helper
                     _liteContext = new();
                     await _liteContext.Logs.AddAsync(new()
                     {
-                        message = e.Message,
+                        message = e.Message + "\n" + e.StackTrace,
                         createDate = DateTime.Now,
                     });
                     await _liteContext.SaveChangesAsync();
@@ -171,7 +171,7 @@ namespace Helper
                     {
                         if (msgText == "#菜单")
                         {
-                            string menu = "1、审核功能：\n#查看全部\n#查看#{第几张}\n#保存#{第几张}\n#保存全部\n#删除#{第几张}\n#删除全部\n2、好友申请：\n#同意/拒绝#{请求人qq}" +
+                            string menu = "1、审核功能：\n#查看全部\n#查看#{第几张}\n#保存#{第几张}\n#保存全部\n#删除#{第几张}\n#删除全部\n2、好友申请：\n#同意/拒绝#{事件标识}" +
                             "\n3、微博：\n#立即同步微博\n#同步微博#{链接地址}\n4、发送消息：\n#发送#{群/好友}#文字/图片/语音/视频/图文/{qq号/群号}/{文字/图片链接/{文字}-{图片链接}}" +
                             "\n5、功能开关：\n#开启/关闭模块{模块名称}\n#开启/关闭转发#{模块}#qq/群\n#修改转发#{模块}#qq/群#{值}\n6、管理员：\n#添加/删除管理员#{qq}\n#删除全部管理员";
                             await fmr.SendMessageAsync(menu);
@@ -281,8 +281,8 @@ namespace Helper
 
                         if (msgText.Contains("#同意#"))
                         {
-                            var fromId = msgText.Replace("#同意#", "");
-                            var friendEvent = Event.FirstOrDefault(t => t.FromId == fromId);
+                            var eventId = msgText.Replace("#同意#", "");
+                            var friendEvent = Event.FirstOrDefault(t => t.EventId == eventId);
                             if (friendEvent == null)
                             {
                                 await fmr.SendMessageAsync("未找到该好友申请！");
@@ -294,8 +294,8 @@ namespace Helper
                         }
                         if (msgText.Contains("#拒绝#"))
                         {
-                            var fromId = msgText.Replace("#拒绝#", "");
-                            var friendEvent = Event.FirstOrDefault(t => t.FromId == fromId);
+                            var eventId = msgText.Replace("#拒绝#", "");
+                            var friendEvent = Event.FirstOrDefault(t => t.EventId == eventId);
                             if (friendEvent == null)
                             {
                                 await fmr.SendMessageAsync("未找到该好友申请！");
@@ -584,7 +584,7 @@ namespace Helper
                     _liteContext = new();
                     await _liteContext.Logs.AddAsync(new()
                     {
-                        message = e.Message,
+                        message = e.Message + "\n" + e.StackTrace,
                         createDate = DateTime.Now,
                     });
                     await _liteContext.SaveChangesAsync();
@@ -605,7 +605,7 @@ namespace Helper
                         case Events.NewFriendRequested:
                             {
                                 var qq = e as NewFriendRequestedEvent;
-                                await SendFriendMsg(Admin, $"机器人收到添加好友请求\n附加消息：{qq.Message}\n请求人：{qq.FromId}\n昵称：{qq.Nick}" + (string.IsNullOrWhiteSpace(qq.GroupId) ? "" : "\n来自群：" + qq.GroupId));
+                                await SendFriendMsg(Admin, $"机器人收到添加好友请求\n事件标识：{qq.EventId}\n附加消息：{qq.Message}\n请求人：{qq.FromId}\n昵称：{qq.Nick}" + (string.IsNullOrWhiteSpace(qq.GroupId) ? "" : "\n来自群：" + qq.GroupId));
                                 Event.Add(qq);
                             };
                             break;
@@ -626,7 +626,7 @@ namespace Helper
                     _liteContext = new();
                     await _liteContext.Logs.AddAsync(new()
                     {
-                        message = ex.Message,
+                        message = ex.Message + "\n" + ex.StackTrace,
                         createDate = DateTime.Now,
                     });
                     await _liteContext.SaveChangesAsync();
@@ -665,7 +665,7 @@ namespace Helper
                 _liteContext = new();
                 await _liteContext.Logs.AddAsync(new()
                 {
-                    message = ex.Message,
+                    message = ex.Message + "\n" + ex.StackTrace,
                     createDate = DateTime.Now,
                 });
                 await _liteContext.SaveChangesAsync();
@@ -688,7 +688,7 @@ namespace Helper
                 _liteContext = new();
                 await _liteContext.Logs.AddAsync(new()
                 {
-                    message = ex.Message,
+                    message = ex.Message + "\n" + ex.StackTrace,
                     createDate = DateTime.Now,
                 });
                 await _liteContext.SaveChangesAsync();
@@ -710,7 +710,7 @@ namespace Helper
                 _liteContext = new();
                 await _liteContext.Logs.AddAsync(new()
                 {
-                    message = ex.Message,
+                    message = ex.Message + "\n" + ex.StackTrace,
                     createDate = DateTime.Now,
                 });
                 await _liteContext.SaveChangesAsync();
@@ -732,7 +732,7 @@ namespace Helper
                 _liteContext = new();
                 await _liteContext.Logs.AddAsync(new()
                 {
-                    message = ex.Message,
+                    message = ex.Message + "\n" + ex.StackTrace,
                     createDate = DateTime.Now,
                 });
                 await _liteContext.SaveChangesAsync();

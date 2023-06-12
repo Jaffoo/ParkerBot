@@ -47,13 +47,13 @@ namespace Helper
                             //创建工作表
                             var path = Directory.GetCurrentDirectory() + "/wwwroot/excel";
                             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-                            var excel = path + "/CelebrationScore"+DateTime.Now.ToString("MMdd")+".csv";
+                            var excel = path + "/CelebrationScore" + DateTime.Now.ToString("MMdd") + ".csv";
                             if (!File.Exists(excel))
                             {
                                 MiniExcel.SaveAs(excel, null);
-                                MiniExcel.Insert(excel, new { 口袋ID = "口袋ID", 昵称 = "昵称", 分数 = "分数", 时间 = "时间",来源="来源" });
+                                MiniExcel.Insert(excel, new { 口袋ID = "口袋ID", 昵称 = "昵称", 分数 = "分数", 时间 = "时间", 来源 = "来源" });
                             }
-                            var value = new { 口袋ID = result["ext"]!["user"]!["userId"], 昵称 = name, 分数 = attachFen["giftInfo"]!["tpNum"]!, 时间 = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),来源= channelName };
+                            var value = new { 口袋ID = result["ext"]!["user"]!["userId"], 昵称 = name, 分数 = attachFen["giftInfo"]!["tpNum"]!, 时间 = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 来源 = channelName };
                             MiniExcel.Insert(excel, value);
                         }
                     }
@@ -174,7 +174,7 @@ namespace Helper
                 _liteContext = new();
                 await _liteContext.Logs.AddAsync(new()
                 {
-                    message = e.Message,
+                    message = e.Message + "\n" + e.StackTrace,
                     createDate = DateTime.Now,
                 });
                 await _liteContext.SaveChangesAsync();
