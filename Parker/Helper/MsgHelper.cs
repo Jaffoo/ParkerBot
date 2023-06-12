@@ -9,6 +9,7 @@ using Mirai.Net.Sessions.Http.Managers;
 using Mirai.Net.Utils.Scaffolds;
 using Mirai.Net.Data.Shared;
 using System.Reactive.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Helper
 {
@@ -170,9 +171,9 @@ namespace Helper
                     {
                         if (msgText == "#菜单")
                         {
-                            string menu = "1、审核功能：\n#查看全部\n#查看#{第几张}\n#保存#{第几张}\n#保存全部\n#删除#{第几张}\n#删除全部\n2、好友申请：\n#同意/拒绝#{事件标识}" +
+                            string menu = "1、审核功能：\n#查看全部\n#查看#{第几张}\n#保存#{第几张}\n#保存全部\n#删除#{第几张}\n#删除全部\n2、好友申请：\n#同意/拒绝#{请求人qq}" +
                             "\n3、微博：\n#立即同步微博\n#同步微博#{链接地址}\n4、发送消息：\n#发送#{群/好友}#文字/图片/语音/视频/图文/{qq号/群号}/{文字/图片链接/{文字}-{图片链接}}" +
-                            "\n5、功能开关：\n#开启/关闭模块{模块名称}\n#开启/关闭转发#{模块}#qq/群\n#修改转发#{模块}#qq/群#{值}";
+                            "\n5、功能开关：\n#开启/关闭模块{模块名称}\n#开启/关闭转发#{模块}#qq/群\n#修改转发#{模块}#qq/群#{值}\n6、管理员：\n#添加/删除管理员#{qq}\n#删除全部管理员";
                             await fmr.SendMessageAsync(menu);
                             return;
                         }
@@ -187,7 +188,7 @@ namespace Helper
                             {
                                 var newMsgChain = new MessageChainBuilder().ImageFromBase64(Base64.UrlImgToBase64(item).Result).Build();
                                 await fmr.SendMessageAsync(newMsgChain);
-                                System.Threading.Thread.Sleep(1000);
+                                Thread.Sleep(1000);
                             }
                             return;
                         }
@@ -224,8 +225,8 @@ namespace Helper
                             if (FileHelper.Save(Check[index]))
                             {
                                 _liteContext = new();
-                                var model = _liteContext.Caches.FirstOrDefault(t => t.content == Check[index] && t.type == 1)!;
-                                _liteContext.Caches.Remove(model);
+                                var model =await _liteContext.Caches.FirstOrDefaultAsync(t => t.content == Check[index] && t.type == 1)!;
+                                if(model!=null) _liteContext.Caches.Remove(model);
                                 await _liteContext.SaveChangesAsync();
                             }
                             await fmr.SendMessageAsync("本地保存成功！");
@@ -260,8 +261,8 @@ namespace Helper
                                 return;
                             }
                             _liteContext = new();
-                            var model = _liteContext.Caches.FirstOrDefault(t => t.content == Check[index] && t.type == 1)!;
-                            _liteContext.Caches.Remove(model);
+                            var model =await _liteContext.Caches.FirstOrDefaultAsync(t => t.content == Check[index] && t.type == 1)!;
+                            if (model != null) _liteContext.Caches.Remove(model);
                             await _liteContext.SaveChangesAsync();
                             await fmr.SendMessageAsync("删除成功！");
                             await Task.Run(Const.SetCache);
@@ -280,8 +281,8 @@ namespace Helper
 
                         if (msgText.Contains("#同意#"))
                         {
-                            var eventId = msgText.Replace("#同意#", "");
-                            var friendEvent = Event.FirstOrDefault(t => t.EventId == eventId);
+                            var fromId = msgText.Replace("#同意#", "");
+                            var friendEvent = Event.FirstOrDefault(t => t.FromId == fromId);
                             if (friendEvent == null)
                             {
                                 await fmr.SendMessageAsync("未找到该好友申请！");
@@ -293,8 +294,8 @@ namespace Helper
                         }
                         if (msgText.Contains("#拒绝#"))
                         {
-                            var eventId = msgText.Replace("#同意#", "");
-                            var friendEvent = Event.FirstOrDefault(t => t.EventId == eventId);
+                            var fromId = msgText.Replace("#拒绝#", "");
+                            var friendEvent = Event.FirstOrDefault(t => t.FromId == fromId);
                             if (friendEvent == null)
                             {
                                 await fmr.SendMessageAsync("未找到该好友申请！");
@@ -316,7 +317,87 @@ namespace Helper
                             await Weibo.SaveByUrl(url);
                             return;
                         }
-
+                        if (msgText == "#最新日志")
+                        {
+                            _liteContext = new();
+                            var log =await _liteContext.Logs.OrderByDescending(t => t.createDate).FirstOrDefaultAsync();
+                            MessageChain mc = new()
+                            {
+                                new PlainMessage("时间：" + log?.createDate.ToString("yyyy-MM-dd HH:mm:ss") ?? ""),
+                                new PlainMessage("\n详细：" + log?.message ?? "未查询到日志！")
+                            };
+                            await fmr.SendMessageAsync(mc);
+                            return;
+                        }
+                        if (msgText.Contains("#添加管理员#"))
+                        {
+                            var qqNum = msgText.Replace("#添加管理员#", "");
+                            if (string.IsNullOrWhiteSpace(qqNum.Trim()))
+                            {
+                                await fmr.SendMessageAsync("格式错误!");
+                                return;
+                            }
+                            _liteContext = new();
+                            var model = await _liteContext.Config.FirstOrDefaultAsync(t => t.key == "Permission");
+                            if (model == null) throw new Exception("key为【Permission】的值不存在！");
+                            Const.Config["QQ"]!["Permission"] = Const.Config["QQ"]!["Permission"]!.ToString() + "," + qqNum;
+                            Const._ConfigModel = null;
+                            model.value = Const.Config["QQ"]!["Permission"]!.ToString();
+                            _liteContext.Update(model);
+                            await _liteContext.SaveChangesAsync();
+                            await _liteContext.DisposeAsync();
+                            await fmr.SendMessageAsync("添加成功！");
+                            return;
+                        }
+                        if (msgText == "#删除全部管理员")
+                        {
+                            _liteContext = new();
+                            var model = await _liteContext.Config.FirstOrDefaultAsync(t => t.key == "Permission");
+                            if (model == null) throw new Exception("key为【Permission】的值不存在！");
+                            model.value = "";
+                            _liteContext.Update(model);
+                            await _liteContext.SaveChangesAsync();
+                            await _liteContext.DisposeAsync();
+                            Const.Config["QQ"]!["Permission"] = model.value;
+                            Const._ConfigModel = null;
+                            await fmr.SendMessageAsync("删除成功！");
+                            return;
+                        }
+                        if (msgText.Contains("#删除管理员#"))
+                        {
+                            var qqNum = msgText.Replace("#添加管理员#", "");
+                            if (string.IsNullOrWhiteSpace(qqNum.Trim()))
+                            {
+                                await fmr.SendMessageAsync("格式错误!");
+                                return;
+                            }
+                            if (!Permission.Contains(qqNum))
+                            {
+                                await fmr.SendMessageAsync("此账号不是管理员！");
+                                return;
+                            }
+                            Permission.Remove(qqNum);
+                            _liteContext = new();
+                            var model = await _liteContext.Config.FirstOrDefaultAsync(t => t.key == "Permission");
+                            if (model == null) throw new Exception("key为【Permission】的值不存在！");
+                            model.value = string.Join(",", Permission);
+                            _liteContext.Update(model);
+                            await _liteContext.SaveChangesAsync();
+                            await _liteContext.DisposeAsync();
+                            Const.Config["QQ"]!["Permission"] = model.value;
+                            Const._ConfigModel = null;
+                            await fmr.SendMessageAsync("删除成功！");
+                            return;
+                        }
+                    }
+                    if (Permission.Contains(fmr.Sender.Id) || fmr.Sender.Id == Admin)
+                    {
+                        if (msgText == "#菜单" && Permission.Contains(fmr.Sender.Id))
+                        {
+                            string menu = "1、功能开关：\n#开启/关闭模块{模块名称}\n#开启/关闭转发#{模块}#qq/群\n#修改转发#{模块}#qq/群#{值}\n2、发送消息：#发送#{群/好友}#文字/图片/语音/视频/图文/{qq号/群号}/{文字/图片链接/{文字}-{图片链接}}";
+                            await fmr.SendMessageAsync(menu);
+                            return;
+                        }
                         if (msgText.Contains("#发送#"))
                         {
                             var msg = msgText.Replace("#发送#", "");
@@ -353,7 +434,7 @@ namespace Helper
                             Const._EnableModule = null;
                             await fmr.SendMessageAsync($"模块【{old}】已开启！");
                             _liteContext = new();
-                            var model = _liteContext.Config.FirstOrDefault(t => t.parentId == 13 && t.key == moudel);
+                            var model =await _liteContext.Config.FirstOrDefaultAsync(t => t.parentId == 13 && t.key == moudel);
                             if (model != null)
                             {
                                 model.value = "True";
@@ -372,7 +453,7 @@ namespace Helper
                             Const._EnableModule = null;
                             await fmr.SendMessageAsync($"模块【{old}】已关闭！");
                             _liteContext = new();
-                            var model = _liteContext.Config.FirstOrDefault(t => t.parentId == 13 && t.key == moudel);
+                            var model =await _liteContext.Config.FirstOrDefaultAsync(t => t.parentId == 13 && t.key == moudel);
                             if (model != null)
                             {
                                 model.value = "False";
@@ -444,10 +525,10 @@ namespace Helper
                             Const._ConfigModel = null;
                             await fmr.SendMessageAsync($"模块【{list[0]}】转发至{type}功能已关闭！");
                             _liteContext = new();
-                            var pModel = _liteContext.Config.FirstOrDefault(t => t.parentId == 13 && t.key == moudel);
+                            var pModel =await _liteContext.Config.FirstOrDefaultAsync(t => t.parentId == 13 && t.key == moudel);
                             if (pModel != null)
                             {
-                                var model = _liteContext.Config.FirstOrDefault(t => t.parentId == pModel.id && t.key == (type == "qq" ? "ForwardQQ" : "ForwardGroup"));
+                                var model = await _liteContext.Config.FirstOrDefaultAsync(t => t.parentId == pModel.id && t.key == (type == "qq" ? "ForwardQQ" : "ForwardGroup"));
                                 if (model != null)
                                 {
                                     model.value = "False";
@@ -496,18 +577,6 @@ namespace Helper
                             await _liteContext.DisposeAsync();
                             return;
                         }
-                        if (msgText == "#最新日志")
-                        {
-                            _liteContext = new();
-                            var log = _liteContext.Logs.OrderByDescending(t => t.createDate).FirstOrDefault();
-
-                            await fmr.SendMessageAsync("时间：" + log?.createDate.ToString("yyyy-MM-dd HH:mm:ss") ?? "" + "\n详细：" + log?.message ?? "未查询到日志！");
-                            return;
-                        }
-                    }
-                    if (Permission.Contains(fmr.Sender.Id))
-                    {
-
                     }
                 }
                 catch (Exception e)
@@ -536,7 +605,7 @@ namespace Helper
                         case Events.NewFriendRequested:
                             {
                                 var qq = e as NewFriendRequestedEvent;
-                                await SendFriendMsg(Admin, $"机器人收到添加好友请求，事件标识：{qq!.EventId}，附加消息：{qq.Message}，请求人：{qq.FromId}，昵称：{qq.Nick}" + (string.IsNullOrWhiteSpace(qq.GroupId) ? "" : "，来自群：" + qq.GroupId));
+                                await SendFriendMsg(Admin, $"机器人收到添加好友请求\n附加消息：{qq.Message}\n请求人：{qq.FromId}\n昵称：{qq.Nick}" + (string.IsNullOrWhiteSpace(qq.GroupId) ? "" : "\n来自群：" + qq.GroupId));
                                 Event.Add(qq);
                             };
                             break;
@@ -669,6 +738,77 @@ namespace Helper
                 await _liteContext.SaveChangesAsync();
                 await _liteContext.DisposeAsync();
                 await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+            }
+        }
+
+        public static async Task TestMethod(string command= "#添加管理员#1737678289")
+        {
+            try
+            {
+                if (command.Contains("#添加管理员#"))
+                {
+                    var qqNum = command.Replace("#添加管理员#", "");
+                    if (string.IsNullOrWhiteSpace(qqNum.Trim()))
+                    {
+                        Console.WriteLine("格式错误!");
+                        return;
+                    }
+                    _liteContext = new();
+                    var model =await _liteContext.Config.FirstOrDefaultAsync(t => t.key == "Permission");
+                    if (model == null) throw new Exception("key为【Permission】的值不存在！");
+                    Const.Config["Permission"] = Const.Config["QQ"]!["Permission"]!.ToString() + "," + qqNum;
+                    Const._ConfigModel = null;
+                    model.value = Const.Config["Permission"]!.ToString();
+                    _liteContext.Update(model);
+                    await _liteContext.SaveChangesAsync();
+                    await _liteContext.DisposeAsync();
+                    Console.WriteLine("添加成功！");
+                    return;
+                }
+                if (command == "#删除全部管理员")
+                {
+                    _liteContext = new();
+                    var model = await _liteContext.Config.FirstOrDefaultAsync(t => t.key == "Permission");
+                    if (model == null) throw new Exception("key为【Permission】的值不存在！");
+                    model.value = "";
+                    _liteContext.Update(model);
+                    await _liteContext.SaveChangesAsync();
+                    await _liteContext.DisposeAsync();
+                    Const.Config["Permission"] = model.value;
+                    Const._ConfigModel = null;
+                    Console.WriteLine("删除成功！");
+                    return;
+                }
+                if (command.Contains("#删除管理员#"))
+                {
+                    var qqNum = command.Replace("#添加管理员#", "");
+                    if (string.IsNullOrWhiteSpace(qqNum.Trim()))
+                    {
+                        Console.WriteLine("格式错误!");
+                        return;
+                    }
+                    if (!Permission.Contains(qqNum))
+                    {
+                        Console.WriteLine("此账号不是管理员！");
+                        return;
+                    }
+                    Permission.Remove(qqNum);
+                    _liteContext = new();
+                    var model = await _liteContext.Config.FirstOrDefaultAsync(t => t.key == "Permission");
+                    if (model == null) throw new Exception("key为【Permission】的值不存在！");
+                    model.value = string.Join(",", Permission);
+                    _liteContext.Update(model);
+                    await _liteContext.SaveChangesAsync();
+                    await _liteContext.DisposeAsync();
+                    Const.Config["Permission"] = model.value;
+                    Const._ConfigModel = null;
+                    Console.WriteLine("删除成功！");
+                    return;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
             }
         }
     }

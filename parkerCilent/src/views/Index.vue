@@ -101,13 +101,13 @@ const startMirai = async () => {
     }
 };
 const start = async () => {
-    const liveNim = new NimChatroomSocket({ roomId: '2615022451', onMessage: liveMsg })
-    console.log(liveNim)
-    liveNim.init('NjMyZmVmZjFmNGM4Mzg1NDFhYjc1MTk1ZDFjZWIzZmE=');
-    setTimeout(() => {
-    liveNim.disconnect();
-    }, 5000);
-    return;
+    // const liveNim = new NimChatroomSocket({ roomId: '2615022451', onMessage: liveMsg })
+    // console.log(liveNim)
+    // liveNim.init('NjMyZmVmZjFmNGM4Mzg1NDFhYjc1MTk1ZDFjZWIzZmE=');
+    // setTimeout(() => {
+    // liveNim.disconnect();
+    // }, 5000);
+    // return;
     if (nim.value) {
         nim.value.destroy()
     }
@@ -180,11 +180,11 @@ const handleLogined = async function () {
     ws.value = new window.WebSocket("ws://localhost:6001");
     ws.value.onopen = () => {
         wsReady.value = true;
-        msg += "连接WebSocket服务器成功。";
+        log.value.push("连接WebSocket服务器成功。");
     };
     ws.value.onclose = () => {
         wsReady.value = false;
-        msg += "连接WebSocket服务器失败。";
+        log.value.push("连接WebSocket服务器失败。");
     };
     if (useMirai.value) {
         if (res.data.mirai) {
@@ -193,9 +193,7 @@ const handleLogined = async function () {
             msg += "QQ机器人启动失败。";
         }
     }
-    setTimeout(() => {
-        log.value.push(msg);
-    }, 500);
+    log.value.push(msg);
 };
 
 const handleMessage = async function (msg: any) {
@@ -206,10 +204,10 @@ const handleMessage = async function (msg: any) {
         ws.value?.send(JSON.stringify(msg));
     }
     //#region 直播
-    if (msg.channelName == "直播") {
-        const liveNim = new NimChatroomSocket({ roomId: baseConfig.value.KD.roomId, onMessage: liveMsg })
-        liveNim.init(baseConfig.value.KD.appKey);
-    }
+    // if (msg.channelName == "直播") {
+    //     const liveNim = new NimChatroomSocket({ roomId: baseConfig.value.KD.roomId, onMessage: liveMsg })
+    //     liveNim.init(baseConfig.value.KD.appKey);
+    // }
     //#endregion
     var mess = `【${msg.channelName}|${msg.time}】${msg.ext.user.nickName}:${msg.body}`;
     log.value.push(mess);

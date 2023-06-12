@@ -10,16 +10,22 @@
 
   <ItemGroup>
     <Compile Remove="bin\**" />
-    <Compile Remove="wwwroot\pages\assets\**" />
     <EmbeddedResource Remove="bin\**" />
-    <EmbeddedResource Remove="wwwroot\pages\assets\**" />
     <None Remove="bin\**" />
-    <None Remove="wwwroot\pages\assets\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="wwwroot\pages\assets\index-1353eb59.css" />
+    <None Remove="wwwroot\pages\assets\index-3e5d490c.js" />
     <None Remove="wwwroot\pages\favicon.ico" />
     <None Remove="wwwroot\pages\index.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="wwwroot\pages\assets\index-1353eb59.css" />
+    <EmbeddedResource Include="wwwroot\pages\assets\index-3e5d490c.js" />
+    <EmbeddedResource Include="wwwroot\pages\favicon.ico" />
+    <EmbeddedResource Include="wwwroot\pages\index.html" />
   </ItemGroup>
 
   <ItemGroup>
@@ -49,10 +55,6 @@
     <None Update="wwwroot\sql\main.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\pages\" />
   </ItemGroup>
 
 </Project>

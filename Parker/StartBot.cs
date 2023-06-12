@@ -12,6 +12,7 @@ namespace ParkerBot
         public static bool HasWebSocket { get; set; } = false;
         public bool Start()
         {
+            Msg.TestMethod().GetAwaiter();
             try
             {
                 if (Const.EnableModule.bd && Const.ConfigModel.BD.saveAliyunDisk)
