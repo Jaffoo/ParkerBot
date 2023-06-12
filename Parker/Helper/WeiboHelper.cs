@@ -217,7 +217,7 @@ namespace Helper
                 if (await Baidu.IsFaceAndCount(url) == 1)
                 {
                     var score = await Baidu.FaceMatch(url);
-                    if (score != Audit) await MessageManager.SendFriendMessageAsync(Msg.Admin, $"人脸对比相似度：{score}");
+                    if (score != Audit) await Msg.SendFriendMsg(Msg.Admin, $"人脸对比相似度：{score}");
                     if (score == Audit)
                     {
                         dbContext = new();
@@ -228,7 +228,7 @@ namespace Helper
                         });
                         await dbContext.SaveChangesAsync();
                         await dbContext.DisposeAsync();
-                        await MessageManager.SendFriendMessageAsync(Msg.Admin, $"未启用人脸识别，加入待审核，目前有{Msg.Check.Count}张图片待审核");
+                        await Msg.SendFriendMsg(Msg.Admin, $"未启用人脸识别，加入待审核，目前有{Msg.Check.Count}张图片待审核");
                         return;
                     }
                     if (score > Audit && score < Similarity)
@@ -241,7 +241,7 @@ namespace Helper
                         });
                         await dbContext.SaveChangesAsync();
                         await dbContext.DisposeAsync();
-                        await MessageManager.SendFriendMessageAsync(Msg.Admin, $"低相似度，加入待审核，目前有{Msg.Check.Count}张图片待审核");
+                        await Msg.SendFriendMsg(Msg.Admin, $"低相似度，加入待审核，目前有{Msg.Check.Count}张图片待审核");
                         return;
                     }
                     if (score >= Similarity && score < 100)
@@ -256,13 +256,13 @@ namespace Helper
                             });
                             await dbContext.SaveChangesAsync();
                             await dbContext.DisposeAsync();
-                            await MessageManager.SendFriendMessageAsync(Msg.Admin, $"保存失败，加入待审核，目前有{Msg.Check.Count}张图片待审核");
+                            await Msg.SendFriendMsg(Msg.Admin, $"保存失败，加入待审核，目前有{Msg.Check.Count}张图片待审核");
                         }
                         else
                         {
                             string msg = "高度相似，已保存本地";
                             if (FileHelper.SaveAliyunDisk) msg += $"，正在上传至阿里云盘【{Const.ConfigModel.BD.albumName}】相册";
-                            await MessageManager.SendFriendMessageAsync(Msg.Admin, msg);
+                            await Msg.SendFriendMsg(Msg.Admin, msg);
                         }
                         return;
                     }

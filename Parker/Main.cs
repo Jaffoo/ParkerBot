@@ -1,6 +1,7 @@
 ﻿using NetDimension.NanUI;
 using NetDimension.NanUI.HostWindow;
 using NetDimension.NanUI.JavaScript;
+using System.Text;
 
 namespace ParkerBot
 {
@@ -11,7 +12,7 @@ namespace ParkerBot
         // 指定启动 Url
         public override string StartUrl => "http://parkerbot/";
         //public override string StartUrl => "http://localhost:5173/";
-        
+
         public Main()
         {
             // 在此处设置窗口样式
@@ -34,7 +35,19 @@ namespace ParkerBot
                 var sql = File.ReadAllText(path);
                 SqlHelper.ExecuteNonQuery(sql);
             }
-            
+            ////数据库有更新时执行
+            //var updateSql = Directory.GetCurrentDirectory() + "/wwwroot/sql/update.txt";
+            //if (File.Exists(updateSql))
+            //{
+            //    Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            //    var sql = File.ReadAllText(updateSql,Encoding.GetEncoding("GBK"));
+            //    b = SqlHelper.ExecuteNonQuery(sql) > 0;
+            //    if (b)
+            //    {
+            //        File.Delete(updateSql);
+            //    }
+            //}
+
             Const.SetCache();
             RegistJs();
 

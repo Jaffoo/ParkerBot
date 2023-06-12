@@ -2,6 +2,9 @@ using Mirai.Net.Utils.Scaffolds;
 using Newtonsoft.Json.Linq;
 using ParkerBot;
 using MiniExcelLibs;
+using Mirai.Net.Data.Messages;
+using Mirai.Net.Data.Messages.Concretes;
+using Newtonsoft.Json;
 
 namespace Helper
 {
@@ -18,7 +21,7 @@ namespace Helper
                     if (!Directory.Exists(log)) Directory.CreateDirectory(log);
                     var logFile = log + "/message.txt";
                     if (!File.Exists(logFile)) File.Create(logFile);
-                    using var sw = new StreamWriter(logFile);
+                    using var sw = new StreamWriter(logFile, true);
                     await sw.WriteLineAsync(str);
                     await sw.DisposeAsync();
                     sw.Close();
@@ -126,16 +129,25 @@ namespace Helper
                     //文字翻牌
                     else if (attach["messageType"]!.ToString() == "FLIPCARD")
                     {
+                        var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
+                        mcb.Plain(answer.ToString());
+                        mcb.Plain("文字翻牌：" + attach["filpCardInfo"]!["question"]);
                         return;
                     }
                     //语音翻牌
                     else if (attach["messageType"]!.ToString() == "FLIPCARD_AUDIO")
                     {
+                        var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
+                        mcb.VoiceFromUrl(Const.ConfigModel.KD.mP4Domain + answer["url"]);
+                        mcb.Plain("语音翻牌：" + attach["filpCardInfo"]!["question"]);
                         return;
                     }
                     //视频翻牌
                     else if (attach["messageType"]!.ToString() == "FLIPCARD_VIDEO")
                     {
+                        var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
+                        mcb.Plain(Const.ConfigModel.KD.mP4Domain + answer["url"]);
+                        mcb.Plain("视频翻牌：" + attach["filpCardInfo"]!["question"]);
                         return;
                     }
                     else
@@ -171,15 +183,19 @@ namespace Helper
             }
             catch (Exception e)
             {
-                _liteContext = new();
-                await _liteContext.Logs.AddAsync(new()
+                object lockObj = new object();
+                lock (lockObj)
                 {
-                    message = e.Message + "\n" + e.StackTrace,
-                    createDate = DateTime.Now,
-                });
-                await _liteContext.SaveChangesAsync();
-                await _liteContext.DisposeAsync();
-                await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                    _liteContext = new();
+                    _liteContext.Logs.Add(new()
+                    {
+                        message = e.Message + "\n" + e.StackTrace,
+                        createDate = DateTime.Now,
+                    });
+                    _liteContext.SaveChanges();
+                    _liteContext.Dispose();
+                    Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！").GetAwaiter();
+                }
             }
         }
     }

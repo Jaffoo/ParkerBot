@@ -113,8 +113,8 @@ namespace ParkerBot
             {
                 var list1 = model.BD.imageList.Split(",").ToList().Select(t => new
                 {
-                    name = t.Replace("http://parkerbot.file/images/standard", ""),
-                    url = t
+                    name = t.Replace("/images/standard", ""),
+                    url = "http://parkerbot.file"+ t
                 } as object).ToList();
                 model!.BD.imageList1 = list1;
             }
@@ -186,6 +186,10 @@ namespace ParkerBot
                     chidren.ForEach(item =>
                     {
                         item.value = data["config"]![mod]![item.key!.FirstLow()]?.ToString() ?? "";
+                        if (item.key == "ImageList")
+                        {
+                            item.value = item.value.Replace("http://parkerbot.file", "");
+                        }
                     });
                     updataList.Add(model);
                     updataList.AddRange(chidren);
@@ -224,7 +228,7 @@ namespace ParkerBot
             object obj = new
             {
                 name,
-                url = "http://parkerbot.file/images/standard" + fileName
+                url = "/images/standard" + fileName
             };
             return Json(obj);
         }

@@ -204,10 +204,11 @@ const handleMessage = async function (msg: any) {
         ws.value?.send(JSON.stringify(msg));
     }
     //#region 直播
-    // if (msg.channelName == "直播") {
-    //     const liveNim = new NimChatroomSocket({ roomId: baseConfig.value.KD.roomId, onMessage: liveMsg })
-    //     liveNim.init(baseConfig.value.KD.appKey);
-    // }
+    if (msg.channelName == "直播") {
+        console.log(msg);
+        // const liveNim = new NimChatroomSocket({ roomId: baseConfig.value.KD.roomId, onMessage: liveMsg })
+        // liveNim.init(baseConfig.value.KD.appKey);
+    }
     //#endregion
     var mess = `【${msg.channelName}|${msg.time}】${msg.ext.user.nickName}:${msg.body}`;
     log.value.push(mess);

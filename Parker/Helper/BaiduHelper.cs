@@ -76,7 +76,7 @@ namespace Helper
                 List<float> scores = new();
                 foreach (var item in faceStandard)
                 {
-                    string img64 =await Base64.UrlImgToBase64(item);
+                    string img64 = Base64.PathToBase64(Directory.GetCurrentDirectory() + "/wwwroot" + item);
                     if (string.IsNullOrWhiteSpace(img64)) return 0;
                     string token = GetBaiduToken();
                     string host = "https://aip.baidubce.com/rest/2.0/face/v3/match?access_token=" + token;

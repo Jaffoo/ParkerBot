@@ -1,0 +1,1 @@
+INSERT INTO "main"."config" ("Name", "Key", "Value", "ParentId") VALUES ('∑øº‰ID', 'RoomId', '', 17);
