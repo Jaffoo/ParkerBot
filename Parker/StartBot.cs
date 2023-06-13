@@ -14,10 +14,6 @@ namespace ParkerBot
         {
             try
             {
-                if (Const.EnableModule.bd && Const.ConfigModel.BD.saveAliyunDisk)
-                {
-                    Task.Run(StartProcess);
-                }
                 if (!Const.EnableModule.kd) return false;
                 WebSocket = new WebSocketServer("ws://0.0.0.0:6001");
                 WebSocket.Start(socket =>
@@ -34,14 +30,6 @@ namespace ParkerBot
             {
                 HasWebSocket = false;
                 return false;
-            }
-        }
-        private void StartProcess()
-        {
-            lock (this)
-            {
-                var path = Directory.GetCurrentDirectory() + "/wwwroot/script/AliDiskApi.exe";
-                using Process p = Process.Start(path)!;
             }
         }
     }

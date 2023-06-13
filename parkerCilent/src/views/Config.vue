@@ -419,7 +419,7 @@ onMounted(() => {
         for (let propName in eable.value) {
             for (let item of res.data.enable) {
                 if (item.key.toLowerCase() == propName) {
-                    if(item.value==="true"||item.value==="True"){
+                    if(JSON.parse(item.value)){
                         eable.value[propName] = true;
                     }else{
                         eable.value[propName] = false;

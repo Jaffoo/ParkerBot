@@ -114,7 +114,7 @@ namespace ParkerBot
                 var list1 = model.BD.imageList.Split(",").ToList().Select(t => new
                 {
                     name = t.Replace("/images/standard", ""),
-                    url = "http://parkerbot.file"+ t
+                    url = "http://parkerbot.file" + t
                 } as object).ToList();
                 model!.BD.imageList1 = list1;
             }
@@ -164,6 +164,20 @@ namespace ParkerBot
             }
         }
 
+        [RouteGet]
+        public ResourceResponse StartAliYunApi(ResourceRequest request)
+        {
+            Task.Run(() =>
+            {
+                if (Const.EnableModule.bd && ConfigModel.BD.saveAliyunDisk)
+                {
+                    var path = Directory.GetCurrentDirectory() + "/wwwroot/script/AliDiskApi.exe";
+                    using Process p = Process.Start(path)!;
+                }
+            });
+            return Json(null);
+        }
+
         [RoutePost]
         public ResourceResponse SetConfig(ResourceRequest request)
         {
@@ -180,7 +194,7 @@ namespace ParkerBot
                 foreach (var mod in mods)
                 {
                     model = dbContext.Config.FirstOrDefault(t => t.key == mod)!;
-                    model.value = data["enable"]![mod.ToLower()]!.ToString();
+                    model.value = data["enable"]![mod.ToLower()]!.ToString().ToLower();
                     if (!bool.Parse(model.value)) continue;
                     chidren = dbContext.Config.Where(t => t.parentId == model.id).ToList();
                     chidren.ForEach(item =>
@@ -189,6 +203,10 @@ namespace ParkerBot
                         if (item.key == "ImageList")
                         {
                             item.value = item.value.Replace("http://parkerbot.file", "");
+                        }
+                        if (item.value == "True" || item.value == "False")
+                        {
+                            item.value=item.value.ToLower();
                         }
                     });
                     updataList.Add(model);

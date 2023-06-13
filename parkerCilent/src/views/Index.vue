@@ -13,6 +13,8 @@
                     <el-button v-if="useMirai" type="primary" native-type="button" :icon="Setting"
                         @click="startMirai">启动Mirai机器人</el-button>
                     <el-button type="primary" native-type="button" :icon="Check" @click="start">启动机器人</el-button>
+                    <el-button v-if="useAli" type="primary" native-type="button" :icon="Setting"
+                        @click="startAli">启动阿里云盘</el-button>
                 </el-form-item>
             </el-form>
         </el-header>
@@ -64,6 +66,7 @@ import NimChatroomSocket from '../component/Live'
 const baseConfig = ref({} as any);
 const mirai = ref({} as any);
 const useMirai = ref(false);
+const useAli = ref(false);
 const router = useRouter();
 const nim = ref<NIMSDK>();
 const qChat = ref<QChatSDK>();
@@ -80,6 +83,12 @@ watch(log.value, (newVal, OldVal) => {
     if (logDiv === null) return;
     logDiv.scrollTop = logDiv.scrollHeight;
 })
+
+const startAli = async () => {
+    await axios({
+        url: "http://parkerbot.api/api/StartAliYunApi"
+    });
+}
 
 const startMirai = async () => {
     var res = await axios({
@@ -264,6 +273,13 @@ onMounted(async () => {
     baseConfig.value = res.data.config;
     mirai.value = res.data.mirai;
     useMirai.value = res.data.mirai.useMirai;
+    res.data.enable.forEach((item: any) => {
+        if (item.key === "BD") {
+            if (JSON.parse(item.value) && res.data.config.BD.saveAliyunDisk) {
+                useAli.value = true;
+            }
+        }
+    })
     await refresh();
 });
 
