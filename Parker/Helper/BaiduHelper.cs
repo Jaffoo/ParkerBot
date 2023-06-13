@@ -27,7 +27,6 @@ namespace Helper
 
         public static async Task<int> IsFaceAndCount(string img)
         {
-            if (!Const.EnableModule.bd) return 1;
             try
             {
                 var url = img;
@@ -64,7 +63,6 @@ namespace Helper
 
         public static async Task<float> FaceMatch(string img)
         {
-            if (!Const.EnableModule.bd) return Weibo.Audit;
             try
             {
                 img = await Base64.UrlImgToBase64(img);
@@ -95,7 +93,7 @@ namespace Helper
                     scores.Add(score);
                     await Task.Delay(1000);
                 }
-                return scores.Count == 0 ? Weibo.Audit : scores.Max();
+                return scores.Count == 0 ? 0 : scores.Max();
             }
             catch (Exception e)
             {

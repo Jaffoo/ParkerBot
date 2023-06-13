@@ -214,11 +214,25 @@ namespace Helper
         {
             try
             {
+                if (!Const.EnableModule.bd)
+                {
+                    dbContext = new();
+                    await dbContext.Caches.AddAsync(new()
+                    {
+                        content = url,
+                        type = 1
+                    });
+                    await dbContext.SaveChangesAsync();
+                    await dbContext.DisposeAsync();
+                    await Msg.SendFriendMsg(Msg.Admin, $"未启用人脸识别，加入待审核，目前有{Msg.Check.Count}张图片待审核");
+                    return;
+                }
                 if (await Baidu.IsFaceAndCount(url) == 1)
                 {
                     var score = await Baidu.FaceMatch(url);
                     if (score != Audit) await Msg.SendFriendMsg(Msg.Admin, $"人脸对比相似度：{score}");
-                    if (score == Audit)
+
+                    if (score >= Audit && score < Similarity)
                     {
                         dbContext = new();
                         await dbContext.Caches.AddAsync(new()
@@ -228,20 +242,7 @@ namespace Helper
                         });
                         await dbContext.SaveChangesAsync();
                         await dbContext.DisposeAsync();
-                        await Msg.SendFriendMsg(Msg.Admin, $"未启用人脸识别，加入待审核，目前有{Msg.Check.Count}张图片待审核");
-                        return;
-                    }
-                    if (score > Audit && score < Similarity)
-                    {
-                        dbContext = new();
-                        await dbContext.Caches.AddAsync(new()
-                        {
-                            content = url,
-                            type = 1
-                        });
-                        await dbContext.SaveChangesAsync();
-                        await dbContext.DisposeAsync();
-                        await Msg.SendFriendMsg(Msg.Admin, $"低相似度，加入待审核，目前有{Msg.Check.Count}张图片待审核");
+                        await Msg.SendFriendMsg(Msg.Admin, $"低相似，加入待审核，目前有{Msg.Check.Count}张图片待审核");
                         return;
                     }
                     if (score >= Similarity && score < 100)
