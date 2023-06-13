@@ -160,25 +160,29 @@ namespace Helper
                     Console.WriteLine(msgType);
                     return;
                 }
-                if (!Const.ConfigModel.KD.forwardGroup) return;
-                string group = !string.IsNullOrWhiteSpace(Const.ConfigModel.KD.group) ? Const.ConfigModel.KD.group : Const.ConfigModel.QQ.group;
-                List<string> groups = !string.IsNullOrWhiteSpace(group) ? group.Split(",").ToList() : new();
-                groups.ForEach(async (item) =>
+                if (Const.ConfigModel.KD.forwardGroup)
                 {
-                    await Msg.SendGroupMsg(item, mcb.Build());
-                });
-                if (!Const.ConfigModel.KD.forwardQQ) return;
-                if (!string.IsNullOrWhiteSpace(Const.ConfigModel.KD.qq))
-                {
-                    var qqs = Const.ConfigModel.KD.qq.Split(",").ToList();
-                    qqs.ForEach(async (item) =>
+                    string group = !string.IsNullOrWhiteSpace(Const.ConfigModel.KD.group) ? Const.ConfigModel.KD.group : Const.ConfigModel.QQ.group;
+                    List<string> groups = !string.IsNullOrWhiteSpace(group) ? group.Split(",").ToList() : new();
+                    groups.ForEach(async (item) =>
                     {
-                        await Msg.SendFriendMsg(item, mcb.Build());
+                        await Msg.SendGroupMsg(item, mcb.Build());
                     });
                 }
-                else if (!string.IsNullOrWhiteSpace(Const.ConfigModel.QQ.admin))
+                if (Const.ConfigModel.KD.forwardQQ)
                 {
-                    await Msg.SendFriendMsg(Const.ConfigModel.QQ.admin, mcb.Build());
+                    if (!string.IsNullOrWhiteSpace(Const.ConfigModel.KD.qq))
+                    {
+                        var qqs = Const.ConfigModel.KD.qq.Split(",").ToList();
+                        qqs.ForEach(async (item) =>
+                        {
+                            await Msg.SendFriendMsg(item, mcb.Build());
+                        });
+                    }
+                    else if (!string.IsNullOrWhiteSpace(Const.ConfigModel.QQ.admin))
+                    {
+                        await Msg.SendFriendMsg(Const.ConfigModel.QQ.admin, mcb.Build());
+                    }
                 }
             }
             catch (Exception e)

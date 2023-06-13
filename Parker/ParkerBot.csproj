@@ -50,7 +50,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="wwwroot\script\AliDiskApi.py">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Update="wwwroot\sql\main.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
