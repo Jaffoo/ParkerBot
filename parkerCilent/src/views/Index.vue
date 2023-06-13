@@ -129,8 +129,8 @@ const start = async () => {
 
     var useKd: boolean = false;
     res.data.enable.forEach((item: any) => {
-        if (item.key == "KD" && item.value == "True") {
-            useKd = true;
+        if (item.key == "KD") {
+            useKd = JSON.parse(item.value);
         }
     });
     if (useKd) {
