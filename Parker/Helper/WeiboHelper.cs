@@ -169,7 +169,6 @@ namespace Helper
                 await _context.SaveChangesAsync();
                 await _context.DisposeAsync();
                 await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
-                return 0;
             }
         }
 
@@ -208,7 +207,6 @@ namespace Helper
                 await _context.SaveChangesAsync();
                 await _context.DisposeAsync();
                 await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
-                return 0;
             }
         }
 
