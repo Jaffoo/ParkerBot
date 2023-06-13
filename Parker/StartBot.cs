@@ -12,7 +12,6 @@ namespace ParkerBot
         public static bool HasWebSocket { get; set; } = false;
         public bool Start()
         {
-            //var a = Base64.UrlImgToBase64("http://parkerbot.file/images/66-230612224035866.jpeg").Result;
             try
             {
                 if (Const.EnableModule.bd && Const.ConfigModel.BD.saveAliyunDisk)

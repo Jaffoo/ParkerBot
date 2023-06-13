@@ -15,8 +15,8 @@ namespace Helper
             List<KeyValuePair<string, string>> paraList = new()
             {
                 new KeyValuePair<string, string>("grant_type", "client_credentials"),
-                new KeyValuePair<string, string>("client_id", appKey),
-                new KeyValuePair<string, string>("client_secret", appSeret)
+                new KeyValuePair<string, string>("client_id", "8zXHBKFPLNjOxUB1EavgVzgZ"),
+                new KeyValuePair<string, string>("client_secret", "rXc2H9QwlLhrW9BRSdGpHBiye3I1jf9X")
             };
 
             HttpResponseMessage response = client.PostAsync(authHost, new FormUrlEncodedContent(paraList)).Result;
@@ -49,14 +49,14 @@ namespace Helper
             }
             catch (Exception e)
             {
-                LiteContext _context = new();
-                _context.Logs.Add(new Logs
+                var _context = new LiteContext();
+                await _context.Logs.AddAsync(new Logs
                 {
-                    message = e.ToString(),
+                    message = "报错信息：\n" + e.Message + "\n堆栈信息：\n" + e.StackTrace,
                     createDate = DateTime.Now,
                 });
-                _context.SaveChanges();
-                _context.Dispose();
+                await _context.SaveChangesAsync();
+                await _context.DisposeAsync();
                 await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
                 return 0;
             }
@@ -67,7 +67,6 @@ namespace Helper
             if (!Const.EnableModule.bd) return Weibo.Audit;
             try
             {
-                var url = img;
                 img = await Base64.UrlImgToBase64(img);
                 if (string.IsNullOrWhiteSpace(img)) return 0;
                 var imageList = Const.ConfigModel.BD.imageList;
@@ -85,7 +84,7 @@ namespace Helper
          "{\"image\": \"" + img64 + "\", \"image_type\": \"BASE64\", \"face_type\": \"LIVE\", \"quality_control\": \"LOW\"}]";
                     StringContent stringContent = new(str);
                     HttpClient client = new();
-                    var response = await client.PostAsync(url, stringContent);
+                    var response = await client.PostAsync(host, stringContent);
                     var resultStr = await response.Content.ReadAsStringAsync();
                     var result = JObject.Parse(resultStr);
                     if (string.IsNullOrWhiteSpace(result["result"]?.ToString() ?? "")) continue;
@@ -101,13 +100,13 @@ namespace Helper
             catch (Exception e)
             {
                 var _context = new LiteContext();
-                _context.Logs.Add(new Logs
+                await _context.Logs.AddAsync(new Logs
                 {
-                    message = e.ToString(),
+                    message ="报错信息：\n"+ e.Message + "\n堆栈信息：\n" + e.StackTrace,
                     createDate = DateTime.Now,
                 });
-                _context.SaveChanges();
-                _context.Dispose();
+                await _context.SaveChangesAsync();
+                await _context.DisposeAsync();
                 await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
                 return 0;
             }

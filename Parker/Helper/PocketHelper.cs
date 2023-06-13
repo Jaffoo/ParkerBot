@@ -183,19 +183,15 @@ namespace Helper
             }
             catch (Exception e)
             {
-                object lockObj = new object();
-                lock (lockObj)
+                _liteContext = new();
+                await _liteContext.Logs.AddAsync(new()
                 {
-                    _liteContext = new();
-                    _liteContext.Logs.Add(new()
-                    {
-                        message = e.Message + "\n" + e.StackTrace,
-                        createDate = DateTime.Now,
-                    });
-                    _liteContext.SaveChanges();
-                    _liteContext.Dispose();
-                    Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！").GetAwaiter();
-                }
+                    message = "报错信息：\n" + e.Message + "\n堆栈信息：\n" + e.StackTrace,
+                    createDate = DateTime.Now,
+                });
+                await _liteContext.SaveChangesAsync();
+                await _liteContext.DisposeAsync();
+                await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
             }
         }
     }

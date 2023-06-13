@@ -148,7 +148,7 @@ namespace Helper
                     _liteContext = new();
                     await _liteContext.Logs.AddAsync(new()
                     {
-                        message = e.Message + "\n" + e.StackTrace,
+                        message = "报错信息：\n" + e.Message + "\n堆栈信息：\n" + e.StackTrace,
                         createDate = DateTime.Now,
                     });
                     await _liteContext.SaveChangesAsync();
