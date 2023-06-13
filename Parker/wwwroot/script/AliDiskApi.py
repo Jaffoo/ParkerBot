@@ -1,6 +1,5 @@
 from flask import Flask        # 导入Flask类
 from aligo import Aligo
-from asq import query
 from flask import request
 
 app = Flask(__name__)          # 实例化Flask类
@@ -10,9 +9,9 @@ def UploadImgToAlbumOf66():
     try:
         path = request.args['path']
         album = request.args['album']
-        CreateAlbum(album=album)
-        CreateFolder(album=album)
-        fileInfo = ali.upload_file(file_path=path, parent_file_id=album)
+        CreateAlbum(album)
+        fileId = CreateFolder(album)
+        fileInfo = ali.upload_file(file_path=path, parent_file_id=fileId)
         for albumInfo in ali.list_albums():
             if albumInfo.name==album:
                 ali.add_files_to_album(album_id=albumInfo.album_id, files=[fileInfo])
@@ -35,14 +34,18 @@ def GetAlbumPhotos():
 
 def CreateAlbum(album):
     list = ali.list_albums()
-    albums = query(list).first_or_default(lambda x: x.name == album)
-    if albums is None:
+    albums = [x for x in list if x.name==album]
+    if len(albums) == 0:
         ali.create_album(album)
 def CreateFolder(folder):
     list = ali.get_file_list()
-    folders = query(list).first_or_default(lambda x: x.name == folder)
-    if folders is None:
-        ali.create_folder(folder)
+    folders = [x for x in list if x.name==folder]
+    if len(folders) == 0:
+        newFolder = ali.create_folder(folder)
+        return newFolder.file_id
+    elif len(folders) == 1:
+        return folders[0].file_id
+    return "root"
 
 class ApiResult:
     code:int
