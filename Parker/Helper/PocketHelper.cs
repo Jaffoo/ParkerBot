@@ -8,7 +8,7 @@ namespace Helper
     public class Pocket
     {
         public static LiteContext? _liteContext { get; set; }
-        private static readonly object _fileLock = new object();
+        private static readonly ReaderWriterLockSlim _fileLock = new();
         public static async Task PocketMessageReceiver(string str)
         {
             try
@@ -53,8 +53,9 @@ namespace Helper
                 {
                     await Task.Run(() =>
                     {
-                        lock (_fileLock)
+                        try
                         {
+                            _fileLock.EnterWriteLock();
                             var log = Directory.GetCurrentDirectory() + "/logs";
                             if (!Directory.Exists(log)) Directory.CreateDirectory(log);
                             var logFile = log + "/message" + DateTime.Now.ToString("MMdd") + ".txt";
@@ -64,6 +65,7 @@ namespace Helper
                             sw.Dispose();
                             sw.Close();
                         }
+                        finally { _fileLock.ExitWriteLock(); }
                     });
                 }
                 MessageChainBuilder mcb = new();
