@@ -5,7 +5,7 @@ import type { LiveRoomMessage } from './messageType';
 type OnMessage = (t: NimChatroomSocket, event: Array<LiveRoomMessage>) => void | Promise<void>;
 
 interface NimChatroomSocketArgs {
-  roomId: string;
+  liveId: string;
   onMessage: OnMessage;
 }
 
@@ -16,11 +16,11 @@ interface NIMError {
 
 /* 创建网易云信sdk的socket连接 */
 class NimChatroomSocket {
-  public roomId: string;
+  public liveId: string;
   public nimChatroomSocket: NIM_Web_Chatroom | undefined;
   public onMessage: OnMessage;
   constructor(arg: NimChatroomSocketArgs) {
-    this.roomId = arg.roomId; // 房间id
+    this.liveId = arg.liveId; // 房间id
     this.onMessage = arg.onMessage;
   }
 
@@ -28,7 +28,7 @@ class NimChatroomSocket {
   init(appkey: string): void {
     this.nimChatroomSocket = NIM_SDK.Chatroom.getInstance({
       appKey: atob(appkey),
-      chatroomId: this.roomId,
+      chatroomId: this.liveId,
       chatroomAddresses: ['chatweblink01.netease.im:443'],
       onconnect:this.onConnet,
       onmsgs: this.handleRoomSocketMessage,

@@ -110,13 +110,6 @@ const startMirai = async () => {
     }
 };
 const start = async () => {
-    // const liveNim = new NimChatroomSocket({ roomId: '2615022451', onMessage: liveMsg })
-    // console.log(liveNim)
-    // liveNim.init('NjMyZmVmZjFmNGM4Mzg1NDFhYjc1MTk1ZDFjZWIzZmE=');
-    // setTimeout(() => {
-    // liveNim.disconnect();
-    // }, 5000);
-    // return;
     if (nim.value) {
         nim.value.destroy()
     }
@@ -215,8 +208,8 @@ const handleMessage = async function (msg: any) {
     //#region 直播
     if (msg.channelName == "直播") {
         console.log(msg);
-        // const liveNim = new NimChatroomSocket({ roomId: baseConfig.value.KD.roomId, onMessage: liveMsg })
-        // liveNim.init(baseConfig.value.KD.appKey);
+        const liveNim = new NimChatroomSocket({ liveId: msg.attach.livePushInfo.liveId, onMessage: liveMsg })
+        liveNim.init(baseConfig.value.KD.appKey);
     }
     //#endregion
     var mess = `【${msg.channelName}|${msg.time}】${msg.ext.user.nickName}:${msg.body}`;

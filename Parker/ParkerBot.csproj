@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="wwwroot\pages\assets\index-069bb2ba.js" />
+    <None Remove="wwwroot\pages\assets\index-f9643a08.js" />
     <None Remove="wwwroot\pages\favicon.ico" />
     <None Remove="wwwroot\pages\index.html" />
   </ItemGroup>
@@ -36,8 +36,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="wwwroot\pages\assets\index-069bb2ba.js" />
     <EmbeddedResource Include="wwwroot\pages\assets\index-1353eb59.css" />
+    <EmbeddedResource Include="wwwroot\pages\assets\index-f9643a08.js" />
     <EmbeddedResource Include="wwwroot\pages\favicon.ico" />
     <EmbeddedResource Include="wwwroot\pages\index.html" />
   </ItemGroup>
