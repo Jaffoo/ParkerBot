@@ -2,30 +2,17 @@ using Mirai.Net.Utils.Scaffolds;
 using Newtonsoft.Json.Linq;
 using ParkerBot;
 using MiniExcelLibs;
-using Mirai.Net.Data.Messages;
-using Mirai.Net.Data.Messages.Concretes;
-using Newtonsoft.Json;
 
 namespace Helper
 {
     public class Pocket
     {
         public static LiteContext? _liteContext { get; set; }
+        private static readonly object _fileLock = new object();
         public static async Task PocketMessageReceiver(string str)
         {
             try
             {
-                await Task.Run(async () =>
-                {
-                    var log = Directory.GetCurrentDirectory() + "/logs";
-                    if (!Directory.Exists(log)) Directory.CreateDirectory(log);
-                    var logFile = log + "/message.txt";
-                    if (!File.Exists(logFile)) File.Create(logFile);
-                    using var sw = new StreamWriter(logFile, true);
-                    await sw.WriteLineAsync(str);
-                    await sw.DisposeAsync();
-                    sw.Close();
-                });
                 if (!Const.EnableModule.kd) return;
                 _liteContext = new();
                 var result = JObject.Parse(str);
@@ -62,6 +49,23 @@ namespace Helper
                     }
                 }
                 if (!fen && roleId != 3) return;
+                if (roleId == 3)
+                {
+                    await Task.Run(() =>
+                    {
+                        lock (_fileLock)
+                        {
+                            var log = Directory.GetCurrentDirectory() + "/logs";
+                            if (!Directory.Exists(log)) Directory.CreateDirectory(log);
+                            var logFile = log + "/message" + DateTime.Now.ToString("MMdd") + ".txt";
+                            if (!File.Exists(logFile)) File.Create(logFile);
+                            using var sw = new StreamWriter(logFile, true);
+                            sw.WriteLine(str);
+                            sw.Dispose();
+                            sw.Close();
+                        }
+                    });
+                }
                 MessageChainBuilder mcb = new();
                 mcb.Plain($"¡¾{channelName}¡¿\n¡¾{time}¡¿\n{name}:");
                 if (msgType == "image")
