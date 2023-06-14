@@ -153,7 +153,7 @@ namespace Helper
                     });
                     await _liteContext.SaveChangesAsync();
                     await _liteContext.DisposeAsync();
-                    await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                    await SendFriendMsg(Admin, "程序报错了，请联系反馈给开发人员！");
                 }
             });
         }
@@ -658,6 +658,7 @@ namespace Helper
             {
                 if (_bot == null) return;
                 var group = _bot.Groups.Value.FirstOrDefault(t => t.Id == groupId);
+                if (group == null) return;
                 await group.SendGroupMessageAsync(msg);
             }
             catch (Exception ex)
@@ -670,7 +671,7 @@ namespace Helper
                 });
                 await _liteContext.SaveChangesAsync();
                 await _liteContext.DisposeAsync();
-                await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                await SendFriendMsg(Admin, "程序报错了，请联系反馈给开发人员！");
             }
         }
 
@@ -680,8 +681,9 @@ namespace Helper
             {
                 if (_bot == null) return;
                 var group = _bot.Groups.Value.FirstOrDefault(t => t.Id == groupId);
+                if (group == null) return;
                 await group.SendGroupMessageAsync(msg);
-                await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                await SendFriendMsg(Admin, "程序报错了，请联系反馈给开发人员！");
             }
             catch (Exception ex)
             {
@@ -693,7 +695,7 @@ namespace Helper
                 });
                 await _liteContext.SaveChangesAsync();
                 await _liteContext.DisposeAsync();
-                await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                await SendFriendMsg(Admin, "程序报错了，请联系反馈给开发人员！");
             }
         }
 
@@ -703,6 +705,7 @@ namespace Helper
             {
                 if (_bot == null) return;
                 var friend = _bot.Friends.Value.FirstOrDefault(t => t.Id == friendId);
+                if (friend == null) return;
                 await friend.SendFriendMessageAsync(msg);
             }
             catch (Exception ex)
@@ -715,16 +718,16 @@ namespace Helper
                 });
                 await _liteContext.SaveChangesAsync();
                 await _liteContext.DisposeAsync();
-                await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                await SendFriendMsg(Admin, "程序报错了，请联系反馈给开发人员！");
             }
         }
         public static async Task SendFriendMsg(string friendId, MessageChain msg)
         {
             try
             {
-
                 if (_bot == null) return;
                 var friend = _bot.Friends.Value.FirstOrDefault(t => t.Id == friendId);
+                if (friend == null) return;
                 await friend.SendFriendMessageAsync(msg);
             }
             catch (Exception ex)
@@ -737,79 +740,9 @@ namespace Helper
                 });
                 await _liteContext.SaveChangesAsync();
                 await _liteContext.DisposeAsync();
-                await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                await SendFriendMsg(Admin, "程序报错了，请联系反馈给开发人员！");
             }
         }
 
-        public static async Task TestMethod(string command= "#添加管理员#1737678289")
-        {
-            try
-            {
-                if (command.Contains("#添加管理员#"))
-                {
-                    var qqNum = command.Replace("#添加管理员#", "");
-                    if (string.IsNullOrWhiteSpace(qqNum.Trim()))
-                    {
-                        Console.WriteLine("格式错误!");
-                        return;
-                    }
-                    _liteContext = new();
-                    var model =await _liteContext.Config.FirstOrDefaultAsync(t => t.key == "Permission");
-                    if (model == null) throw new Exception("key为【Permission】的值不存在！");
-                    Const.Config["Permission"] = Const.Config["QQ"]!["Permission"]!.ToString() + "," + qqNum;
-                    Const._ConfigModel = null;
-                    model.value = Const.Config["Permission"]!.ToString();
-                    _liteContext.Update(model);
-                    await _liteContext.SaveChangesAsync();
-                    await _liteContext.DisposeAsync();
-                    Console.WriteLine("添加成功！");
-                    return;
-                }
-                if (command == "#删除全部管理员")
-                {
-                    _liteContext = new();
-                    var model = await _liteContext.Config.FirstOrDefaultAsync(t => t.key == "Permission");
-                    if (model == null) throw new Exception("key为【Permission】的值不存在！");
-                    model.value = "";
-                    _liteContext.Update(model);
-                    await _liteContext.SaveChangesAsync();
-                    await _liteContext.DisposeAsync();
-                    Const.Config["Permission"] = model.value;
-                    Const._ConfigModel = null;
-                    Console.WriteLine("删除成功！");
-                    return;
-                }
-                if (command.Contains("#删除管理员#"))
-                {
-                    var qqNum = command.Replace("#添加管理员#", "");
-                    if (string.IsNullOrWhiteSpace(qqNum.Trim()))
-                    {
-                        Console.WriteLine("格式错误!");
-                        return;
-                    }
-                    if (!Permission.Contains(qqNum))
-                    {
-                        Console.WriteLine("此账号不是管理员！");
-                        return;
-                    }
-                    Permission.Remove(qqNum);
-                    _liteContext = new();
-                    var model = await _liteContext.Config.FirstOrDefaultAsync(t => t.key == "Permission");
-                    if (model == null) throw new Exception("key为【Permission】的值不存在！");
-                    model.value = string.Join(",", Permission);
-                    _liteContext.Update(model);
-                    await _liteContext.SaveChangesAsync();
-                    await _liteContext.DisposeAsync();
-                    Const.Config["Permission"] = model.value;
-                    Const._ConfigModel = null;
-                    Console.WriteLine("删除成功！");
-                    return;
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-        }
     }
 }
