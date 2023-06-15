@@ -1,20 +1,16 @@
-﻿using Mirai.Net.Sessions.Http.Managers;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using ParkerBot;
 using System.Globalization;
 using Mirai.Net.Utils.Scaffolds;
-using Newtonsoft.Json;
-using System.Net.Http;
-using Vanara.Extensions;
 
 namespace Helper
 {
     public class Weibo
     {
         public static LiteContext? dbContext;
-        public static List<string> Urls
+        public static List<string> Uids
         {
-            get { return (Const.ConfigModel.WB.url ?? "").Split(@"\n").ToList(); }
+            get { return (Const.ConfigModel.WB.url ?? "").Split(",").ToList(); }
         }
         public static int Similarity
         {
@@ -33,7 +29,7 @@ namespace Helper
             try
             {
                 var index = -1;
-                foreach (var item in Urls)
+                foreach (var item in Uids)
                 {
                     index++;
                     var url = "https://weibo.com/ajax/statuses/mymblog?uid=" + item;

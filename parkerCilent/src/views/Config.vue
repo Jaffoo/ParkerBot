@@ -56,8 +56,8 @@
                         </el-form-item>
                     </el-collapse-item>
                     <el-collapse-item title="微博" v-if="eable.wb" name="wb">
-                        <el-form-item label="微博地址" prop="WB.url" :rules="rules.input">
-                            <el-input type="textarea" v-model="config.WB.url" placeholder="多个用回车键分隔"></el-input>
+                        <el-form-item label="用户ID" prop="WB.url" :rules="rules.input">
+                            <el-input v-model="config.WB.url" placeholder="多个用英文,分隔"></el-input>
                         </el-form-item>
                         <el-form-item label="监听间隔" prop="WB.timeSpan" :rules="rules.input">
                             <el-input type="number" v-model="config.WB.timeSpan" placeholder="单位分钟"></el-input>
@@ -80,8 +80,8 @@
                         </el-form-item>
                     </el-collapse-item>
                     <el-collapse-item title="B站" v-if="eable.bz" name="bz">
-                        <el-form-item label="B站地址" prop="BZ.url" :rules="rules.input">
-                            <el-input type="textarea" v-model="config.BZ.url" placeholder="多个用回车键分隔"></el-input>
+                        <el-form-item label="用户ID" prop="BZ.url" :rules="rules.input">
+                            <el-input v-model="config.BZ.url" placeholder="多个用英文,分隔"></el-input>
                         </el-form-item>
                         <el-form-item label="监听间隔" prop="BZ.timeSpan" :rules="rules.input">
                             <el-input type="number" v-model="config.BZ.timeSpan" placeholder="单位分钟"></el-input>
@@ -138,8 +138,8 @@
                         </el-form-item>
                     </el-collapse-item>
                     <el-collapse-item title="小红书" v-if="eable.xhs" name="xhs">
-                        <el-form-item label="小红书地址" prop="XHS.url" :rules="rules.input">
-                            <el-input type="textarea" v-model="config.XHS.url" placeholder="多个用回车键分隔"></el-input>
+                        <el-form-item label="用户ID" prop="XHS.url" :rules="rules.input">
+                            <el-input v-model="config.XHS.url" placeholder="多个用英文,分隔"></el-input>
                         </el-form-item>
                         <el-form-item label="监听时长" prop="XHS.timeSpan" :rules="rules.input">
                             <el-input type="number" v-model="config.XHS.timeSpan" placeholder="单位分钟"></el-input>
@@ -162,8 +162,8 @@
                         </el-form-item>
                     </el-collapse-item>
                     <el-collapse-item title="抖音" v-if="eable.dy" name="dy">
-                        <el-form-item label="抖音地址" prop="DY.url" :rules="rules.input">
-                            <el-input type="textarea" v-model="config.DY.url" placeholder="多个用回车键分隔"></el-input>
+                        <el-form-item label="用户ID" prop="DY.url" :rules="rules.input">
+                            <el-input v-model="config.DY.url" placeholder="多个用英文,分隔"></el-input>
                         </el-form-item>
                         <el-form-item label="监听时长" prop="DY.timeSpan" :rules="rules.input">
                             <el-input type="number" v-model="config.DY.timeSpan" placeholder="单位分钟"></el-input>
