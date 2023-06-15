@@ -225,8 +225,8 @@ namespace Helper
                             if (FileHelper.Save(Check[index]))
                             {
                                 _liteContext = new();
-                                var model =await _liteContext.Caches.FirstOrDefaultAsync(t => t.content == Check[index] && t.type == 1)!;
-                                if(model!=null) _liteContext.Caches.Remove(model);
+                                var model = await _liteContext.Caches.FirstOrDefaultAsync(t => t.content == Check[index] && t.type == 1)!;
+                                if (model != null) _liteContext.Caches.Remove(model);
                                 await _liteContext.SaveChangesAsync();
                             }
                             await fmr.SendMessageAsync("本地保存成功！");
@@ -261,7 +261,7 @@ namespace Helper
                                 return;
                             }
                             _liteContext = new();
-                            var model =await _liteContext.Caches.FirstOrDefaultAsync(t => t.content == Check[index] && t.type == 1)!;
+                            var model = await _liteContext.Caches.FirstOrDefaultAsync(t => t.content == Check[index] && t.type == 1)!;
                             if (model != null) _liteContext.Caches.Remove(model);
                             await _liteContext.SaveChangesAsync();
                             await fmr.SendMessageAsync("删除成功！");
@@ -320,7 +320,7 @@ namespace Helper
                         if (msgText == "#最新日志")
                         {
                             _liteContext = new();
-                            var log =await _liteContext.Logs.OrderByDescending(t => t.createDate).FirstOrDefaultAsync();
+                            var log = await _liteContext.Logs.OrderByDescending(t => t.createDate).FirstOrDefaultAsync();
                             MessageChain mc = new()
                             {
                                 new PlainMessage("时间：" + log?.createDate.ToString("yyyy-MM-dd HH:mm:ss") ?? ""),
@@ -434,7 +434,7 @@ namespace Helper
                             Const._EnableModule = null;
                             await fmr.SendMessageAsync($"模块【{old}】已开启！");
                             _liteContext = new();
-                            var model =await _liteContext.Config.FirstOrDefaultAsync(t => t.parentId == 13 && t.key == moudel);
+                            var model = await _liteContext.Config.FirstOrDefaultAsync(t => t.parentId == 13 && t.key == moudel);
                             if (model != null)
                             {
                                 model.value = "True";
@@ -453,7 +453,7 @@ namespace Helper
                             Const._EnableModule = null;
                             await fmr.SendMessageAsync($"模块【{old}】已关闭！");
                             _liteContext = new();
-                            var model =await _liteContext.Config.FirstOrDefaultAsync(t => t.parentId == 13 && t.key == moudel);
+                            var model = await _liteContext.Config.FirstOrDefaultAsync(t => t.parentId == 13 && t.key == moudel);
                             if (model != null)
                             {
                                 model.value = "False";
@@ -525,7 +525,7 @@ namespace Helper
                             Const._ConfigModel = null;
                             await fmr.SendMessageAsync($"模块【{list[0]}】转发至{type}功能已关闭！");
                             _liteContext = new();
-                            var pModel =await _liteContext.Config.FirstOrDefaultAsync(t => t.parentId == 13 && t.key == moudel);
+                            var pModel = await _liteContext.Config.FirstOrDefaultAsync(t => t.parentId == 13 && t.key == moudel);
                             if (pModel != null)
                             {
                                 var model = await _liteContext.Config.FirstOrDefaultAsync(t => t.parentId == pModel.id && t.key == (type == "qq" ? "ForwardQQ" : "ForwardGroup"));
@@ -675,6 +675,32 @@ namespace Helper
             }
         }
 
+        public static async Task SendGroupMsg(List<string> groupIds, string msg)
+        {
+            try
+            {
+                if (_bot == null) return;
+                foreach (var groupId in groupIds)
+                {
+                    var group = _bot.Groups.Value.FirstOrDefault(t => t.Id == groupId);
+                    if (group == null) continue;
+                    await group.SendGroupMessageAsync(msg);
+                }
+            }
+            catch (Exception ex)
+            {
+                _liteContext = new();
+                await _liteContext.Logs.AddAsync(new()
+                {
+                    message = "报错信息：\n" + ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
+                    createDate = DateTime.Now,
+                });
+                await _liteContext.SaveChangesAsync();
+                await _liteContext.DisposeAsync();
+                await SendFriendMsg(Admin, "程序报错了，请联系反馈给开发人员！");
+            }
+        }
+
         public static async Task SendGroupMsg(string groupId, MessageChain msg)
         {
             try
@@ -684,6 +710,33 @@ namespace Helper
                 if (group == null) return;
                 await group.SendGroupMessageAsync(msg);
                 await SendFriendMsg(Admin, "程序报错了，请联系反馈给开发人员！");
+            }
+            catch (Exception ex)
+            {
+                _liteContext = new();
+                await _liteContext.Logs.AddAsync(new()
+                {
+                    message = "报错信息：\n" + ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
+                    createDate = DateTime.Now,
+                });
+                await _liteContext.SaveChangesAsync();
+                await _liteContext.DisposeAsync();
+                await SendFriendMsg(Admin, "程序报错了，请联系反馈给开发人员！");
+            }
+        }
+
+        public static async Task SendGroupMsg(List<string> groupIds, MessageChain msg)
+        {
+            try
+            {
+                if (_bot == null) return;
+                foreach (var groupId in groupIds)
+                {
+                    var group = _bot.Groups.Value.FirstOrDefault(t => t.Id == groupId);
+                    if (group == null) continue;
+                    await group.SendGroupMessageAsync(msg);
+                    await SendFriendMsg(Admin, "程序报错了，请联系反馈给开发人员！");
+                }
             }
             catch (Exception ex)
             {
@@ -721,6 +774,33 @@ namespace Helper
                 await SendFriendMsg(Admin, "程序报错了，请联系反馈给开发人员！");
             }
         }
+
+        public static async Task SendFriendMsg(List<string> friendIds, string msg)
+        {
+            try
+            {
+                if (_bot == null) return;
+                foreach (var friendId in friendIds)
+                {
+                    var friend = _bot.Friends.Value.FirstOrDefault(t => t.Id == friendId);
+                    if (friend == null) continue;
+                    await friend.SendFriendMessageAsync(msg);
+                }
+            }
+            catch (Exception ex)
+            {
+                _liteContext = new();
+                await _liteContext.Logs.AddAsync(new()
+                {
+                    message = "报错信息：\n" + ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
+                    createDate = DateTime.Now,
+                });
+                await _liteContext.SaveChangesAsync();
+                await _liteContext.DisposeAsync();
+                await SendFriendMsg(Admin, "程序报错了，请联系反馈给开发人员！");
+            }
+        }
+
         public static async Task SendFriendMsg(string friendId, MessageChain msg)
         {
             try
@@ -744,5 +824,30 @@ namespace Helper
             }
         }
 
+        public static async Task SendFriendMsg(List<string> friendIds, MessageChain msg)
+        {
+            try
+            {
+                if (_bot == null) return;
+                foreach (var friendId in friendIds)
+                {
+                    var friend = _bot.Friends.Value.FirstOrDefault(t => t.Id == friendId);
+                    if (friend == null) continue;
+                    await friend.SendFriendMessageAsync(msg);
+                }
+            }
+            catch (Exception ex)
+            {
+                _liteContext = new();
+                await _liteContext.Logs.AddAsync(new()
+                {
+                    message = "报错信息：\n" + ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
+                    createDate = DateTime.Now,
+                });
+                await _liteContext.SaveChangesAsync();
+                await _liteContext.DisposeAsync();
+                await SendFriendMsg(Admin, "程序报错了，请联系反馈给开发人员！");
+            }
+        }
     }
 }

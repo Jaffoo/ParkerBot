@@ -8,7 +8,6 @@ namespace Helper
     public class Pocket
     {
         public static LiteContext? _liteContext { get; set; }
-        private static readonly ReaderWriterLockSlim _fileLock = new();
         public static async Task PocketMessageReceiver(string str)
         {
             try
@@ -49,25 +48,6 @@ namespace Helper
                     }
                 }
                 if (!fen && roleId != 3) return;
-                if (roleId == 3)
-                {
-                    await Task.Run(() =>
-                    {
-                        try
-                        {
-                            _fileLock.EnterWriteLock();
-                            var log = Directory.GetCurrentDirectory() + "/logs";
-                            if (!Directory.Exists(log)) Directory.CreateDirectory(log);
-                            var logFile = log + "/message" + DateTime.Now.ToString("MMdd") + ".txt";
-                            if (!File.Exists(logFile)) File.Create(logFile);
-                            using var sw = new StreamWriter(logFile, true);
-                            sw.WriteLine(str);
-                            sw.Dispose();
-                            sw.Close();
-                        }
-                        finally { _fileLock.ExitWriteLock(); }
-                    });
-                }
                 MessageChainBuilder mcb = new();
                 mcb.Plain($"【{channelName}】\n【{time}】\n{name}:");
                 if (msgType == "image")
@@ -129,7 +109,7 @@ namespace Helper
                     else if (attach["messageType"]!.ToString() == "TEAM_VOICE")
                     {
                         //判断是否at所有人
-                        msbBody = name + "开启了房间电台";
+                        msbBody = "开启了房间电台";
                         mcb.Plain(msbBody);
                     }
                     //文字翻牌
@@ -170,20 +150,14 @@ namespace Helper
                 {
                     string group = !string.IsNullOrWhiteSpace(Const.ConfigModel.KD.group) ? Const.ConfigModel.KD.group : Const.ConfigModel.QQ.group;
                     List<string> groups = !string.IsNullOrWhiteSpace(group) ? group.Split(",").ToList() : new();
-                    groups.ForEach(async (item) =>
-                    {
-                        await Msg.SendGroupMsg(item, mcb.Build());
-                    });
+                    await Msg.SendGroupMsg(groups, mcb.Build());
                 }
                 if (Const.ConfigModel.KD.forwardQQ)
                 {
                     if (!string.IsNullOrWhiteSpace(Const.ConfigModel.KD.qq))
                     {
                         var qqs = Const.ConfigModel.KD.qq.Split(",").ToList();
-                        qqs.ForEach(async (item) =>
-                        {
-                            await Msg.SendFriendMsg(item, mcb.Build());
-                        });
+                        await Msg.SendFriendMsg(qqs, mcb.Build());
                     }
                     else if (!string.IsNullOrWhiteSpace(Const.ConfigModel.QQ.admin))
                     {

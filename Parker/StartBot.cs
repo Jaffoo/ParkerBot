@@ -2,7 +2,6 @@
 using FluentScheduler;
 using Helper;
 using Mirai.Net.Sessions;
-using System.Diagnostics;
 
 namespace ParkerBot
 {
