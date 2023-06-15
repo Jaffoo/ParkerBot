@@ -3,6 +3,7 @@ using ParkerBot;
 using System.Globalization;
 using Mirai.Net.Utils.Scaffolds;
 using Newtonsoft.Json;
+using System.Data.SQLite;
 
 namespace Helper
 {
@@ -160,12 +161,14 @@ namespace Helper
                 var _context = new LiteContext();
                 await _context.Logs.AddAsync(new Logs
                 {
-                    message = "报错信息：\n" + e.Message + "\n堆栈信息：\n" + e.StackTrace,
+                    message =e.Message + "\n堆栈信息：\n" + e.StackTrace,
                     createDate = DateTime.Now,
                 });
-                await _context.SaveChangesAsync();
+                var b = await _context.SaveChangesAsync();
                 await _context.DisposeAsync();
-                await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                if (b > 0) await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                else await Msg.SendFriendMsg(Msg.Admin, "日志写入失败。" + e.Message + "\n" + e.StackTrace);
+                return;
             }
         }
 
@@ -192,18 +195,21 @@ namespace Helper
                     await FatchFace(img);
                     Thread.Sleep(1000);
                 }
+                return;
             }
             catch (Exception e)
             {
                 var _context = new LiteContext();
                 await _context.Logs.AddAsync(new Logs
                 {
-                    message = "报错信息：\n" + e.Message + "\n堆栈信息：\n" + e.StackTrace,
+                    message =e.Message + "\n堆栈信息：\n" + e.StackTrace,
                     createDate = DateTime.Now,
                 });
-                await _context.SaveChangesAsync();
+                var b = await _context.SaveChangesAsync();
                 await _context.DisposeAsync();
-                await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                if (b > 0) await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                else await Msg.SendFriendMsg(Msg.Admin, "日志写入失败。" + e.Message + "\n" + e.StackTrace);
+                return;
             }
         }
 
@@ -265,18 +271,21 @@ namespace Helper
                         return;
                     }
                 }
+                return;
             }
             catch (Exception e)
             {
                 var _context = new LiteContext();
                 await _context.Logs.AddAsync(new Logs
                 {
-                    message = "报错信息：\n" + e.Message + "\n堆栈信息：\n" + e.StackTrace,
+                    message =e.Message + "\n堆栈信息：\n" + e.StackTrace,
                     createDate = DateTime.Now,
                 });
-                await _context.SaveChangesAsync();
+                var b = await _context.SaveChangesAsync();
                 await _context.DisposeAsync();
-                await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                if (b > 0) await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                else await Msg.SendFriendMsg(Msg.Admin, "日志写入失败。" + e.Message + "\n" + e.StackTrace);
+                return;
             }
         }
     }

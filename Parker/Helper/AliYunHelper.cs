@@ -27,7 +27,7 @@ namespace Helper
                 var _liteContext = new LiteContext();
                 await _liteContext.Logs.AddAsync(new()
                 {
-                    message = "报错信息：\n" + e.Message + "\n堆栈信息：\n" + e.StackTrace,
+                    message =e.Message + "\n堆栈信息：\n" + e.StackTrace,
                     createDate = DateTime.Now,
                 });
                 await _liteContext.SaveChangesAsync();
@@ -50,7 +50,7 @@ namespace Helper
                 var _liteContext = new LiteContext();
                 await _liteContext.Logs.AddAsync(new()
                 {
-                    message = "报错信息：\n" + e.Message + "\n堆栈信息：\n" + e.StackTrace,
+                    message =e.Message + "\n堆栈信息：\n" + e.StackTrace,
                     createDate = DateTime.Now,
                 });
                 await _liteContext.SaveChangesAsync();

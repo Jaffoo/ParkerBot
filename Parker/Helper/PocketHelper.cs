@@ -138,12 +138,13 @@ namespace Helper
                     }
                     else
                     {
+                        await Msg.SendFriendMsg(Msg.Admin, "custom未知消息\n" + attach.ToString());
                         return;
                     }
                 }
                 else
                 {
-                    Console.WriteLine(msgType);
+                    await Msg.SendFriendMsg(Msg.Admin, "未知消息类型\n" + str);
                     return;
                 }
                 if (Const.ConfigModel.KD.forwardGroup)
@@ -164,18 +165,21 @@ namespace Helper
                         await Msg.SendFriendMsg(Const.ConfigModel.QQ.admin, mcb.Build());
                     }
                 }
+                return;
             }
             catch (Exception e)
             {
                 _liteContext = new();
                 await _liteContext.Logs.AddAsync(new()
                 {
-                    message = "报错信息：\n" + e.Message + "\n堆栈信息：\n" + e.StackTrace,
+                    message =e.Message + "\n堆栈信息：\n" + e.StackTrace,
                     createDate = DateTime.Now,
                 });
-                await _liteContext.SaveChangesAsync();
+                var b = await _liteContext.SaveChangesAsync();
                 await _liteContext.DisposeAsync();
-                await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                if (b > 0) await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                else await Msg.SendFriendMsg(Msg.Admin, "日志写入失败。" + e.Message + "\n" + e.StackTrace);
+                return;
             }
         }
     }

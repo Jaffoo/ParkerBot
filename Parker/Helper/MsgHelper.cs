@@ -109,6 +109,7 @@ namespace Helper
                         {
                             var mcb = new MessageChainBuilder().At(gmr.Sender.Id).Plain(" 您发送的消息文字中包含敏感词！").Build();
                             await gmr.SendMessageAsync(mcb);
+                            return;
                         }
                         //私信群管
                         if (SensitiveAction.Contains(2))
@@ -119,6 +120,7 @@ namespace Helper
                             {
                                 if (friends.Any(t => t == item)) await SendFriendMsg(item, $"群【{gmr.GroupName}】用户【{gmr.Sender.Name}】发送的“{msgText}”中含有敏感词！");
                             }
+                            return;
                         }
                         //私信机器人管理员
                         if (SensitiveAction.Contains(3))
@@ -128,11 +130,13 @@ namespace Helper
                             {
                                 if (friends.Any(t => t == item)) await SendFriendMsg(item, $"群【{gmr.GroupName}】用户【{gmr.Sender.Name}】发送的“{msgText}”中含有敏感词！");
                             }
+                            return;
                         }
                         //私信超管
                         if (SensitiveAction.Contains(4))
                         {
                             await SendFriendMsg(Admin, $"群【{gmr.GroupName}】用户【{gmr.Sender.Name}】发送的“ {msgText} ”中含有敏感词！");
+                            return;
                         }
                         //撤回
                         if (SensitiveAction.Contains(5))
@@ -140,20 +144,24 @@ namespace Helper
                             await gmr.RecallAsync();
                             var mcb = new MessageChainBuilder().At(gmr.Sender.Id).Plain(" 消息已被撤回，撤回原因：文字中包含敏感词！").Build();
                             await gmr.SendMessageAsync(mcb);
+                            return;
                         }
                     }
+                    return;
                 }
                 catch (Exception e)
                 {
                     _liteContext = new();
                     await _liteContext.Logs.AddAsync(new()
                     {
-                        message = "报错信息：\n" + e.Message + "\n堆栈信息：\n" + e.StackTrace,
+                        message =e.Message + "\n堆栈信息：\n" + e.StackTrace,
                         createDate = DateTime.Now,
                     });
-                    await _liteContext.SaveChangesAsync();
+                    var b = await _liteContext.SaveChangesAsync();
                     await _liteContext.DisposeAsync();
-                    await SendFriendMsg(Admin, "程序报错了，请联系反馈给开发人员！");
+                    if (b > 0) await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                    else await Msg.SendFriendMsg(Msg.Admin, "日志写入失败。" + e.Message + "\n" + e.StackTrace);
+                    return;
                 }
             });
         }
@@ -584,12 +592,14 @@ namespace Helper
                     _liteContext = new();
                     await _liteContext.Logs.AddAsync(new()
                     {
-                        message = "报错信息：\n" + e.Message + "\n堆栈信息：\n" + e.StackTrace,
+                        message =e.Message + "\n堆栈信息：\n" + e.StackTrace,
                         createDate = DateTime.Now,
                     });
-                    await _liteContext.SaveChangesAsync();
+                    var b = await _liteContext.SaveChangesAsync();
                     await _liteContext.DisposeAsync();
-                    await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                    if (b > 0) await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                    else await Msg.SendFriendMsg(Msg.Admin, "日志写入失败。" + e.Message + "\n" + e.StackTrace);
+                    return;
                 }
             });
         }
@@ -620,18 +630,21 @@ namespace Helper
                             };
                             break;
                     }
+                    return;
                 }
                 catch (Exception ex)
                 {
                     _liteContext = new();
                     await _liteContext.Logs.AddAsync(new()
                     {
-                        message = "报错信息：\n" + ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
+                        message =ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
                         createDate = DateTime.Now,
                     });
-                    await _liteContext.SaveChangesAsync();
+                    var b = await _liteContext.SaveChangesAsync();
                     await _liteContext.DisposeAsync();
-                    await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                    if (b > 0) await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                    else await Msg.SendFriendMsg(Msg.Admin, "日志写入失败。" + ex.Message + "\n" + ex.StackTrace);
+                    return;
                 }
             });
         }
@@ -660,18 +673,20 @@ namespace Helper
                 var group = _bot.Groups.Value.FirstOrDefault(t => t.Id == groupId);
                 if (group == null) return;
                 await group.SendGroupMessageAsync(msg);
+                return;
             }
             catch (Exception ex)
             {
                 _liteContext = new();
                 await _liteContext.Logs.AddAsync(new()
                 {
-                    message = "报错信息：\n" + ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
+                    message =ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
                     createDate = DateTime.Now,
                 });
-                await _liteContext.SaveChangesAsync();
+                var b = await _liteContext.SaveChangesAsync();
                 await _liteContext.DisposeAsync();
-                await SendFriendMsg(Admin, "程序报错了，请联系反馈给开发人员！");
+                if (b > 0) await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                else await Msg.SendFriendMsg(Msg.Admin, "日志写入失败。" + ex.Message + "\n" + ex.StackTrace);
             }
         }
 
@@ -686,18 +701,21 @@ namespace Helper
                     if (group == null) continue;
                     await group.SendGroupMessageAsync(msg);
                 }
+                return;
             }
             catch (Exception ex)
             {
                 _liteContext = new();
                 await _liteContext.Logs.AddAsync(new()
                 {
-                    message = "报错信息：\n" + ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
+                    message =ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
                     createDate = DateTime.Now,
                 });
-                await _liteContext.SaveChangesAsync();
+                var b = await _liteContext.SaveChangesAsync();
                 await _liteContext.DisposeAsync();
-                await SendFriendMsg(Admin, "程序报错了，请联系反馈给开发人员！");
+                if (b > 0) await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                else await Msg.SendFriendMsg(Msg.Admin, "日志写入失败。" + ex.Message + "\n" + ex.StackTrace);
+                return;
             }
         }
 
@@ -710,18 +728,21 @@ namespace Helper
                 if (group == null) return;
                 await group.SendGroupMessageAsync(msg);
                 await SendFriendMsg(Admin, "程序报错了，请联系反馈给开发人员！");
+                return;
             }
             catch (Exception ex)
             {
                 _liteContext = new();
                 await _liteContext.Logs.AddAsync(new()
                 {
-                    message = "报错信息：\n" + ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
+                    message =ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
                     createDate = DateTime.Now,
                 });
-                await _liteContext.SaveChangesAsync();
+                var b = await _liteContext.SaveChangesAsync();
                 await _liteContext.DisposeAsync();
-                await SendFriendMsg(Admin, "程序报错了，请联系反馈给开发人员！");
+                if (b > 0) await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                else await Msg.SendFriendMsg(Msg.Admin, "日志写入失败。" + ex.Message + "\n" + ex.StackTrace);
+                return;
             }
         }
 
@@ -735,7 +756,7 @@ namespace Helper
                     var group = _bot.Groups.Value.FirstOrDefault(t => t.Id == groupId);
                     if (group == null) continue;
                     await group.SendGroupMessageAsync(msg);
-                    await SendFriendMsg(Admin, "程序报错了，请联系反馈给开发人员！");
+                    return;
                 }
             }
             catch (Exception ex)
@@ -743,12 +764,14 @@ namespace Helper
                 _liteContext = new();
                 await _liteContext.Logs.AddAsync(new()
                 {
-                    message = "报错信息：\n" + ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
+                    message =ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
                     createDate = DateTime.Now,
                 });
-                await _liteContext.SaveChangesAsync();
+                var b = await _liteContext.SaveChangesAsync();
                 await _liteContext.DisposeAsync();
-                await SendFriendMsg(Admin, "程序报错了，请联系反馈给开发人员！");
+                if (b > 0) await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                else await Msg.SendFriendMsg(Msg.Admin, "日志写入失败。" + ex.Message + "\n" + ex.StackTrace);
+                return;
             }
         }
 
@@ -760,18 +783,21 @@ namespace Helper
                 var friend = _bot.Friends.Value.FirstOrDefault(t => t.Id == friendId);
                 if (friend == null) return;
                 await friend.SendFriendMessageAsync(msg);
+                return;
             }
             catch (Exception ex)
             {
                 _liteContext = new();
                 await _liteContext.Logs.AddAsync(new()
                 {
-                    message = "报错信息：\n" + ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
+                    message =ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
                     createDate = DateTime.Now,
                 });
-                await _liteContext.SaveChangesAsync();
+                var b = await _liteContext.SaveChangesAsync();
                 await _liteContext.DisposeAsync();
-                await SendFriendMsg(Admin, "程序报错了，请联系反馈给开发人员！");
+                if (b > 0) await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                else await Msg.SendFriendMsg(Msg.Admin, "日志写入失败。" + ex.Message + "\n" + ex.StackTrace);
+                return;
             }
         }
 
@@ -785,6 +811,7 @@ namespace Helper
                     var friend = _bot.Friends.Value.FirstOrDefault(t => t.Id == friendId);
                     if (friend == null) continue;
                     await friend.SendFriendMessageAsync(msg);
+                    return;
                 }
             }
             catch (Exception ex)
@@ -792,12 +819,14 @@ namespace Helper
                 _liteContext = new();
                 await _liteContext.Logs.AddAsync(new()
                 {
-                    message = "报错信息：\n" + ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
+                    message =ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
                     createDate = DateTime.Now,
                 });
-                await _liteContext.SaveChangesAsync();
+                var b = await _liteContext.SaveChangesAsync();
                 await _liteContext.DisposeAsync();
-                await SendFriendMsg(Admin, "程序报错了，请联系反馈给开发人员！");
+                if (b > 0) await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                else await Msg.SendFriendMsg(Msg.Admin, "日志写入失败。" + ex.Message + "\n" + ex.StackTrace);
+                return;
             }
         }
 
@@ -809,18 +838,21 @@ namespace Helper
                 var friend = _bot.Friends.Value.FirstOrDefault(t => t.Id == friendId);
                 if (friend == null) return;
                 await friend.SendFriendMessageAsync(msg);
+                return;
             }
             catch (Exception ex)
             {
                 _liteContext = new();
                 await _liteContext.Logs.AddAsync(new()
                 {
-                    message = "报错信息：\n" + ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
+                    message =ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
                     createDate = DateTime.Now,
                 });
-                await _liteContext.SaveChangesAsync();
+                var b = await _liteContext.SaveChangesAsync();
                 await _liteContext.DisposeAsync();
-                await SendFriendMsg(Admin, "程序报错了，请联系反馈给开发人员！");
+                if (b > 0) await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                else await Msg.SendFriendMsg(Msg.Admin, "日志写入失败。" + ex.Message + "\n" + ex.StackTrace);
+                return;
             }
         }
 
@@ -835,18 +867,21 @@ namespace Helper
                     if (friend == null) continue;
                     await friend.SendFriendMessageAsync(msg);
                 }
+                return;
             }
             catch (Exception ex)
             {
                 _liteContext = new();
                 await _liteContext.Logs.AddAsync(new()
                 {
-                    message = "报错信息：\n" + ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
+                    message =ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
                     createDate = DateTime.Now,
                 });
-                await _liteContext.SaveChangesAsync();
+                var b = await _liteContext.SaveChangesAsync();
                 await _liteContext.DisposeAsync();
-                await SendFriendMsg(Admin, "程序报错了，请联系反馈给开发人员！");
+                if (b > 0) await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                else await Msg.SendFriendMsg(Msg.Admin, "日志写入失败。" + ex.Message + "\n" + ex.StackTrace);
+                return;
             }
         }
     }
