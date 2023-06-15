@@ -138,7 +138,7 @@ namespace Helper
                                 }
                             }
                             //保存图片
-                            if (mblogtype == 1)
+                            if (mblogtype == 2)
                             {
                                 var picList = blog["pic_ids"]!.Select(t => t.ToString()).ToList();
                                 if (picList == null) continue;
