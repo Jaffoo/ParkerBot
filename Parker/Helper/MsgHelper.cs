@@ -73,6 +73,7 @@ namespace Helper
             {
                 try
                 {
+                    if (!Group.Contains(gmr.GroupId)) return;
                     //消息链
                     var msgChain = gmr.MessageChain;
                     var msgText = gmr.MessageChain.GetPlainMessage();
