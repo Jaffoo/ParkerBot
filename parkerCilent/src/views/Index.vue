@@ -62,6 +62,7 @@ import NIMSDK from "nim-web-sdk-ng/dist/NIM_BROWSER_SDK";
 import type { SubscribeAllChannelResult } from "nim-web-sdk-ng/dist/QCHAT_BROWSER_SDK/QChatServerServiceInterface";
 import dayjs from 'dayjs';
 import NimChatroomSocket from '../component/Live'
+import type { LiveRoomMessage } from "@/component/messageType";
 
 const baseConfig = ref({} as any);
 const mirai = ref({} as any);
@@ -70,6 +71,7 @@ const useAli = ref(false);
 const router = useRouter();
 const nim = ref<NIMSDK>();
 const qChat = ref<QChatSDK>();
+const liveNim = ref<NimChatroomSocket>();
 const log = ref<Array<string>>(new Array<string>());
 const pic = ref<Array<string>>(new Array<string>());
 const ws = ref<WebSocket>();
@@ -178,6 +180,10 @@ const handleLogined = async function () {
         return;
     }
     msg += `订阅服务器【${baseConfig.value.KD.serverId}】成功。`;
+    //同时订阅直播间
+    liveNim.value = new NimChatroomSocket({ liveId: baseConfig.value.KD.liveRoomId, onMessage: liveMsg })
+    liveNim.value.init(baseConfig.value.KD.appKey);
+
     var res = await axios({ url: "http://parkerbot.api/api/start" });
     ws.value = new window.WebSocket("ws://localhost:6001");
     ws.value.onopen = () => {
@@ -205,20 +211,31 @@ const handleMessage = async function (msg: any) {
     if (wsReady.value) {
         ws.value?.send(JSON.stringify(msg));
     }
-    //#region 直播
-    if (msg.channelName == "直播") {
-        console.log(msg);
-        const liveNim = new NimChatroomSocket({ liveId: msg.attach.livePushInfo.liveId, onMessage: liveMsg })
-        liveNim.init(baseConfig.value.KD.appKey);
-    }
-    //#endregion
     var mess = `【${msg.channelName}|${msg.time}】${msg.ext.user.nickName}:${msg.body}`;
     log.value.push(mess);
 };
 
-const liveMsg = function (t: any, event: any) {
-    console.log("liveMsgT", t);
-    console.log("liveMsgEvent", event);
+const liveMsg = function (t: any, event: Array<LiveRoomMessage>) {
+    event.forEach(item => {
+        if (item.type == "custom") {
+            var custom = JSON.parse(item.custom);
+            if ((custom?.giftInfo ?? null) == null) return;
+            custom.giftInfo.userName = custom.giftInfo.acceptUser.userName;
+            var msgModel = {
+                channelName: "直播间",
+                time: dayjs(item.time).format("YYYY-MM-DD HH:mm:ss"),
+                ext: {
+                    user: custom.user,
+                },
+                type: item.type,
+                fromAccount: custom.user.nickName,
+                attach: { giftInfo: custom.giftInfo }
+            }
+            if (wsReady.value) {
+                ws.value?.send(JSON.stringify(msgModel));
+            }
+        }
+    })
 }
 
 const handleRoomSocketDisconnect = function (...context: any): void {
@@ -243,6 +260,9 @@ const config = () => {
     if (qChat.value) {
         qChat.value.destroy()
     }
+    if (liveNim.value) {
+        liveNim.value.disconnect();
+    }
     router.push("/config");
 };
 const miraiSetting = () => {
@@ -251,6 +271,9 @@ const miraiSetting = () => {
     }
     if (qChat.value) {
         qChat.value.destroy()
+    }
+    if (liveNim.value) {
+        liveNim.value.disconnect();
     }
     router.push("mirai");
 };

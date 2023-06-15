@@ -248,7 +248,7 @@ namespace Helper
                         await Msg.SendFriendMsg(Msg.Admin, $"低相似，加入待审核，目前有{Msg.Check.Count}张图片待审核");
                         return;
                     }
-                    if (score >= Similarity && score < 100)
+                    if (score >= Similarity && score <= 100)
                     {
                         if (!FileHelper.Save(url))
                         {

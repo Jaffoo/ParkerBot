@@ -56,7 +56,7 @@ namespace ParkerBot
         public string appKey { get; set; } = string.Empty;
         public string imgDomain { get; set; } = string.Empty;
         public string mP4Domain { get; set; } = string.Empty;
-        public string roomId { get; set; } = string.Empty;
+        public string liveRoomId { get; set; } = string.Empty;
     }
     public class BD
     {

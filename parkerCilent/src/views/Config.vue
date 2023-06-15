@@ -113,8 +113,8 @@
                         <el-form-item label="IMtoken" prop="KD.token" :rules="rules.input">
                             <el-input v-model="config.KD.token"></el-input>
                         </el-form-item>
-                        <el-form-item label="房间Id" prop="KD.roomId" :rules="rules.input">
-                            <el-input v-model="config.KD.roomId"></el-input>
+                        <el-form-item label="直播房间Id" prop="KD.liveRoomId" :rules="rules.input">
+                            <el-input v-model="config.KD.liveRoomId"></el-input>
                         </el-form-item>
                         <el-form-item>
                             <el-button @click="loginKD = true">登录口袋48</el-button>
@@ -318,7 +318,7 @@ const config = ref({
         serverId: '',
         qq: '',
         forwardQQ: false,
-        roomId:''
+        liveRoomId:''
     },
     XHS: {
         url: '',
