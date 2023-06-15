@@ -728,7 +728,6 @@ namespace Helper
                 var group = _bot.Groups.Value.FirstOrDefault(t => t.Id == groupId);
                 if (group == null) return;
                 await group.SendGroupMessageAsync(msg);
-                await SendFriendMsg(Admin, "程序报错了，请联系反馈给开发人员！");
                 return;
             }
             catch (Exception ex)
