@@ -558,7 +558,7 @@ namespace Helper
                             }
                             if (string.IsNullOrWhiteSpace(type))
                                 type = "群";
-                            if (type == "qq")
+                            if (type == "qq" || type=="QQ")
                                 Const.Config[moudel]!["QQ"] = value;
                             if (type == "群")
                                 Const.Config[moudel]!["Group"] = value;
