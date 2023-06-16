@@ -756,8 +756,8 @@ namespace Helper
                     var group = _bot.Groups.Value.FirstOrDefault(t => t.Id == groupId);
                     if (group == null) continue;
                     await group.SendGroupMessageAsync(msg);
-                    return;
                 }
+                return;
             }
             catch (Exception ex)
             {
@@ -811,8 +811,8 @@ namespace Helper
                     var friend = _bot.Friends.Value.FirstOrDefault(t => t.Id == friendId);
                     if (friend == null) continue;
                     await friend.SendFriendMessageAsync(msg);
-                    return;
                 }
+                return;
             }
             catch (Exception ex)
             {
