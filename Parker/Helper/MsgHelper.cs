@@ -13,8 +13,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Helper
 {
+    public class MsgModel
+    {
+        /// <summary>
+        /// 1-群，2-好友
+        /// </summary>
+        public int Type { get; set; } = 1;
+        public string Id { get; set; } = "";
+        public List<string>? Ids { get; set; }
+        public string? MsgStr { get; set; }
+        public MessageChain? MsgChain { get; set; }
+    }
+
     public static class Msg
     {
+        public static Queue<MsgModel> MsgQueue = new();
+        private static long _lastSendTime = DateTime.Now.Ticks;
+        private static long _interval = 1000;
         public static MiraiBot _bot { get; set; }
         public static LiteContext? _liteContext { get; set; }
         #region 全局变量
@@ -65,6 +80,7 @@ namespace Helper
             GroupMessageReceiver();
             FriendMessageReceiver();
             EventMessageReceiver();
+            Task.Run(HandlMsg);
         }
 
         public static void GroupMessageReceiver()
@@ -155,7 +171,7 @@ namespace Helper
                     _liteContext = new();
                     await _liteContext.Logs.AddAsync(new()
                     {
-                        message =e.Message + "\n堆栈信息：\n" + e.StackTrace,
+                        message = e.Message + "\n堆栈信息：\n" + e.StackTrace,
                         createDate = DateTime.Now,
                     });
                     var b = await _liteContext.SaveChangesAsync();
@@ -567,7 +583,7 @@ namespace Helper
                             }
                             if (string.IsNullOrWhiteSpace(type))
                                 type = "群";
-                            if (type == "qq" || type=="QQ")
+                            if (type == "qq" || type == "QQ")
                                 Const.Config[moudel]!["QQ"] = value;
                             if (type == "群")
                                 Const.Config[moudel]!["Group"] = value;
@@ -593,7 +609,7 @@ namespace Helper
                     _liteContext = new();
                     await _liteContext.Logs.AddAsync(new()
                     {
-                        message =e.Message + "\n堆栈信息：\n" + e.StackTrace,
+                        message = e.Message + "\n堆栈信息：\n" + e.StackTrace,
                         createDate = DateTime.Now,
                     });
                     var b = await _liteContext.SaveChangesAsync();
@@ -638,7 +654,7 @@ namespace Helper
                     _liteContext = new();
                     await _liteContext.Logs.AddAsync(new()
                     {
-                        message =ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
+                        message = ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
                         createDate = DateTime.Now,
                     });
                     var b = await _liteContext.SaveChangesAsync();
@@ -681,7 +697,7 @@ namespace Helper
                 _liteContext = new();
                 await _liteContext.Logs.AddAsync(new()
                 {
-                    message =ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
+                    message = ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
                     createDate = DateTime.Now,
                 });
                 var b = await _liteContext.SaveChangesAsync();
@@ -709,7 +725,7 @@ namespace Helper
                 _liteContext = new();
                 await _liteContext.Logs.AddAsync(new()
                 {
-                    message =ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
+                    message = ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
                     createDate = DateTime.Now,
                 });
                 var b = await _liteContext.SaveChangesAsync();
@@ -735,7 +751,7 @@ namespace Helper
                 _liteContext = new();
                 await _liteContext.Logs.AddAsync(new()
                 {
-                    message =ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
+                    message = ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
                     createDate = DateTime.Now,
                 });
                 var b = await _liteContext.SaveChangesAsync();
@@ -764,7 +780,7 @@ namespace Helper
                 _liteContext = new();
                 await _liteContext.Logs.AddAsync(new()
                 {
-                    message =ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
+                    message = ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
                     createDate = DateTime.Now,
                 });
                 var b = await _liteContext.SaveChangesAsync();
@@ -790,7 +806,7 @@ namespace Helper
                 _liteContext = new();
                 await _liteContext.Logs.AddAsync(new()
                 {
-                    message =ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
+                    message = ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
                     createDate = DateTime.Now,
                 });
                 var b = await _liteContext.SaveChangesAsync();
@@ -819,7 +835,7 @@ namespace Helper
                 _liteContext = new();
                 await _liteContext.Logs.AddAsync(new()
                 {
-                    message =ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
+                    message = ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
                     createDate = DateTime.Now,
                 });
                 var b = await _liteContext.SaveChangesAsync();
@@ -845,7 +861,7 @@ namespace Helper
                 _liteContext = new();
                 await _liteContext.Logs.AddAsync(new()
                 {
-                    message =ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
+                    message = ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
                     createDate = DateTime.Now,
                 });
                 var b = await _liteContext.SaveChangesAsync();
@@ -874,7 +890,7 @@ namespace Helper
                 _liteContext = new();
                 await _liteContext.Logs.AddAsync(new()
                 {
-                    message =ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
+                    message = ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
                     createDate = DateTime.Now,
                 });
                 var b = await _liteContext.SaveChangesAsync();
@@ -883,6 +899,51 @@ namespace Helper
                 else await Msg.SendFriendMsg(Msg.Admin, "日志写入失败。" + ex.Message + "\n" + ex.StackTrace);
                 return;
             }
+        }
+
+        public static async Task HandlMsg()
+        {
+            while (true)
+            {
+                long interval = DateTime.Now.Ticks - _lastSendTime;
+                if (MsgQueue.Count > 0 && interval >= _interval)
+                {
+                    var msgModel = MsgQueue.Dequeue();
+                    if (msgModel.Type == 1)
+                    {
+                        if (msgModel.Ids != null)
+                        {
+                            if (msgModel.MsgChain != null) await SendGroupMsg(msgModel.Ids, msgModel.MsgChain);
+                            else if (!string.IsNullOrWhiteSpace(msgModel.MsgStr)) await SendGroupMsg(msgModel.Ids, msgModel.MsgStr);
+                        }
+                        else if (!string.IsNullOrWhiteSpace(msgModel.Id))
+                        {
+                            if (msgModel.MsgChain != null) await SendGroupMsg(msgModel.Id, msgModel.MsgChain);
+                            else if (!string.IsNullOrWhiteSpace(msgModel.MsgStr)) await SendGroupMsg(msgModel.Id, msgModel.MsgStr);
+                        }
+                    }
+                    if (msgModel.Type == 2)
+                    {
+                        if (msgModel.Ids != null)
+                        {
+                            if (msgModel.MsgChain != null) await SendFriendMsg(msgModel.Ids, msgModel.MsgChain);
+                            else if (!string.IsNullOrWhiteSpace(msgModel.MsgStr)) await SendFriendMsg(msgModel.Ids, msgModel.MsgStr);
+                        }
+                        else if (!string.IsNullOrWhiteSpace(msgModel.Id))
+                        {
+                            if (msgModel.MsgChain != null) await SendFriendMsg(msgModel.Id, msgModel.MsgChain);
+                            else if (!string.IsNullOrWhiteSpace(msgModel.MsgStr)) await SendFriendMsg(msgModel.Id, msgModel.MsgStr);
+                        }
+                    }
+                    _lastSendTime = DateTime.Now.Ticks;
+                }
+                Thread.Sleep(1);
+            }
+        }
+
+        public static void AddMsg(this MsgModel model)
+        {
+            MsgQueue.Enqueue(model);
         }
     }
 }

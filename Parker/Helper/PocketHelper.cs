@@ -96,6 +96,7 @@ namespace Helper
                         //判断是否at所有人
                         msbBody = "直播啦！\n标题：" + attach["livePushInfo"]!["liveTitle"];
                         mcb.Plain(msbBody).ImageFromBase64(Base64.UrlImgToBase64(Const.ConfigModel.KD.imgDomain + attach["livePushInfo"]!["liveCover"]!.ToString()).Result);
+
                     }
                     else if (attach["messageType"]!.ToString() == "AUDIO")
                     {
@@ -118,7 +119,6 @@ namespace Helper
                         var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
                         mcb.Plain(answer.ToString());
                         mcb.Plain("文字翻牌：" + attach["filpCardInfo"]!["question"]);
-                        return;
                     }
                     //语音翻牌
                     else if (attach["messageType"]!.ToString() == "FLIPCARD_AUDIO")
@@ -126,7 +126,6 @@ namespace Helper
                         var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
                         mcb.VoiceFromUrl(Const.ConfigModel.KD.mP4Domain + answer["url"]);
                         mcb.Plain("语音翻牌：" + attach["filpCardInfo"]!["question"]);
-                        return;
                     }
                     //视频翻牌
                     else if (attach["messageType"]!.ToString() == "FLIPCARD_VIDEO")
@@ -134,7 +133,11 @@ namespace Helper
                         var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
                         mcb.Plain(Const.ConfigModel.KD.mP4Domain + answer["url"]);
                         mcb.Plain("视频翻牌：" + attach["filpCardInfo"]!["question"]);
-                        return;
+                    }
+                    else if (attach["messageType"]!.ToString() == "EXPRESSIMAGE")
+                    {
+                        string url = attach["expressImgInfo"]!["emotionRemote"]!.ToString();
+                        mcb.ImageFromBase64(Base64.UrlImgToBase64(url).Result);
                     }
                     else
                     {
@@ -147,23 +150,33 @@ namespace Helper
                     await Msg.SendFriendMsg(Msg.Admin, "未知消息类型\n" + str);
                     return;
                 }
+                if (!Const.MiraiConfig.useMirai) return;
                 if (Const.ConfigModel.KD.forwardGroup)
                 {
                     string group = !string.IsNullOrWhiteSpace(Const.ConfigModel.KD.group) ? Const.ConfigModel.KD.group : Const.ConfigModel.QQ.group;
                     List<string> groups = !string.IsNullOrWhiteSpace(group) ? group.Split(",").ToList() : new();
-                    await Msg.SendGroupMsg(groups, mcb.Build());
+                    MsgModel msgModel = new()
+                    {
+                        MsgChain = mcb.Build(),
+                        Ids = groups,
+                    };
+                    msgModel.AddMsg();
                 }
                 if (Const.ConfigModel.KD.forwardQQ)
                 {
+                    MsgModel msgModel = new();
+                    msgModel.Type = 2;
+                    msgModel.MsgChain = mcb.Build();
                     if (!string.IsNullOrWhiteSpace(Const.ConfigModel.KD.qq))
                     {
                         var qqs = Const.ConfigModel.KD.qq.Split(",").ToList();
-                        await Msg.SendFriendMsg(qqs, mcb.Build());
+                        msgModel.Ids = qqs;
                     }
                     else if (!string.IsNullOrWhiteSpace(Const.ConfigModel.QQ.admin))
                     {
-                        await Msg.SendFriendMsg(Const.ConfigModel.QQ.admin, mcb.Build());
+                        msgModel.Id = Const.ConfigModel.QQ.admin;
                     }
+                    msgModel.AddMsg();
                 }
                 return;
             }
@@ -172,7 +185,7 @@ namespace Helper
                 _liteContext = new();
                 await _liteContext.Logs.AddAsync(new()
                 {
-                    message =e.Message + "\n堆栈信息：\n" + e.StackTrace,
+                    message = e.Message + "\n堆栈信息：\n" + e.StackTrace,
                     createDate = DateTime.Now,
                 });
                 var b = await _liteContext.SaveChangesAsync();
