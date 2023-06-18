@@ -28,8 +28,8 @@ namespace Helper
     public static class Msg
     {
         public static Queue<MsgModel> MsgQueue = new();
-        private static long _lastSendTime = DateTime.Now.Ticks;
-        private static long _interval = 1000;
+        private static DateTime _lastSendTime = DateTime.Now;
+        private static double _interval = 1;//单位秒
         public static MiraiBot _bot { get; set; }
         public static LiteContext? _liteContext { get; set; }
         #region 全局变量
@@ -905,7 +905,7 @@ namespace Helper
         {
             while (true)
             {
-                long interval = DateTime.Now.Ticks - _lastSendTime;
+                double interval = (DateTime.Now - _lastSendTime).TotalSeconds;
                 if (MsgQueue.Count > 0 && interval >= _interval)
                 {
                     var msgModel = MsgQueue.Dequeue();
@@ -935,7 +935,7 @@ namespace Helper
                             else if (!string.IsNullOrWhiteSpace(msgModel.MsgStr)) await SendFriendMsg(msgModel.Id, msgModel.MsgStr);
                         }
                     }
-                    _lastSendTime = DateTime.Now.Ticks;
+                    _lastSendTime = DateTime.Now;
                 }
                 Thread.Sleep(1);
             }
