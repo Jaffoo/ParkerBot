@@ -49,7 +49,7 @@ namespace Helper
                 }
                 if (!fen && roleId != 3) return;
                 MessageChainBuilder mcb = new();
-                mcb.Plain($"¡¾{channelName}¡¿\n¡¾{time}¡¿\n{name}:");
+                mcb.Plain($"¡¾{Const.ConfigModel.KD.name}|{channelName}¡¿\n¡¾{time}¡¿\n{name}:");
                 if (msgType == "image")
                 {
                     msbBody = result["attach"]!["url"]!.ToString();

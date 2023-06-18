@@ -104,6 +104,9 @@
                         </el-form-item>
                     </el-collapse-item>
                     <el-collapse-item title="口袋48" v-if="eable.kd" name="kd">
+                        <el-form-item label="姓名" prop="KD.name" :rules="rules.input">
+                            <el-input v-model="config.KD.name"></el-input>
+                        </el-form-item>
                         <el-form-item label="IMServerId" prop="KD.serverId" :rules="rules.input">
                             <el-input v-model="config.KD.serverId"></el-input>
                         </el-form-item>
@@ -306,6 +309,7 @@ const config = ref({
         forwardQQ: false,
     },
     KD: {
+        name:'',
         sec: 60,
         hasSend: false,
         area: '86',

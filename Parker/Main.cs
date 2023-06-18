@@ -35,18 +35,8 @@ namespace ParkerBot
                 var sql = File.ReadAllText(path);
                 SqlHelper.ExecuteNonQuery(sql);
             }
-            ////数据库有更新时执行
-            //var updateSql = Directory.GetCurrentDirectory() + "/wwwroot/sql/update.txt";
-            //if (File.Exists(updateSql))
-            //{
-            //    Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            //    var sql = File.ReadAllText(updateSql,Encoding.GetEncoding("GBK"));
-            //    b = SqlHelper.ExecuteNonQuery(sql) > 0;
-            //    if (b)
-            //    {
-            //        File.Delete(updateSql);
-            //    }
-            //}
+            //数据库有更新时执行
+            SqlHelper.ExecuteNonQuery(@"INSERT INTO config (""Name"",""Key"",""Value"",""ParentId"") SELECT '姓名','Name','',17 WHERE NOT EXISTS (SELECT 1 FROM config WHERE ParentId=17 AND ""Key""='Name')");
 
             Const.SetCache();
             RegistJs();

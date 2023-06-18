@@ -46,6 +46,7 @@ namespace ParkerBot
 
     public class KD
     {
+        public string name { get; set; } = string.Empty;
         public string account { get; set; } = string.Empty;
         public string token { get; set; } = string.Empty;
         public string serverId { get; set; } = string.Empty;
