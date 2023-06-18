@@ -229,7 +229,7 @@ const liveMsg = function (t: any, event: Array<LiveRoomMessage>) {
                 },
                 type: item.type,
                 fromAccount: custom.user.nickName,
-                attach: { giftInfo: custom.giftInfo }
+                attach: { giftInfo: custom.giftInfo, messageType: 'GIFT_TEXT' }
             }
             if (wsReady.value) {
                 ws.value?.send(JSON.stringify(msgModel));

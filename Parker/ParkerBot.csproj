@@ -15,13 +15,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="wwwroot\pages\assets\index-6e96e130.js" />
+    <None Remove="wwwroot\pages\assets\index-2df4be08.js" />
     <None Remove="wwwroot\pages\favicon.ico" />
     <None Remove="wwwroot\pages\index.html" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="wwwroot\pages\assets\index-6e96e130.js" />
+    <EmbeddedResource Include="wwwroot\pages\assets\index-2df4be08.js" />
     <EmbeddedResource Include="wwwroot\pages\assets\index-d35a4f8f.css" />
     <EmbeddedResource Include="wwwroot\pages\favicon.ico" />
     <EmbeddedResource Include="wwwroot\pages\index.html" />
