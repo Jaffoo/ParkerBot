@@ -29,7 +29,7 @@ namespace Helper
     {
         public static Queue<MsgModel> MsgQueue = new();
         private static DateTime _lastSendTime = DateTime.Now;
-        private static double _interval = 3;//单位秒
+        private static double _interval = 1;//单位秒
         public static MiraiBot _bot { get; set; }
         public static LiteContext? _liteContext { get; set; }
         #region 全局变量
@@ -771,7 +771,8 @@ namespace Helper
                 {
                     var group = _bot.Groups.Value.FirstOrDefault(t => t.Id == groupId);
                     if (group == null) continue;
-                    await group.SendGroupMessageAsync(msg);
+                    //await group.SendGroupMessageAsync(msg);
+                    await MessageManager.SendGroupMessageAsync(group.Id, msg);
                 }
                 return;
             }
