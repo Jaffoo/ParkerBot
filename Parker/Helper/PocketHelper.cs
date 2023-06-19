@@ -116,6 +116,8 @@ namespace Helper
                     //Œƒ◊÷∑≠≈∆
                     else if (attach["messageType"]!.ToString() == "FLIPCARD")
                     {
+                        await Msg.SendFriendMsg(Msg.Admin, "Œƒ◊÷∑≠≈∆:\n" + attach.ToString());
+                        return;
                         var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
                         mcb.Plain(answer.ToString());
                         mcb.Plain("Œƒ◊÷∑≠≈∆£∫" + attach["filpCardInfo"]!["question"]);
@@ -123,6 +125,8 @@ namespace Helper
                     //”Ô“Ù∑≠≈∆
                     else if (attach["messageType"]!.ToString() == "FLIPCARD_AUDIO")
                     {
+                        await Msg.SendFriendMsg(Msg.Admin, "”Ô“Ù∑≠≈∆:\n" + attach.ToString());
+                        return;
                         var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
                         mcb.VoiceFromUrl(Const.ConfigModel.KD.mP4Domain + answer["url"]);
                         mcb.Plain("”Ô“Ù∑≠≈∆£∫" + attach["filpCardInfo"]!["question"]);
@@ -130,10 +134,13 @@ namespace Helper
                     // ”∆µ∑≠≈∆
                     else if (attach["messageType"]!.ToString() == "FLIPCARD_VIDEO")
                     {
+                        await Msg.SendFriendMsg(Msg.Admin, " ”∆µ∑≠≈∆:\n" + attach.ToString());
+                        return;
                         var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
                         mcb.Plain(Const.ConfigModel.KD.mP4Domain + answer["url"]);
                         mcb.Plain(" ”∆µ∑≠≈∆£∫" + attach["filpCardInfo"]!["question"]);
                     }
+                    //±Ì«È
                     else if (attach["messageType"]!.ToString() == "EXPRESSIMAGE")
                     {
                         string url = attach["expressImgInfo"]!["emotionRemote"]!.ToString();

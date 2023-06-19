@@ -29,7 +29,7 @@ namespace Helper
     {
         public static Queue<MsgModel> MsgQueue = new();
         private static DateTime _lastSendTime = DateTime.Now;
-        private static double _interval = 1;//单位秒
+        private static double _interval = 3;//单位秒
         public static MiraiBot _bot { get; set; }
         public static LiteContext? _liteContext { get; set; }
         #region 全局变量
