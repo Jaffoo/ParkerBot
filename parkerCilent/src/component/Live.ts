@@ -49,7 +49,8 @@ class NimChatroomSocket {
 
   // 事件监听
   onConnet: Function = (event: any ): void => {
-    console.log("链接成功")
+    msg = `进入小偶像${baseConfig.value.KD.name}的直播间成功。`;
+    console.log(msg);
   };
 
   // 进入房间失败

@@ -168,18 +168,21 @@ const start = async () => {
 };
 
 const handleLogined = async function () {
-    var msg = "机器人启动中！口袋登录成功。开始订阅小偶像聊天服务器，";
-    if (qChat.value == null) throw ("聊天室未成功实例化");
+    var msg = `口袋登录成功。开始订阅小偶像${baseConfig.value.KD.name}的房间。`;
+    log.value.push(msg);
+    if (qChat.value == null) throw("聊天室未成功实例化");
     const result: SubscribeAllChannelResult =
         await qChat.value.qchatServer.subscribeAllChannel({
             type: 1,
             serverIds: [baseConfig.value.KD.serverId],
         });
     if (result.failServerIds.length) {
-        msg += `订阅服务器【${result.failServerIds[0]}】失败。`;
+        msg = `进入小偶像${baseConfig.value.KD.name}的房间失败。请检查配置后重试，如仍有问题，请联系开发者。`;
+        log.value.push(msg);
         return;
     }
-    msg += `订阅服务器【${baseConfig.value.KD.serverId}】成功。`;
+    msg = `进入小偶像${baseConfig.value.KD.name}的房间成功。`;
+    log.value.push(msg);
     //同时订阅直播间
     liveNim.value = new NimChatroomSocket({ liveId: baseConfig.value.KD.liveRoomId, onMessage: liveMsg })
     liveNim.value.init(baseConfig.value.KD.appKey);
@@ -188,20 +191,20 @@ const handleLogined = async function () {
     ws.value = new window.WebSocket("ws://localhost:6001");
     ws.value.onopen = () => {
         wsReady.value = true;
-        log.value.push("连接WebSocket服务器成功。");
+        log.value.push("连接消息推送服务器成功。");
     };
     ws.value.onclose = () => {
         wsReady.value = false;
-        log.value.push("连接WebSocket服务器失败。");
+        log.value.push("连接消息推送服务器失败。请检查配置后重试，如仍有问题，请联系开发者。");
     };
     if (useMirai.value) {
         if (res.data.mirai) {
-            msg += "QQ机器人启动成功。";
+            msg = "QQ机器人启动成功。";
         } else {
-            msg += "QQ机器人启动失败。";
+            msg = "QQ机器人启动失败。请检查配置后重试，如仍有问题，请联系开发者。";
         }
+        log.value.push(msg);
     }
-    log.value.push(msg);
 };
 
 const handleMessage = async function (msg: any) {
