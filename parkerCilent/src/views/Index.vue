@@ -34,7 +34,7 @@
                                 <th width="300px">图片</th>
                                 <th>操作</th>
                             </tr>
-                            <tr v-for="item, index in pic">
+                            <tr v-for="(item, index) in pic">
                                 <td align="center">
                                     <el-image style="height: 80px;width: 80px;" :src="item.content"
                                         :preview-src-list="[item.content]"></el-image>
@@ -73,7 +73,7 @@ const nim = ref<NIMSDK>();
 const qChat = ref<QChatSDK>();
 const liveNim = ref<NimChatroomSocket>();
 const log = ref<Array<string>>(new Array<string>());
-const pic = ref<Array<string>>(new Array<string>());
+const pic = ref<Array<any>>(new Array<any>());
 const ws = ref<WebSocket>();
 const wsReady = ref<boolean>(false);
 
