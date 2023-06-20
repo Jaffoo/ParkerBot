@@ -202,5 +202,17 @@ namespace Helper
                 return;
             }
         }
+        public static async Task LiveMsgReceiver(string str)
+        {
+            _liteContext = new();
+            Logs log = new()
+            {
+                message = str,
+                createDate = DateTime.Now,
+            };
+            await _liteContext.Logs.AddAsync(log);
+            await _liteContext.SaveChangesAsync();
+            await _liteContext.DisposeAsync();
+        }
     }
 }

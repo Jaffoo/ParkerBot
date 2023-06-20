@@ -170,7 +170,7 @@ const start = async () => {
 const handleLogined = async function () {
     var msg = `口袋登录成功。开始订阅小偶像${baseConfig.value.KD.name}的房间。`;
     log.value.push(msg);
-    if (qChat.value == null) throw("聊天室未成功实例化");
+    if (qChat.value == null) throw ("聊天室未成功实例化");
     const result: SubscribeAllChannelResult =
         await qChat.value.qchatServer.subscribeAllChannel({
             type: 1,
@@ -208,6 +208,7 @@ const handleLogined = async function () {
 };
 
 const handleMessage = async function (msg: any) {
+    msg.fromType = 1;
     msg.ext = JSON.parse(msg.ext as string);
     msg.channelName = await getChannel(msg.channelId);
     msg.time = dayjs(msg.time).format("YYYY-MM-DD HH:mm:ss");
@@ -220,11 +221,16 @@ const handleMessage = async function (msg: any) {
 
 const liveMsg = function (t: any, event: Array<LiveRoomMessage>) {
     event.forEach(item => {
+        if (wsReady.value) {
+            item.fromType=2;
+            ws.value?.send(JSON.stringify(item));
+        }
         if (item.type == "custom") {
             var custom = JSON.parse(item.custom);
             if ((custom?.giftInfo ?? null) == null) return;
             custom.giftInfo.userName = custom.giftInfo.acceptUser.userName;
             var msgModel = {
+                fromType: 1,
                 channelName: "直播间",
                 time: dayjs(item.time).format("YYYY-MM-DD HH:mm:ss"),
                 ext: {

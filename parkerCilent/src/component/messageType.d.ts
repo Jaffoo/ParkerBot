@@ -67,6 +67,7 @@ export interface LiveRoomCustomUser {
   }
   
   interface LiveRoomBasicEvent {
+    fromType:number;
     chatroomId: `${ number }`;
     custom: `{${ string }}`;
     fromAvatar: string;
