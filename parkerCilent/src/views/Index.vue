@@ -23,7 +23,12 @@
                 <el-col :span="12">
                     <h3 style="cursor: pointer;margin-left: 40%;">即时消息及日志</h3>
                     <div style="height: 500px;overflow:auto;" id="textArae">
-                        <div v-for="(item, index) in log" style="margin:5px">{{ (index + 1) + ':' + item }}</div>
+                        <div v-for="(item, index) in log" style="margin:5px">
+                            {{ (index + 1) + ':' }}
+                            <span v-if="item.type != 2">{{ item.content }}</span>
+                            <el-image v-if="item.type == 2" style="height: 80px;width: 80px;" :src="item.url"
+                                :preview-src-list="[item.url]"></el-image>
+                        </div>
                     </div>
                 </el-col>
                 <el-col :span="12">
@@ -63,6 +68,7 @@ import type { SubscribeAllChannelResult } from "nim-web-sdk-ng/dist/QCHAT_BROWSE
 import dayjs from 'dayjs';
 import NimChatroomSocket from '../component/Live'
 import type { LiveRoomMessage } from "@/component/messageType";
+import PocketMessage from "@/component/Type";
 
 const baseConfig = ref({} as any);
 const mirai = ref({} as any);
@@ -72,10 +78,11 @@ const router = useRouter();
 const nim = ref<NIMSDK>();
 const qChat = ref<QChatSDK>();
 const liveNim = ref<NimChatroomSocket>();
-const log = ref<Array<string>>(new Array<string>());
+const log = ref<Array<PocketMessage>>(new Array<PocketMessage>());
 const pic = ref<Array<any>>(new Array<any>());
 const ws = ref<WebSocket>();
 const wsReady = ref<boolean>(false);
+
 
 watch(log.value, (newVal, OldVal) => {
     if (newVal.length >= 100) {
@@ -150,7 +157,7 @@ const start = async () => {
         await qChat.value.login();
     } else {
         var msg = "机器人启动中！";
-        log.value.push(msg);
+        log.value.push(new PocketMessage().add(msg));
         msg = "";
         var res1 = await axios({ url: "http://parkerbot.api/api/start" });
         if (useMirai.value) {
@@ -161,15 +168,15 @@ const start = async () => {
             }
         }
         setTimeout(() => {
-            if (msg) log.value.push(msg);
-            log.value.push("机器人已启动");
+            if (msg) log.value.push(new PocketMessage().add(msg));
+            log.value.push(new PocketMessage().add("机器人已启动"));
         }, 500);
     }
 };
 
 const handleLogined = async function () {
     var msg = `口袋登录成功。开始订阅小偶像${baseConfig.value.KD.name}的房间。`;
-    log.value.push(msg);
+    log.value.push(new PocketMessage().add(msg));
     if (qChat.value == null) throw ("聊天室未成功实例化");
     const result: SubscribeAllChannelResult =
         await qChat.value.qchatServer.subscribeAllChannel({
@@ -178,11 +185,11 @@ const handleLogined = async function () {
         });
     if (result.failServerIds.length) {
         msg = `进入小偶像${baseConfig.value.KD.name}的房间失败。请检查配置后重试，如仍有问题，请联系开发者。`;
-        log.value.push(msg);
+        log.value.push(new PocketMessage().add(msg));
         return;
     }
     msg = `进入小偶像${baseConfig.value.KD.name}的房间成功。`;
-    log.value.push(msg);
+    log.value.push(new PocketMessage().add(msg));
     //同时订阅直播间
     liveNim.value = new NimChatroomSocket({ liveId: baseConfig.value.KD.liveRoomId, onMessage: liveMsg })
     liveNim.value.init(baseConfig.value.KD.appKey);
@@ -191,11 +198,11 @@ const handleLogined = async function () {
     ws.value = new window.WebSocket("ws://localhost:6001");
     ws.value.onopen = () => {
         wsReady.value = true;
-        log.value.push("连接消息推送服务器成功。");
+        log.value.push(new PocketMessage().add("连接消息推送服务器成功。"));
     };
     ws.value.onclose = () => {
         wsReady.value = false;
-        log.value.push("连接消息推送服务器失败。请检查配置后重试，如仍有问题，请联系开发者。");
+        log.value.push(new PocketMessage().add("连接消息推送服务器失败。请检查配置后重试，如仍有问题，请联系开发者。"));
     };
     if (useMirai.value) {
         if (res.data.mirai) {
@@ -203,7 +210,7 @@ const handleLogined = async function () {
         } else {
             msg = "QQ机器人启动失败。请检查配置后重试，如仍有问题，请联系开发者。";
         }
-        log.value.push(msg);
+        log.value.push(new PocketMessage().add(msg));
     }
 };
 
@@ -215,14 +222,28 @@ const handleMessage = async function (msg: any) {
     if (wsReady.value) {
         ws.value?.send(JSON.stringify(msg));
     }
-    var mess = `【${msg.channelName}|${msg.time}】${msg.ext.user.nickName}:${msg.body}`;
-    log.value.push(mess);
+    if (msg.type == "text") {
+        var mess = `【${msg.channelName}|${msg.time}】${msg.ext.user.nickName}:${msg.body}`;
+        log.value.push(new PocketMessage().add(mess));
+    }
+    else if (msg.type == "image") {
+        log.value.push(new PocketMessage().addImg(`【${msg.channelName}|${msg.time}】${msg.ext.user.nickName}:${msg?.attach?.url}`));
+    }
+    else if (msg.type == "video") {
+        log.value.push(new PocketMessage().addVideo(`【${msg.channelName}|${msg.time}】${msg.ext.user.nickName}:${msg?.attach?.url}`));
+    }
+    else if (msg.type == "audio") {
+        log.value.push(new PocketMessage().addVoice(`【${msg.channelName}|${msg.time}】${msg.ext.user.nickName}:${msg?.attach?.url}`));
+    }
+    else if (msg.type == "custom") {
+        log.value.push(new PocketMessage().add(`【${msg.channelName}|${msg.time}】${msg.ext.user.nickName}:发送了一条特殊消息！`));
+    }
 };
 
 const liveMsg = function (t: any, event: Array<LiveRoomMessage>) {
     event.forEach(item => {
         if (wsReady.value) {
-            item.fromType=2;
+            item.fromType = 2;
             ws.value?.send(JSON.stringify(item));
         }
         if (item.type == "custom") {
@@ -248,7 +269,7 @@ const liveMsg = function (t: any, event: Array<LiveRoomMessage>) {
 }
 
 const handleRoomSocketDisconnect = function (...context: any): void {
-    log.value.push("登录连接状态已断开。");
+    log.value.push(new PocketMessage().add("登录连接状态已断开。"));
 };
 
 const getChannel = async function (id: number) {
