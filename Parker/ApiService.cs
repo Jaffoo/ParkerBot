@@ -206,7 +206,7 @@ namespace ParkerBot
                         }
                         if (item.value == "True" || item.value == "False")
                         {
-                            item.value=item.value.ToLower();
+                            item.value = item.value.ToLower();
                         }
                     });
                     updataList.Add(model);
@@ -257,6 +257,7 @@ namespace ParkerBot
             if (!StartBot.HasWebSocket) new StartBot().Start();
             if (!StartMirai.HasMirai) new StartMirai();
             StartTimer.Start();
+            Thread.Sleep(5000);
             var obj = new
             {
                 pocket = StartBot.HasWebSocket,
