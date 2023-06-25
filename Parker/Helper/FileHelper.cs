@@ -31,7 +31,7 @@ namespace Helper
                         var data = JObject.Parse(res);
                         var msg = data["msg"]?.ToString() ?? "";
                         if (string.IsNullOrWhiteSpace(msg)) msg = "保存状态未知，请前往云盘查看!";
-                        await MessageManager.SendFriendMessageAsync(Msg.Admin, msg);
+                        await Msg.SendFriendMsg(Msg.Admin, msg);
                     });
                     Thread t = new(ts);
                     t.Start();
