@@ -1,7 +1,6 @@
 ﻿using NetDimension.NanUI;
 using NetDimension.NanUI.HostWindow;
 using NetDimension.NanUI.JavaScript;
-using System.Text;
 
 namespace ParkerBot
 {
@@ -15,8 +14,9 @@ namespace ParkerBot
 
         public Main()
         {
-            // 在此处设置窗口样式
             Size = new Size(1024, 768);
+            Sizable = false;
+            Maximizable = false;
             StartPosition = FormStartPosition.CenterParent;
             EnableSplashScreen = false;
             Subtitle = "帕克机器人";
