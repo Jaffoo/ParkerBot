@@ -59,6 +59,14 @@
                         <el-form-item label="用户ID" prop="WB.url" :rules="rules.input">
                             <el-input v-model="config.WB.url" placeholder="多个用英文,分隔"></el-input>
                         </el-form-item>
+                        <el-form-item label="吃瓜用户ID">
+                            <el-input v-model="config.WB.cg" placeholder="多个用英文,分隔"></el-input>
+                            <span style="color:red">*多个用英文逗号,分隔</span>
+                        </el-form-item>
+                        <el-form-item label="吃瓜微博过滤">
+                            <el-input v-model="config.WB.keyword" placeholder="关键词"></el-input>
+                            <span style="color:red">*多个用英文逗号,分隔。当微博文案中含有这些词汇是监听生效</span>
+                        </el-form-item>
                         <el-form-item label="监听间隔" prop="WB.timeSpan" :rules="rules.input">
                             <el-input type="number" v-model="config.WB.timeSpan" placeholder="单位分钟"></el-input>
                         </el-form-item>
@@ -138,6 +146,13 @@
                         <el-form-item label="qq好友" v-show="config.KD.forwardQQ === true">
                             <el-input v-model="config.KD.qq" placeholder="发新微博转发消息"></el-input>
                             <span style="color:red">*多个用英文逗号,分隔；不填写则默认超管</span>
+                        </el-form-item>
+                        <el-form-item label="监听消息类型" v-show="config.KD.forwardGroup === true">
+                            <el-checkbox-group v-model="selectType">
+                                <el-checkbox v-for="(item, index) in msgTypeList" :label="item.value"
+                                    :key="index">{{ item.name
+                                    }}</el-checkbox>
+                            </el-checkbox-group>
                         </el-form-item>
                     </el-collapse-item>
                     <el-collapse-item title="小红书" v-if="eable.xhs" name="xhs">
@@ -266,6 +281,8 @@ import type { UploadProps, UploadUserFile } from 'element-plus'
 
 const funcs = ref([] as any[]);
 const funcsChecked = ref([] as any[]);
+const selectType = ref([] as any[]);
+const msgTypeList = ref([] as any[]);
 const loginKD = ref(false);
 const eable = ref({
     qq: false,
@@ -275,7 +292,7 @@ const eable = ref({
     xhs: false,
     dy: false,
     bd: false,
-});
+} as any);
 const form = ref<FormInstance>();
 const config = ref({
     QQ: {
@@ -299,6 +316,8 @@ const config = ref({
         forwardGroup: false,
         qq: '',
         forwardQQ: false,
+        cg: '',
+        keyword: ''
     },
     BZ: {
         url: '',
@@ -309,7 +328,7 @@ const config = ref({
         forwardQQ: false,
     },
     KD: {
-        name:'',
+        name: '',
         sec: 60,
         hasSend: false,
         area: '86',
@@ -322,7 +341,8 @@ const config = ref({
         serverId: '',
         qq: '',
         forwardQQ: false,
-        liveRoomId:''
+        liveRoomId: '',
+        msgType: '',
     },
     XHS: {
         url: '',
@@ -423,22 +443,24 @@ onMounted(() => {
         for (let propName in eable.value) {
             for (let item of res.data.enable) {
                 if (item.key.toLowerCase() == propName) {
-                    if(JSON.parse(item.value)){
+                    if (JSON.parse(item.value)) {
                         eable.value[propName] = true;
-                    }else{
+                    } else {
                         eable.value[propName] = false;
                     }
                     continue;
                 }
             }
         }
+        msgTypeList.value = JSON.parse(res.data.config.KD.msgTypeList);
         res.data.config.QQ.funcEnable1 = res.data.config.QQ.funcEnable1 ?? new Array();
         res.data.config.QQ.funcAdmin1 = res.data.config.QQ.funcAdmin1 ?? new Array();
         res.data.config.QQ.funcUser1 = res.data.config.QQ.funcUser1 ?? new Array();
         config.value = res.data.config;
-        config.value.QQ.actions=config.value.QQ.action.split(",")
+        config.value.QQ.actions = config.value.QQ.action.split(",")
         config.value.KD.area = '86';
         funcsChecked.value = res.data.config.QQ.funcEnable1;
+        selectType.value = config.value.KD.msgType.split(",");
     });
 
     axios({
@@ -456,11 +478,12 @@ const back = () => {
 const save = async (formEl: FormInstance | undefined) => {
     if (!formEl) return;
     await formEl.validate((valid, fields) => {
-        config.value.BD.imageList=config.value.BD.imageList1.map(item=>{
+        config.value.BD.imageList = config.value.BD.imageList1.map(item => {
             return item.url;
         }).toString();
         if (valid) {
-            config.value.QQ.action=config.value.QQ.actions.toString();
+            config.value.QQ.action = config.value.QQ.actions.toString();
+            config.value.KD.msgType = selectType.value.toString();
             axios({
                 url: "http://parkerbot.api/api/SetConfig",
                 method: "post",

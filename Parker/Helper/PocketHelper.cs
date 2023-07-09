@@ -2,13 +2,14 @@ using Mirai.Net.Utils.Scaffolds;
 using Newtonsoft.Json.Linq;
 using ParkerBot;
 using MiniExcelLibs;
-using Vanara.PInvoke;
+using System.Linq;
 
 namespace Helper
 {
     public class Pocket
     {
         public static LiteContext? _liteContext { get; set; }
+        private static List<string> MsgType { get; set; } = Const.ConfigModel.KD.msgType.Split(',').ToList();
         public static async Task PocketMessageReceiver(string str)
         {
             try
@@ -50,7 +51,8 @@ namespace Helper
                 if (!fen && roleId != 3) return;
                 MessageChainBuilder mcb = new();
                 mcb.Plain($"【{Const.ConfigModel.KD.name}|{channelName}】\n【{time}】\n{name}:");
-                if (msgType == "image")
+                //图片
+                if (MsgType.Contains(msgType))
                 {
                     msbBody = result["attach"]!["url"]!.ToString();
                     mcb.ImageFromBase64(Base64.UrlImgToBase64(msbBody).Result);
@@ -59,62 +61,75 @@ namespace Helper
                         await Weibo.FatchFace(msbBody);
                     });
                 }
-                else if (msgType == "text")
+                //文字
+                else if (MsgType.Contains(msgType))
                 {
                     //"230226137"
                     msbBody = result["body"]!.ToString();
                     mcb.Plain(msbBody);
                 }
-                else if (msgType == "video")
+                //视频
+                else if (MsgType.Contains(msgType))
                 {
                     mcb.Plain(result["attach"]!["url"]!.ToString());
                 }
-                else if (msgType == "audio")
+                //语言
+                else if (MsgType.Contains(msgType))
                 {
                     mcb.VoiceFromUrl(result["attach"]!["url"]!.ToString());
                 }
                 else if (msgType == "custom")
                 {
                     var attach = result["attach"]!;
-                    if (attach["messageType"]!.ToString() == "REPLY")
+                    //回复
+                    if (MsgType.Contains(attach["messageType"]!.ToString()))
                     {
                         msbBody = attach["replyInfo"]!["text"] + "\n" + attach["replyInfo"]!["replyName"]! + ":" + attach["replyInfo"]!["replyText"]!;
                         mcb.Plain(msbBody);
                     }
-                    else if (attach["messageType"]!.ToString() == "GIFTREPLY")
+                    //礼物回复
+                    else if (MsgType.Contains(attach["messageType"]!.ToString()))
                     {
                         msbBody = attach["giftReplyInfo"]!["text"] + "\n" + attach["giftReplyInfo"]!["replyName"]! + ":" + attach["giftReplyInfo"]!["replyText"]!;
                         mcb.Plain(msbBody);
                     }
-                    else if (attach["messageType"]!.ToString() == "GIFT_TEXT" || fen)
+                    //总选计分
+                    else if (MsgType.Contains(attach["messageType"]!.ToString()) || fen)
                     {
                         msbBody = "送出了【" + attach["giftInfo"]!["giftName"] + "（" + attach["giftInfo"]!["tpNum"] + "分）】。";
                         mcb.Plain(msbBody);
                     }
-                    else if (attach["messageType"]!.ToString() == "LIVEPUSH")
+                    //直播
+                    else if (MsgType.Contains(attach["messageType"]!.ToString()))
                     {
                         //判断是否at所有人
                         msbBody = "直播啦！\n标题：" + attach["livePushInfo"]!["liveTitle"];
                         mcb.Plain(msbBody).ImageFromBase64(Base64.UrlImgToBase64(Const.ConfigModel.KD.imgDomain + attach["livePushInfo"]!["liveCover"]!.ToString()).Result);
+                        if (MsgType.FirstOrDefault(t => t == "AtAll")?.ToBool() ?? false)
+                            mcb.AtAll();
 
                     }
-                    else if (attach["messageType"]!.ToString() == "AUDIO")
+                    //语言
+                    else if (MsgType.Contains(attach["messageType"]!.ToString()))
                     {
                         mcb.VoiceFromUrl(attach["audioInfo"]!["url"]!.ToString());
                     }
-                    else if (attach["messageType"]!.ToString() == "VIDEO")
+                    //视频
+                    else if (MsgType.Contains(attach["messageType"]!.ToString()))
                     {
                         mcb.VoiceFromUrl(attach["videoInfo"]!["url"]!.ToString());
                     }
                     // 房间电台
-                    else if (attach["messageType"]!.ToString() == "TEAM_VOICE")
+                    else if (MsgType.Contains(attach["messageType"]!.ToString()))
                     {
                         //判断是否at所有人
                         msbBody = "开启了房间电台";
                         mcb.Plain(msbBody);
+                        if (MsgType.FirstOrDefault(t => t == "AtAll")?.ToBool() ?? false)
+                            mcb.AtAll();
                     }
                     //文字翻牌
-                    else if (attach["messageType"]!.ToString() == "FLIPCARD")
+                    else if (MsgType.Contains(attach["messageType"]!.ToString()))
                     {
                         await Msg.SendFriendMsg(Msg.Admin, "文字翻牌:\n" + attach.ToString());
                         return;
@@ -123,7 +138,7 @@ namespace Helper
                         mcb.Plain("文字翻牌：" + attach["filpCardInfo"]!["question"]);
                     }
                     //语音翻牌
-                    else if (attach["messageType"]!.ToString() == "FLIPCARD_AUDIO")
+                    else if (MsgType.Contains(attach["messageType"]!.ToString()))
                     {
                         await Msg.SendFriendMsg(Msg.Admin, "语音翻牌:\n" + attach.ToString());
                         return;
@@ -132,7 +147,7 @@ namespace Helper
                         mcb.Plain("语音翻牌：" + attach["filpCardInfo"]!["question"]);
                     }
                     //视频翻牌
-                    else if (attach["messageType"]!.ToString() == "FLIPCARD_VIDEO")
+                    else if (MsgType.Contains(attach["messageType"]!.ToString()))
                     {
                         await Msg.SendFriendMsg(Msg.Admin, "视频翻牌:\n" + attach.ToString());
                         return;
@@ -141,7 +156,7 @@ namespace Helper
                         mcb.Plain("视频翻牌：" + attach["filpCardInfo"]!["question"]);
                     }
                     //表情
-                    else if (attach["messageType"]!.ToString() == "EXPRESSIMAGE")
+                    else if (MsgType.Contains(attach["messageType"]!.ToString()))
                     {
                         string url = attach["expressImgInfo"]!["emotionRemote"]!.ToString();
                         mcb.ImageFromBase64(Base64.UrlImgToBase64(url).Result);

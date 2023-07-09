@@ -42,6 +42,8 @@ namespace ParkerBot
         public bool forwardGroup { get; set; }
         public bool forwardQQ { get; set; }
         public string qq { get; set; } = string.Empty;
+        public string cg { get; set; } = string.Empty;
+        public string keyword { get;set; } = string.Empty;
     }
 
     public class KD
@@ -58,6 +60,8 @@ namespace ParkerBot
         public string imgDomain { get; set; } = string.Empty;
         public string mP4Domain { get; set; } = string.Empty;
         public string liveRoomId { get; set; } = string.Empty;
+        public string msgType { get; set; } = string.Empty;
+        public string msgTypeList { get; set; }= string.Empty;
     }
     public class BD
     {

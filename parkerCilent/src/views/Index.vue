@@ -250,6 +250,7 @@ const liveMsg = function (t: any, event: Array<LiveRoomMessage>) {
             var custom = JSON.parse(item.custom);
             if ((custom?.giftInfo ?? null) == null) return;
             custom.giftInfo.userName = custom.giftInfo.acceptUser.userName;
+            custom.giftInfo.isScore='1';
             var msgModel = {
                 fromType: 1,
                 channelName: "直播间",
