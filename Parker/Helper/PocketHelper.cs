@@ -29,8 +29,7 @@ namespace Helper
                     var attachFen = (JObject)result["attach"]!;
                     if (attachFen.ContainsKey("giftInfo"))
                     {
-                        var listFen = new List<string> { "0.1分", "1分", "9分", "99分", "999分" };
-                        if (listFen.Contains(attachFen["giftInfo"]!["giftName"]!.ToString()))
+                        if (attachFen["giftInfo"]?["isScore"]?.ToString() == "1")
                         {
                             fen = true;
                             //创建工作表
@@ -86,7 +85,7 @@ namespace Helper
                         msbBody = attach["giftReplyInfo"]!["text"] + "\n" + attach["giftReplyInfo"]!["replyName"]! + ":" + attach["giftReplyInfo"]!["replyText"]!;
                         mcb.Plain(msbBody);
                     }
-                    else if (attach["messageType"]!.ToString() == "GIFT_TEXT")
+                    else if (attach["messageType"]!.ToString() == "GIFT_TEXT" || fen)
                     {
                         msbBody = "为" + attach["giftInfo"]!["userName"]! + "的作品打出了" + attach["giftInfo"]!["giftName"] + "。";
                         mcb.Plain(msbBody);
