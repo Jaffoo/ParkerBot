@@ -2,6 +2,7 @@ using Mirai.Net.Utils.Scaffolds;
 using Newtonsoft.Json.Linq;
 using ParkerBot;
 using MiniExcelLibs;
+using Vanara.PInvoke;
 
 namespace Helper
 {
@@ -87,7 +88,7 @@ namespace Helper
                     }
                     else if (attach["messageType"]!.ToString() == "GIFT_TEXT" || fen)
                     {
-                        msbBody = "为" + attach["giftInfo"]!["userName"]! + "的作品打出了" + attach["giftInfo"]!["giftName"] + "。";
+                        msbBody = "送出了【" + attach["giftInfo"]!["giftName"] + "（" + attach["giftInfo"]!["tpNum"] + "分）】。";
                         mcb.Plain(msbBody);
                     }
                     else if (attach["messageType"]!.ToString() == "LIVEPUSH")

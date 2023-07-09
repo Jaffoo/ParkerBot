@@ -175,7 +175,7 @@ const start = async () => {
 };
 
 const handleLogined = async function () {
-    var msg = `口袋登录成功。开始订阅小偶像${baseConfig.value.KD.name}的房间。`;
+    var msg = `口袋登录成功。订阅小偶像${baseConfig.value.KD.name}的房间。`;
     log.value.push(new PocketMessage().add(msg));
     if (qChat.value == null) throw ("聊天室未成功实例化");
     const result: SubscribeAllChannelResult =
@@ -184,11 +184,11 @@ const handleLogined = async function () {
             serverIds: [baseConfig.value.KD.serverId],
         });
     if (result.failServerIds.length) {
-        msg = `进入小偶像${baseConfig.value.KD.name}的房间失败。请检查配置后重试，如仍有问题，请联系开发者。`;
+        msg = `小偶像${baseConfig.value.KD.name}的房间订阅失败。请检查配置后重试，如仍有问题，请联系开发者。`;
         log.value.push(new PocketMessage().add(msg));
         return;
     }
-    msg = `进入小偶像${baseConfig.value.KD.name}的房间成功。`;
+    msg = `小偶像${baseConfig.value.KD.name}的房间订阅失败。`;
     log.value.push(new PocketMessage().add(msg));
     //同时订阅直播间
     liveNim.value = new NimChatroomSocket({ liveId: baseConfig.value.KD.liveRoomId, onMessage: liveMsg })
