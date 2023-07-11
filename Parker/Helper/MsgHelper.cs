@@ -10,6 +10,11 @@ using Mirai.Net.Utils.Scaffolds;
 using Mirai.Net.Data.Shared;
 using System.Reactive.Linq;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Policy;
+using Newtonsoft.Json;
+using System;
+using Newtonsoft.Json.Linq;
+using System.Text;
 
 namespace Helper
 {
@@ -362,6 +367,8 @@ namespace Helper
                                 await fmr.SendMessageAsync("格式错误!");
                                 return;
                             }
+                            if (Permission.Contains(qqNum))
+                                await fmr.SendMessageAsync("此账号已是管理员！");
                             _liteContext = new();
                             var model = await _liteContext.Config.FirstOrDefaultAsync(t => t.key == "Permission");
                             if (model == null) throw new Exception("key为【Permission】的值不存在！");
@@ -390,7 +397,7 @@ namespace Helper
                         }
                         if (msgText.Contains("#删除管理员#"))
                         {
-                            var qqNum = msgText.Replace("#添加管理员#", "");
+                            var qqNum = msgText.Replace("#删除管理员#", "");
                             if (string.IsNullOrWhiteSpace(qqNum.Trim()))
                             {
                                 await fmr.SendMessageAsync("格式错误!");
@@ -419,7 +426,8 @@ namespace Helper
                     {
                         if (msgText == "#菜单" && Permission.Contains(fmr.Sender.Id))
                         {
-                            string menu = "1、功能开关：\n#开启/关闭模块{模块名称}\n#开启/关闭转发#{模块}#qq/群\n#修改转发#{模块}#qq/群#{值}\n2、发送消息：#发送#{群/好友}#文字/图片/语音/视频/图文/{qq号/群号}/{文字/图片链接/{文字}-{图片链接}}";
+                            string menu = "1、功能开关：\n#开启/关闭模块{模块名称}\n#开启/关闭转发#{模块}#qq/群\n#修改转发#{模块}#qq/群#{值}\n2、发送消息：#发送#{群/好友}#文字/图片/语音/视频/图文/{qq号/群号}/{文字/图片链接/{文字}-{图片链接}}" +
+                            "\n3、#微博用户搜索#{关键词}";
                             await fmr.SendMessageAsync(menu);
                             return;
                         }
@@ -601,6 +609,33 @@ namespace Helper
                             }
                             await _liteContext.DisposeAsync();
                             return;
+                        }
+                        if (msgText.Contains("#微博用户搜索#"))
+                        {
+                            var keyword = msgText.Replace("#微博用户搜索#", "");
+                            var url = $"https://m.weibo.cn/api/container/getIndex?containerid=100103type%3D3%26q%3D{keyword}%26t%3D%26page_type%3Dsearchall";
+                            var handler = new HttpClientHandler() { UseCookies = true };
+                            HttpClient httpClient = new(handler);
+                            httpClient.DefaultRequestHeaders.Add("user-agent", @"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36 Edg/114.0.1823");
+                            httpClient.DefaultRequestHeaders.Add("sec-ch-ua", "\"Not.A/Brand\"; v = \"8\", \"Chromium\"; v = \"114\", \"Microsoft Edge\"; v = \"114\"");
+                            httpClient.DefaultRequestHeaders.Add("sec-ch-ua-platform", "Windows");
+                            httpClient.DefaultRequestHeaders.Add("cookie", "_T_WM=98249609066; WEIBOCN_FROM=1110005030; MLOGIN=0; XSRF-TOKEN=4c5095; mweibo_short_token=1937e050d5; M_WEIBOCN_PARAMS=luicode%3D10000011%26lfid%3D100103type%253D3%2526q%253D%25E9%25BB%2584%25E6%2580%25A1%25E6%2585%2588%2526t%253D%26fid%3D100103type%253D3%2526q%253D%25E9%25BB%2584%25E6%2580%25A1%25E6%2585%2588%2526t%253D%26uicode%3D10000011");
+                            var res = await httpClient.GetAsync(url);
+                            var content = await res.Content.ReadAsStringAsync();
+                            var result = JObject.Parse(content);
+                            var resultList = JArray.FromObject(result["data"]!["cards"]!);
+                            var model = resultList.FirstOrDefault(t => t["card_type"]?.ToString() == "11");
+                            if (model == null) return;
+                            var list = JArray.FromObject(model["card_group"]!);
+                            StringBuilder msg = new("以为你搜索到以下结果：\n");
+                            for (int i = 0; i < list.Count; i++)
+                            {
+                                var user = list[i];
+                                msg.Append($"{i + 1}：{user!["user"]!["screen_name"]}({user!["user"]!["id"]}),{user!["desc1"]},{user!["desc2"]}\n");
+                                if (i == 2) break;
+                            }
+                            msg.Append("注：结果有多个时，仅展示前三个！");
+                            await fmr.SendMessageAsync(msg.ToString());
                         }
                     }
                 }
