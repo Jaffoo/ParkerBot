@@ -188,7 +188,7 @@ const handleLogined = async function () {
         log.value.push(new PocketMessage().add(msg));
         return;
     }
-    msg = `小偶像${baseConfig.value.KD.name}的房间订阅失败。`;
+    msg = `小偶像${baseConfig.value.KD.name}的房间订阅成功。`;
     log.value.push(new PocketMessage().add(msg));
     //同时订阅直播间
     liveNim.value = new NimChatroomSocket({ liveId: baseConfig.value.KD.liveRoomId, onMessage: liveMsg })

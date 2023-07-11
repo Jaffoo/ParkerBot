@@ -10,6 +10,7 @@ namespace Helper
             if (Const.EnableModule.wb)
             {
                 Schedule(async () => await Weibo.Seve()).WithName("WB").NonReentrant().ToRunNow().AndEvery(Const.ConfigModel.WB.timeSpan.ToInt()).Minutes();
+                Schedule(async () => await Weibo.ChiGua()).WithName("WBChiGua").NonReentrant().ToRunNow().AndEvery(Const.ConfigModel.WB.timeSpan.ToInt()).Minutes();
             }
             if (Const.EnableModule.bz)
             {

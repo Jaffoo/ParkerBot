@@ -22,11 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="wwwroot\pages\favicon.ico" />
-    <EmbeddedResource Include="wwwroot\pages\index.html" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Fleck" Version="1.2.0" />
     <PackageReference Include="FluentScheduler" Version="5.5.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.5" />
@@ -54,6 +49,10 @@
     <None Update="wwwroot\sql\main.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\pages\" />
   </ItemGroup>
 
 </Project>

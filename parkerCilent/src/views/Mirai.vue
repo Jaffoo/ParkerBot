@@ -28,7 +28,7 @@
             </el-form>
         </el-main>
         <el-footer>
-            <div>具体配置教学由于网上很多此处不再赘，下面提供几个教学地址：</div>
+            <div>具体配置教学由于网上很多此处不再赘述，下面提供几个教学地址：</div>
             <div>1、GitHub：<span
                     style="color:rgb(19, 1, 173);text-decoration-line: underline;">https://sinoahpx.github.io/Mirai.Net.Documents/#/?id=mirainet-文档</span>
                 通常来说你只用看到开始使用-快速开始-安装mirai环境即可，如果想了解什么是mirai可以看开始使用-基础知识-mirai生态
