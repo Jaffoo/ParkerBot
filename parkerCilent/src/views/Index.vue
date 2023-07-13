@@ -21,8 +21,8 @@
         <el-main>
             <el-row :gutter="20">
                 <el-col :span="12">
-                    <h3 style="cursor: pointer;margin-left: 40%;">即时消息及日志</h3>
-                    <div style="height: 500px;overflow:auto;" id="textArae">
+                    <h3 style="margin-left: 40%;">即时消息及日志</h3>
+                    <div style="height: 530px;overflow:auto;" id="textArae">
                         <div v-for="(item, index) in log" style="margin:5px">
                             {{ (index + 1) + ':' }}
                             <span v-if="item.type != 2">{{ item.content }}</span>
@@ -33,7 +33,7 @@
                 </el-col>
                 <el-col :span="12">
                     <h3 title="点此刷新" @click="refresh" style="cursor: pointer;margin-left: 40%;">图片待审核列表</h3>
-                    <div style="height: 500px;overflow:auto;">
+                    <div style="height: 530px;overflow:auto;">
                         <table>
                             <tr>
                                 <th width="300px">图片</th>
@@ -55,6 +55,7 @@
             </el-row>
         </el-main>
     </el-container>
+        <span title="点击复制" style="position: absolute;right: 10px;bottom: 0;color:rgb(194, 191, 191);font-size: 15px;">如发现问题，反馈QQ：1615842006</span>
 </template>
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
@@ -82,7 +83,6 @@ const log = ref<Array<PocketMessage>>(new Array<PocketMessage>());
 const pic = ref<Array<any>>(new Array<any>());
 const ws = ref<WebSocket>();
 const wsReady = ref<boolean>(false);
-
 
 watch(log.value, (newVal, OldVal) => {
     if (newVal.length >= 100) {
@@ -250,7 +250,7 @@ const liveMsg = function (t: any, event: Array<LiveRoomMessage>) {
             var custom = JSON.parse(item.custom);
             if ((custom?.giftInfo ?? null) == null) return;
             custom.giftInfo.userName = custom.giftInfo.acceptUser.userName;
-            custom.giftInfo.isScore='1';
+            custom.giftInfo.isScore = '1';
             var msgModel = {
                 fromType: 1,
                 channelName: "直播间",
