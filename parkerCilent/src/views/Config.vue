@@ -457,7 +457,7 @@ onMounted(() => {
         res.data.config.QQ.funcAdmin1 = res.data.config.QQ.funcAdmin1 ?? new Array();
         res.data.config.QQ.funcUser1 = res.data.config.QQ.funcUser1 ?? new Array();
         config.value = res.data.config;
-        config.value.QQ.actions = config.value.QQ.action.split(",")
+        config.value.QQ.actions = config.value.QQ.action===''?[]:config.value.QQ.action.split(",")
         config.value.KD.area = '86';
         funcsChecked.value = res.data.config.QQ.funcEnable1;
         selectType.value = config.value.KD.msgType.split(",");
