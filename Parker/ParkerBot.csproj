@@ -44,7 +44,7 @@
 
   <ItemGroup>
     <None Update="data\config.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Update="wwwroot\image\sharpicons_Spider.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
