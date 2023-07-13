@@ -8,7 +8,7 @@
 
 #### 安装教程
 
-1.  xxxx
+1.  进入https://gitee.com/jaffoo/ParkerBotV2/releases下载最新版本。
 2.  xxxx
 3.  xxxx
 
