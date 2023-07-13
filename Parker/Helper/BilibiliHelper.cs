@@ -48,7 +48,7 @@ namespace Helper
                             //获取微博类型0-视频，1-图文
                             var type = -1;
                             if (blog["modules"]!["module_dynamic"]!["major"]!["type"]!.ToString() == "MAJOR_TYPE_DRAW") type = 1;
-                            if (blog["modules"]!["module_dynamic"]!["major"]!["type"]!.ToString() == "MAJOR_TYPE_ARCHIVE") type = 0;
+                            else if (blog["modules"]!["module_dynamic"]!["major"]!["type"]!.ToString() == "MAJOR_TYPE_ARCHIVE") type = 0;
                             //需要发送通知则发送通知
                             if (index == 0)
                             {
