@@ -4,18 +4,19 @@
 监听微博，口袋等偶像社交软件，通过人脸识别及对比，自动保存偶像图片至本地或阿里云盘，解放双手，集成消息通知等功能。
 
 #### 软件架构
-基于.NET 6 winform框架开源UI库NanUI开发[NanUI](https://gitee.com/dotnetchina/NanUI)。前端页面使用的是Vue3，Ts，ElementUI。
+基于.NET 6 winform框架开源UI库[NanUI](https://gitee.com/dotnetchina/NanUI)开发。前端页面使用的是Vue3，Ts，ElementUI。
 
 #### 安装教程
 
 1.  进入[发行版](https://gitee.com/jaffoo/ParkerBotV2/releases)下载最新版本。
-2.  1
-3.  xxxx
+2.  解压压缩包。
+3.  找到ParkerBot.exe，运行即可。
 
-#### 使用说明
+#### 配置教程
 
+注：简单的配置就不多说明。主要教学有难点的。
+##### 脸部识别配置
 1.  xxxx
-2.  xxxx
 3.  xxxx
 
 #### 参与贡献
