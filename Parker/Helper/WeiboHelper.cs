@@ -213,7 +213,7 @@ namespace Helper
                             if (blog.ContainsKey("page_info")) mblogtype = 0;
                             if (blog.ContainsKey("pic_infos")) mblogtype = 2;
                             var blogContent = blog["text_raw"]!.ToString();
-                            if (!Keywords.Select(keyword => blogContent.Contains(keyword)).Any(x => x))
+                            if (!Keywords.Select(keyword => blogContent.Contains(keyword)).Any(x => x) && Keywords.Count > 0)
                                 return;
                             var mcb = new MessageChainBuilder();
                             mcb.Plain($"{blog["user"]!["screen_name"]}发了一条相关微博！");

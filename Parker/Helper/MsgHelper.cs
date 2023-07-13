@@ -427,7 +427,7 @@ namespace Helper
                         if (msgText == "#菜单" && Permission.Contains(fmr.Sender.Id))
                         {
                             string menu = "1、功能开关：\n#开启/关闭模块{模块名称}\n#开启/关闭转发#{模块}#qq/群\n#修改转发#{模块}#qq/群#{值}\n2、发送消息：#发送#{群/好友}#文字/图片/语音/视频/图文/{qq号/群号}/{文字/图片链接/{文字}-{图片链接}}" +
-                            "\n3、#微博用户搜索#{关键词}";
+                            "\n3、微博：\n#微博用户搜索#{关键词}\n#关注微博用户#{用户id}\n#添加/删除微博关键词#{词}\n#重置微博关键词";
                             await fmr.SendMessageAsync(menu);
                             return;
                         }
@@ -636,6 +636,48 @@ namespace Helper
                             }
                             msg.Append("注：结果有多个时，仅展示前三个！");
                             await fmr.SendMessageAsync(msg.ToString());
+                        }
+                        if (msgText.Contains("#删除微博关键词#"))
+                        {
+                            var keywords = msgText.Replace("#删除微博关键词#", "");
+                            if (string.IsNullOrWhiteSpace(keywords))
+                                await fmr.SendMessageAsync("输入内容为空！");
+                            if (!Weibo.Keywords.Contains(keywords))
+                                await fmr.SendMessageAsync("不存在该关键词！");
+                            Weibo.Keywords.Remove(keywords);
+                            _liteContext = new();
+                            var model = _liteContext.Config.FirstOrDefault(t => t.id == 87);
+                            model!.value = string.Join(",", Weibo.Keywords);
+                            _liteContext.Update(model);
+                            _liteContext.SaveChanges();
+                            Const._ConfigModel = null;
+                            await fmr.SendMessageAsync($"已删除关键词【{keywords}】");
+                        }
+                        if (msgText.Contains("#添加微博关键词#"))
+                        {
+                            var keywords = msgText.Replace("#添加微博关键词#", "");
+                            if (string.IsNullOrWhiteSpace(keywords))
+                                await fmr.SendMessageAsync("输入内容为空！");
+                            if (Weibo.Keywords.Contains(keywords))
+                                await fmr.SendMessageAsync("已存在该关键词！");
+                            Weibo.Keywords.Add(keywords);
+                            _liteContext = new();
+                            var model = _liteContext.Config.FirstOrDefault(t => t.id == 87);
+                            model!.value = string.Join(",", Weibo.Keywords);
+                            _liteContext.Update(model);
+                            _liteContext.SaveChanges();
+                            Const._ConfigModel = null;
+                            await fmr.SendMessageAsync($"已添加关键词【{keywords}】");
+                        }
+                        if (msgText.Contains("#重置微博关键词"))
+                        {
+                            _liteContext = new();
+                            var model = _liteContext.Config.FirstOrDefault(t => t.id == 87);
+                            model!.value = "";
+                            _liteContext.Update(model);
+                            _liteContext.SaveChanges();
+                            Const._ConfigModel = null;
+                            await fmr.SendMessageAsync($"已重置关键词");
                         }
                     }
                 }
