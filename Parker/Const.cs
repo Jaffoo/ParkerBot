@@ -110,6 +110,13 @@ namespace ParkerBot
             return val;
         }
 
+        public static long Tolong(this string str)
+        {
+            if (string.IsNullOrWhiteSpace(str)) return 0;
+            if (!long.TryParse(str, out var val)) return 0;
+            return val;
+        }
+
         public static bool ToBool(this string str)
         {
             if (string.IsNullOrWhiteSpace(str)) return false;
