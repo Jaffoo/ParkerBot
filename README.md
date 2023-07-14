@@ -43,8 +43,9 @@
 5. 小红书（暂未上线）
 6. 抖音（暂未上线）
 7. 百度(用于人脸识别)
-- appKey和appSeret获取方式，打开[百度云](https://cloud.baidu.com/)右上角登陆，然后进行实名认证，选个人认证，完成后打开[领取免费资源](https://console.bce.baidu.com/ai/#/ai/face/overview/resource/getFree)按图操作。
-![输入图片说明](images/bdimage.png)
+- appKey和appSeret获取方式，打开[百度云](https://cloud.baidu.com/)右上角登陆，然后进行实名认证，选个人认证，完成后打开[领取免费资源](https://console.bce.baidu.com/ai/#/ai/face/overview/resource/getFree)，按图操作。
+![输入图片说明](images/bdimage.png)    领取成功后点击前往应用列表。点击创建应用，勾选红框中的内容或者按照默认全选也行，然后按照要求填入信息后点击立即创建，首页就可以看到你刚刚创建的应用，把相应的apiKey和SecretKey填入配置相应位置即可。
+![输入图片说明](images/bd1image.png)
 - 开启人脸验证，顾名思义。
 - 基础人脸，上传3张人脸照片，尽量找五官清晰的近期照片。
 - 人脸相似度，当人脸相似度大于该值，则直接保存。
