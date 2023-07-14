@@ -19,8 +19,7 @@ namespace ParkerBot
             Maximizable = false;
             StartPosition = FormStartPosition.CenterParent;
             EnableSplashScreen = false;
-            Subtitle = "帕克机器人";
-            Title = "by 子墨Jaffoo";
+            Title = "ParkerBot";
             Icon = new Icon(Directory.GetCurrentDirectory() + "/wwwroot/image/sharpicons_Spider.ico");
         }
 
