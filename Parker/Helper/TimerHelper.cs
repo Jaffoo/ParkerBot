@@ -14,7 +14,7 @@ namespace Helper
             }
             if (Const.EnableModule.bz)
             {
-
+                Schedule(async () => await Bilibili.Monitor()).WithName("BZ").NonReentrant().ToRunNow().AndEvery(Const.ConfigModel.WB.timeSpan.ToInt()).Minutes();
             }
             if (Const.EnableModule.xhs)
             {

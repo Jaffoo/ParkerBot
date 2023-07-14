@@ -17,7 +17,7 @@ namespace Helper
             get { return Const.ConfigModel.BZ.timeSpan.ToInt(); }
         }
 
-        public static async void Monitor()
+        public static async Task Monitor()
         {
             try
             {
