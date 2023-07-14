@@ -173,7 +173,8 @@ INSERT INTO "config" VALUES (85, '消息类型', 'MsgTypeList', '[{
     "value":"PRESENT_NORMAL"
 }]', 17);
 INSERT INTO "config" VALUES (86, '吃瓜微博', 'Cg', '', 15);
-INSERT INTO "config" VALUES (87, '吃瓜关键字', 'keyword', '', 15);
+INSERT INTO "config" VALUES (87, '吃瓜关键字', 'Keyword', '', 15);
+INSERT INTO "config" VALUES (88, '姓名', 'Name', '', 17);
 
 -- ----------------------------
 -- Table structure for idol
@@ -201,4 +202,25 @@ CREATE TABLE "log" (
   "Id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   "Message" TEXT NOT NULL,
   "CreateDate" DATE NOT NULL
+);
+
+-- ----------------------------
+-- Table structure for message
+-- ----------------------------
+DROP TABLE IF EXISTS "message";
+CREATE TABLE "message" (
+  "Id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "MsgId" text NOT NULL,
+  "FromId" text NOT NULL,
+  "FromName" TEXT NOT NULL,
+  "ToId" INTEGER NOT NULL,
+  "ToName" TEXT NOT NULL,
+  "Content" TEXT,
+  "Img" TEXT,
+  "Voice" TEXT,
+  "Video" TEXT,
+  "Other" TEXT,
+  "CreateDate" DATE NOT NULL,
+  "Type" TEXT NOT NULL DEFAULT 1,
+  "MsgType" integer NOT NULL DEFAULT 1
 );
