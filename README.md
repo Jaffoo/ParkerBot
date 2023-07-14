@@ -8,7 +8,7 @@
 
 ## 安装教程
 
-1.  进入[发行版](https://gitee.com/jaffoo/ParkerBotV2/releases)下载最新版本。
+1.  由于仓库限制上传文件大小，需要自行下载源码编译打包。不会可以加QQ群下载成品，群号：738156151。
 2.  解压压缩包。
 3.  找到ParkerBot.exe，运行即可。
 
