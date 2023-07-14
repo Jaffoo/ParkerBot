@@ -10,11 +10,10 @@
                         Mirai配置
                     </el-button>
                     <span style="color:red">(不启用QQ机器人无需配置)</span>
-                    <el-button v-if="useMirai" type="primary" native-type="button" :icon="Setting"
+                    <el-button v-if="useMirai" type="primary" native-type="button"
                         @click="startMirai">启动Mirai机器人</el-button>
-                    <el-button type="primary" native-type="button" :icon="Check" @click="start">启动机器人</el-button>
-                    <el-button v-if="useAli" type="primary" native-type="button" :icon="Setting"
-                        @click="startAli">启动阿里云盘</el-button>
+                    <el-button type="primary" native-type="button" @click="start">启动机器人</el-button>
+                    <el-button v-if="useAli" type="primary" native-type="button" @click="startAli">启动阿里云盘</el-button>
                 </el-form-item>
             </el-form>
         </el-header>
@@ -55,7 +54,8 @@
             </el-row>
         </el-main>
     </el-container>
-        <span title="点击复制" style="position: absolute;right: 10px;bottom: 0;color:rgb(194, 191, 191);font-size: 15px;">如发现问题，反馈QQ：1615842006</span>
+    <span title="点击复制"
+        style="position: absolute;right: 10px;bottom: 0;color:rgb(194, 191, 191);font-size: 15px;">如发现问题，反馈QQ：1615842006</span>
 </template>
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";

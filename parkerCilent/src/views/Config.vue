@@ -147,11 +147,11 @@
                             <el-input v-model="config.KD.qq" placeholder="发新微博转发消息"></el-input>
                             <span style="color:red">*多个用英文逗号,分隔；不填写则默认超管</span>
                         </el-form-item>
-                        <el-form-item label="监听消息类型" v-show="config.KD.forwardGroup === true">
+                        <el-form-item label="监听消息类型" v-show="config.KD.forwardGroup === true || config.KD.forwardQQ === true">
                             <el-checkbox-group v-model="selectType">
-                                <el-checkbox v-for="(item, index) in msgTypeList" :label="item.value"
-                                    :key="index">{{ item.name
-                                    }}</el-checkbox>
+                                <el-checkbox v-for="(item, index) in msgTypeList" :label="item.value" :key="index">{{
+                                    item.name
+                                }}</el-checkbox>
                             </el-checkbox-group>
                         </el-form-item>
                     </el-collapse-item>
@@ -204,7 +204,7 @@
                         </el-form-item>
                     </el-collapse-item>
                     <el-collapse-item title="百度" v-if="eable.bd" name="bd">
-                        <el-form-item label="appKey" prop="BD.appKey" :rules="rules.input">
+                        <el-form-item label="apiKey" prop="BD.appKey" :rules="rules.input">
                             <el-input v-model="config.BD.appKey" placeholder="百度appKey"></el-input>
                         </el-form-item>
                         <el-form-item label="appSeret" prop="BD.appSeret" :rules="rules.input">
@@ -457,7 +457,7 @@ onMounted(() => {
         res.data.config.QQ.funcAdmin1 = res.data.config.QQ.funcAdmin1 ?? new Array();
         res.data.config.QQ.funcUser1 = res.data.config.QQ.funcUser1 ?? new Array();
         config.value = res.data.config;
-        config.value.QQ.actions = config.value.QQ.action===''?[]:config.value.QQ.action.split(",")
+        config.value.QQ.actions = config.value.QQ.action === '' ? [] : config.value.QQ.action.split(",")
         config.value.KD.area = '86';
         funcsChecked.value = res.data.config.QQ.funcEnable1;
         selectType.value = config.value.KD.msgType.split(",");
@@ -563,6 +563,9 @@ const submitForm = () => {
         }).then(res1 => {
             config.value.KD.token = res1.data.content.pwd;
             config.value.KD.account = res1.data.content.accid;
+            setTimeout(() => {
+                close();
+            }, 1000);
         });
     });
 }
