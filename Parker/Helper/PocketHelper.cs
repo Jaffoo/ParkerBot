@@ -52,7 +52,7 @@ namespace Helper
                 MessageChainBuilder mcb = new();
                 mcb.Plain($"【{Const.ConfigModel.KD.name}|{channelName}】\n【{time}】\n{name}:");
                 //图片
-                if (MsgType.Contains(msgType))
+                if (MsgType.Contains(msgType)&& msgType == "image")
                 {
                     msbBody = result["attach"]!["url"]!.ToString();
                     mcb.ImageFromBase64(Base64.UrlImgToBase64(msbBody).Result);
@@ -62,45 +62,46 @@ namespace Helper
                     });
                 }
                 //文字
-                else if (MsgType.Contains(msgType))
+                else if (MsgType.Contains(msgType) && msgType == "text")
                 {
                     //"230226137"
                     msbBody = result["body"]!.ToString();
                     mcb.Plain(msbBody);
                 }
                 //视频
-                else if (MsgType.Contains(msgType))
+                else if (MsgType.Contains(msgType) && msgType == "video")
                 {
                     mcb.Plain(result["attach"]!["url"]!.ToString());
                 }
                 //语言
-                else if (MsgType.Contains(msgType))
+                else if (MsgType.Contains(msgType) && msgType == "audio")
                 {
                     mcb.VoiceFromUrl(result["attach"]!["url"]!.ToString());
                 }
                 else if (msgType == "custom")
                 {
                     var attach = result["attach"]!;
+                    var messageType = attach["messageType"]!.ToString();
                     //回复
-                    if (MsgType.Contains(attach["messageType"]!.ToString()))
+                    if (MsgType.Contains(messageType) && messageType == "REPLY")
                     {
                         msbBody = attach["replyInfo"]!["text"] + "\n" + attach["replyInfo"]!["replyName"]! + ":" + attach["replyInfo"]!["replyText"]!;
                         mcb.Plain(msbBody);
                     }
                     //礼物回复
-                    else if (MsgType.Contains(attach["messageType"]!.ToString()))
+                    else if (MsgType.Contains(messageType) && messageType == "GIFTREPLY")
                     {
                         msbBody = attach["giftReplyInfo"]!["text"] + "\n" + attach["giftReplyInfo"]!["replyName"]! + ":" + attach["giftReplyInfo"]!["replyText"]!;
                         mcb.Plain(msbBody);
                     }
                     //总选计分
-                    else if (MsgType.Contains(attach["messageType"]!.ToString()) || fen)
+                    else if (MsgType.Contains(messageType) && fen)
                     {
                         msbBody = "送出了【" + attach["giftInfo"]!["giftName"] + "（" + attach["giftInfo"]!["tpNum"] + "分）】。";
                         mcb.Plain(msbBody);
                     }
                     //直播
-                    else if (MsgType.Contains(attach["messageType"]!.ToString()))
+                    else if (MsgType.Contains(messageType) && messageType == "LIVEPUSH")
                     {
                         //判断是否at所有人
                         msbBody = "直播啦！\n标题：" + attach["livePushInfo"]!["liveTitle"];
@@ -109,18 +110,18 @@ namespace Helper
                             mcb.AtAll();
 
                     }
-                    //语言
-                    else if (MsgType.Contains(attach["messageType"]!.ToString()))
+                    //语音
+                    else if (MsgType.Contains(messageType.ToLower()) && messageType == "AUDIO")
                     {
                         mcb.VoiceFromUrl(attach["audioInfo"]!["url"]!.ToString());
                     }
                     //视频
-                    else if (MsgType.Contains(attach["messageType"]!.ToString()))
+                    else if (MsgType.Contains(messageType.ToLower()) && messageType == "VIDEO")
                     {
                         mcb.VoiceFromUrl(attach["videoInfo"]!["url"]!.ToString());
                     }
                     // 房间电台
-                    else if (MsgType.Contains(attach["messageType"]!.ToString()))
+                    else if (MsgType.Contains(messageType) && messageType == "TEAM_VOICE")
                     {
                         //判断是否at所有人
                         msbBody = "开启了房间电台";
@@ -129,7 +130,7 @@ namespace Helper
                             mcb.AtAll();
                     }
                     //文字翻牌
-                    else if (MsgType.Contains(attach["messageType"]!.ToString()))
+                    else if (MsgType.Contains(messageType) && messageType == "FLIPCARD")
                     {
                         await Msg.SendFriendMsg(Msg.Admin, "文字翻牌:\n" + attach.ToString());
                         return;
@@ -138,7 +139,7 @@ namespace Helper
                         mcb.Plain("文字翻牌：" + attach["filpCardInfo"]!["question"]);
                     }
                     //语音翻牌
-                    else if (MsgType.Contains(attach["messageType"]!.ToString()))
+                    else if (MsgType.Contains(messageType) && messageType == "FLIPCARD_AUDIO")
                     {
                         await Msg.SendFriendMsg(Msg.Admin, "语音翻牌:\n" + attach.ToString());
                         return;
@@ -147,7 +148,7 @@ namespace Helper
                         mcb.Plain("语音翻牌：" + attach["filpCardInfo"]!["question"]);
                     }
                     //视频翻牌
-                    else if (MsgType.Contains(attach["messageType"]!.ToString()))
+                    else if (MsgType.Contains(messageType) && messageType == "FLIPCARD_VIDEO")
                     {
                         await Msg.SendFriendMsg(Msg.Admin, "视频翻牌:\n" + attach.ToString());
                         return;
@@ -156,7 +157,7 @@ namespace Helper
                         mcb.Plain("视频翻牌：" + attach["filpCardInfo"]!["question"]);
                     }
                     //表情
-                    else if (MsgType.Contains(attach["messageType"]!.ToString()))
+                    else if (MsgType.Contains(messageType) && messageType == "EXPRESSIMAGE")
                     {
                         string url = attach["expressImgInfo"]!["emotionRemote"]!.ToString();
                         mcb.ImageFromBase64(Base64.UrlImgToBase64(url).Result);

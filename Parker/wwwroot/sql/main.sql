@@ -126,11 +126,11 @@ INSERT INTO "config" VALUES (85, '消息类型', 'MsgTypeList', '[{
 },
 {
     "name":"视频消息",
-    "value":"video,VIDEO"
+    "value":"video"
 },
 {
     "name":"音频消息",
-    "value":"audio,AUDIO"
+    "value":"audio"
 },
 {
     "name":"回复消息",
@@ -161,11 +161,11 @@ INSERT INTO "config" VALUES (85, '消息类型', 'MsgTypeList', '[{
     "value":"FLIPCARD"
 },
 {
-    "name":"视频翻牌",
+    "name":"语音翻牌",
     "value":"FLIPCARD_AUDIO"
 },
 {
-    "name":"语言翻牌",
+    "name":"视频翻牌",
     "value":"FLIPCARD_VIDEO"
 },
 {
