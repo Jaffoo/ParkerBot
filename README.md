@@ -3,6 +3,11 @@
 ## 介绍
 监听微博，口袋等偶像社交软件，通过人脸识别及对比，自动保存偶像图片至本地或阿里云盘，解放双手，集成消息通知等功能。
 
+## 仓库架构
+-Park，服务端C#。
+-parkClien，客户端vue。
+-images，此文档说明图片。
+
 ## 软件架构
 基于.NET 6 winform框架开源UI库[NanUI](https://gitee.com/dotnetchina/NanUI)开发。前端页面使用的是Vue3，Ts，ElementUI。
 
