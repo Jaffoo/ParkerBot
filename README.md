@@ -5,16 +5,18 @@
 
 ## 仓库架构
 -Park，服务端C#。
+
 -parkClien，客户端vue。
+
 -images，此文档说明图片。
 
 ## 软件架构
-基于.NET 6 winform框架开源UI库[NanUI](https://gitee.com/dotnetchina/NanUI)开发。前端页面使用的是Vue3，Ts，ElementUI。
+基于 .NET 6 winform框架开源UI库[NanUI](https://gitee.com/dotnetchina/NanUI)开发。前端使用的是vite，Vue3，Ts，ElementUI。
 
 ## 安装教程
 
 1.  由于仓库限制上传文件大小，需要自行下载源码编译打包。不会可以加QQ群下载成品，群号：738156151。
-2.  解压压缩包。
+2.  解压压缩包（自行打包的可忽略）。
 3.  找到ParkerBot.exe，运行即可。
 
 ## 配置教程
