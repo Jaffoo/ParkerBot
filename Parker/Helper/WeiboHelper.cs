@@ -106,7 +106,7 @@ namespace Helper
                                     }
                                     else if (mblogtype == 1)
                                     {
-                                        mcb.Plain($"{blog["user"]!["screen_name"]}转发微博(https://weibo.com/{blog["user"]!["id"]}/{blog["mid"]})\n源微博：");
+                                        mcb.Plain($"{blog["user"]!["screen_name"]}转发微博(https://weibo.com/{blog["user"]!["id"]}/{blog["mid"]})\n");
                                         mcb.Plain(blog["text_raw"]!.ToString());
                                     }
                                     else
