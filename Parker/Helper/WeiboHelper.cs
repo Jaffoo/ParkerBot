@@ -81,7 +81,7 @@ namespace Helper
                                     //{
                                     //    mcb.AtAll();
                                     //}
-                                    mcb.Plain($"{blog["user"]!["screen_name"]}发微博啦！");
+                                    mcb.Plain($"{blog["user"]!["screen_name"]}发微博啦！\n");
                                     if (mblogtype == 2)
                                     {
                                         //获取第一张图片发送
@@ -357,7 +357,7 @@ namespace Helper
                         });
                         await dbContext.SaveChangesAsync();
                         await dbContext.DisposeAsync();
-                        await Msg.SendFriendMsg(Msg.Admin, $"低相似，加入待审核，目前有{Msg.Check.Count}张图片待审核");
+                        await Msg.SendFriendMsg(Msg.Admin, $"相似度低于{Similarity}，加入待审核，目前有{Msg.Check.Count}张图片待审核");
                         return;
                     }
                     if (score >= Similarity && score <= 100)
@@ -376,7 +376,7 @@ namespace Helper
                         }
                         else
                         {
-                            string msg = "高度相似，已保存本地";
+                            string msg = $"相似大于{Similarity}，已保存本地";
                             if (FileHelper.SaveAliyunDisk) msg += $"，正在上传至阿里云盘【{Const.ConfigModel.BD.albumName}】相册";
                             await Msg.SendFriendMsg(Msg.Admin, msg);
                         }
