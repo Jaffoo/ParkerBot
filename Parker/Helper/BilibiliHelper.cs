@@ -28,13 +28,15 @@ namespace Helper
                     var url = "https://api.bilibili.com/x/polymer/web-dynamic/v1/feed/space?host_mid=" + item;
                     var handler = new HttpClientHandler() { UseCookies = true };
                     HttpClient httpClient = new(handler);
-                    httpClient.DefaultRequestHeaders.Add("Cookie", @"innersign=0; buvid3=B09C4EDD-E9AD-E356-B175-DFE480723E9473557infoc; b_nut=1689325073; i-wanna-go-back=-1; b_ut=7; b_lsid=228B475E_189539EF4DA; _uuid=E10B1089AB-385E-A293-7623-9AB122CB453D73648infoc; buvid_fp=0f0d5bc12567f1ab6cd34cd8ddc293d6; FEED_LIVE_VERSION=V8; header_theme_version=undefined; buvid4=3324EAE6-33BF-8691-6062-FA80CF798E4974581-023071416-azIlqJreFUhHnRhsgdcUPw%3D%3D; home_feed_column=5; browser_resolution=1707-916; nostalgia_conf=-1");
+                    httpClient.DefaultRequestHeaders.Add("Cookie", @"buvid3=58F14D89-11DF-647C-3AC6-8F15F22713D809834infoc; b_nut=1689419709; b_lsid=A6A7F965_1895942FF52; _uuid=109EA106B5-A6C8-D325-213F-724EACB7D61610296infoc; buvid_fp=d41d346d3dbd68a9e773c53562f86fe6; buvid4=C1503B9C-500E-4F3B-7D70-0B793816F3CF11282-023071519-Mdlkjl0/Y/VGNZRRioOIsA%3D%3D; PVID=1");
                     httpClient.DefaultRequestHeaders.Add("User-Agent", @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.79");
                     httpClient.DefaultRequestHeaders.Add("Sec-Ch-Ua", "\" Not A; Brand\";v=\"99\", \"Chromium\";v=\"101\", \"Microsoft Edge\";v=\"101\"");
                     httpClient.DefaultRequestHeaders.Add("Sec-Ch-Ua-Platform", "Windows");
                     var res = await httpClient.GetAsync(url);
                     var content = await res.Content.ReadAsStringAsync();
                     var data = JObject.Parse(content);
+                    var code = data["code"]!.ToString();
+                    if (code != "0") continue;
                     var list = JArray.FromObject(data["data"]!["items"]!);
                     foreach (JObject blog in list)
                     {

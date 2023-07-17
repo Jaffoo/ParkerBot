@@ -64,10 +64,11 @@ namespace Helper
                         if (createDate >= DateTime.Now.AddMinutes(-TimeSpan))
                         {
                             //可以认定为新发的微博
-                            //获取微博类型0-视频，2-图文
+                            //获取微博类型0-视频，2-图文,1-转发微博
                             var mblogtype = -1;
                             if (blog.ContainsKey("page_info")) mblogtype = 0;
                             if (blog.ContainsKey("pic_infos")) mblogtype = 2;
+                            if (blog.ContainsKey("topic_struct")) mblogtype = 1;
                             //需要发送通知则发送通知
                             if (index == 0)
                             {
@@ -81,15 +82,17 @@ namespace Helper
                                     //{
                                     //    mcb.AtAll();
                                     //}
-                                    mcb.Plain($"{blog["user"]!["screen_name"]}发微博啦！");
+
                                     if (mblogtype == 2)
                                     {
+                                        mcb.Plain($"{blog["user"]!["screen_name"]}发微博啦！(https://weibo.com/{blog["user"]!["id"]}/{blog["mid"]})\n");
                                         //获取第一张图片发送
                                         var first = blog["pic_infos"]![JArray.FromObject(blog["pic_ids"]!)[0]!.ToString()]!["large"]!["url"]!.ToString();
                                         mcb.Plain(blog["text_raw"]!.ToString()).ImageFromUrl(first);
                                     }
                                     else if (mblogtype == 0)
                                     {
+                                        mcb.Plain($"{blog["user"]!["screen_name"]}发微博啦！(https://weibo.com/{blog["user"]!["id"]}/{blog["mid"]})\n");
                                         var pageInfo = (JObject?)blog["page_info"];
                                         if (pageInfo != null)
                                         {
@@ -101,9 +104,15 @@ namespace Helper
                                             }
                                         }
                                     }
+                                    else if (mblogtype == 1)
+                                    {
+                                        mcb.Plain($"{blog["user"]!["screen_name"]}转发微博(https://weibo.com/{blog["user"]!["id"]}/{blog["mid"]})\n");
+                                        mcb.Plain(blog["text_raw"]!.ToString());
+                                    }
                                     else
                                     {
-                                        mcb.Plain("未知类型微博，更多类型通知尽请期待！");
+                                        mcb.Plain($"{blog["user"]!["screen_name"]}发微博啦！(https://weibo.com/{blog["user"]!["id"]}/{blog["mid"]})\n");
+                                        mcb.Plain(blog["text_raw"]?.ToString() ?? "");
                                     }
                                     foreach (var group in glist)
                                     {
@@ -357,7 +366,7 @@ namespace Helper
                         });
                         await dbContext.SaveChangesAsync();
                         await dbContext.DisposeAsync();
-                        await Msg.SendFriendMsg(Msg.Admin, $"低相似，加入待审核，目前有{Msg.Check.Count}张图片待审核");
+                        await Msg.SendFriendMsg(Msg.Admin, $"相似度低于{Similarity}，加入待审核，目前有{Msg.Check.Count}张图片待审核");
                         return;
                     }
                     if (score >= Similarity && score <= 100)
@@ -376,7 +385,7 @@ namespace Helper
                         }
                         else
                         {
-                            string msg = "高度相似，已保存本地";
+                            string msg = $"相似大于{Similarity}，已保存本地";
                             if (FileHelper.SaveAliyunDisk) msg += $"，正在上传至阿里云盘【{Const.ConfigModel.BD.albumName}】相册";
                             await Msg.SendFriendMsg(Msg.Admin, msg);
                         }
