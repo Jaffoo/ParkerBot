@@ -60,8 +60,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="wwwroot\pages\assets\index-586da35a.js" />
-    <EmbeddedResource Include="wwwroot\pages\assets\index-d2723f1f.css" />
     <EmbeddedResource Include="wwwroot\pages\favicon.ico" />
     <EmbeddedResource Include="wwwroot\pages\index.html" />
   </ItemGroup>
