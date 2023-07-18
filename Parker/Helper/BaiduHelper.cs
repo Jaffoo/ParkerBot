@@ -69,7 +69,7 @@ namespace Helper
                 if (string.IsNullOrWhiteSpace(img)) return 0;
                 var imageList = Const.ConfigModel.BD.imageList;
                 if (string.IsNullOrWhiteSpace(imageList)) return 0;
-                List<string> faceStandard = imageList.Split(",").ToList();
+                List<string> faceStandard = imageList.ToListV2();
                 List<float> scores = new();
                 foreach (var item in faceStandard)
                 {

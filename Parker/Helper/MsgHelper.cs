@@ -10,12 +10,8 @@ using Mirai.Net.Utils.Scaffolds;
 using Mirai.Net.Data.Shared;
 using System.Reactive.Linq;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Policy;
-using Newtonsoft.Json;
-using System;
 using Newtonsoft.Json.Linq;
 using System.Text;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Helper
 {
@@ -52,30 +48,30 @@ namespace Helper
         {
             get
             {
-                return (Const.ConfigModel.QQ.permission ?? "").Split(",").ToList();
+                return Const.ConfigModel.QQ.permission.ToListV2();
             }
         }
         public static List<string> Sensitive
         {
-            get { return (Const.ConfigModel.QQ.sensitive ?? "").Split(",").ToList(); }
+            get { return Const.ConfigModel.QQ.sensitive.ToListV2(); }
         }
         public static List<int> SensitiveAction
         {
-            get { return (Const.ConfigModel.QQ.action ?? "").Split(",").Select(t => t.ToInt()).ToList(); }
+            get { return Const.ConfigModel.QQ.action.ToListV2().Select(t => t.ToInt()).ToList(); }
         }
         public static List<string> FuncEnable
         {
-            get { return (Const.ConfigModel.QQ.funcEnable ?? "").Split(",").ToList(); }
+            get { return Const.ConfigModel.QQ.funcEnable.ToListV2(); }
         }
         public static List<string> FuncAdmin
         {
-            get { return (Const.ConfigModel.QQ.funcAdmin ?? "").Split(",").ToList(); }
+            get { return Const.ConfigModel.QQ.funcAdmin.ToListV2(); }
         }
         public static List<string> FuncUser
         {
-            get { return (Const.ConfigModel.QQ.funcUser ?? "").Split(",").ToList(); }
+            get { return Const.ConfigModel.QQ.funcUser.ToListV2(); }
         }
-        public static List<string> Group { get { return (Const.ConfigModel.QQ.group ?? "").Split(",").ToList(); } }
+        public static List<string> Group { get { return Const.ConfigModel.QQ.group.ToListV2(); } }
         public static List<RequestedEventBase> Event { get; set; } = new();
         #endregion
 

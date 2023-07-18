@@ -111,16 +111,16 @@ namespace ParkerBot
             var model = ConfigModel;
             if (!string.IsNullOrWhiteSpace(model.BD.imageList))
             {
-                var list1 = model.BD.imageList.Split(",").ToList().Select(t => new
+                var list1 = model.BD.imageList.ToListV2().Select(t => new
                 {
                     name = t.Replace("/images/standard", ""),
                     url = "http://parkerbot.file" + t
                 } as object).ToList();
                 model!.BD.imageList1 = list1;
             }
-            model.QQ.funcEnable1 = string.IsNullOrWhiteSpace(model.QQ.funcEnable) ? new() : model.QQ.funcEnable.Split(",").ToList();
-            model.QQ.funcAdmin1 = string.IsNullOrWhiteSpace(model.QQ.funcAdmin) ? new() : model.QQ.funcAdmin.Split(",").ToList();
-            model.QQ.funcUser1 = string.IsNullOrWhiteSpace(model.QQ.funcUser) ? new() : model.QQ.funcUser.Split(",").ToList();
+            model.QQ.funcEnable1 = model.QQ.funcEnable.ToListV2();
+            model.QQ.funcAdmin1 = model.QQ.funcAdmin.ToListV2();
+            model.QQ.funcUser1 = model.QQ.funcUser.ToListV2();
             data.config = model;
             data.mirai = Const.Mirai.ToObject<Mirai>();
             return Json(data);

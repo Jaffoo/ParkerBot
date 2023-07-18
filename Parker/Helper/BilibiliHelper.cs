@@ -80,7 +80,7 @@ namespace Helper
                                     if (Const.ConfigModel.WB.forwardGroup)
                                     {
                                         var groups = string.IsNullOrWhiteSpace(Const.ConfigModel.WB.group) ? Const.ConfigModel.QQ.group : Const.ConfigModel.WB.group;
-                                        var glist = string.IsNullOrWhiteSpace(groups) ? new List<string>() : groups.Split(",").ToList();
+                                        var glist = groups.ToListV2();
                                         foreach (var group in glist)
                                         {
                                             await Msg.SendGroupMsg(group, mcb.Build());
@@ -89,7 +89,7 @@ namespace Helper
                                     if (Const.ConfigModel.WB.forwardQQ)
                                     {
                                         var qqs = string.IsNullOrWhiteSpace(Const.ConfigModel.WB.qq) ? Msg.Admin : Const.ConfigModel.WB.qq;
-                                        var qlist = string.IsNullOrWhiteSpace(qqs) ? new List<string>() : qqs.Split(",").ToList();
+                                        var qlist = qqs.ToListV2();
                                         foreach (var qq in qlist)
                                         {
                                             await Msg.SendFriendMsg(qq, mcb.Build());

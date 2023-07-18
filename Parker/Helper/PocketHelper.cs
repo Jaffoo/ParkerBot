@@ -177,7 +177,7 @@ namespace Helper
                 if (Const.ConfigModel.KD.forwardGroup)
                 {
                     string group = !string.IsNullOrWhiteSpace(Const.ConfigModel.KD.group) ? Const.ConfigModel.KD.group : Const.ConfigModel.QQ.group;
-                    List<string> groups = !string.IsNullOrWhiteSpace(group) ? group.Split(",").ToList() : new();
+                    List<string> groups = group.ToListV2();
                     MsgModel msgModel = new()
                     {
                         MsgChain = mcb.Build(),
@@ -192,7 +192,7 @@ namespace Helper
                     msgModel.MsgChain = mcb.Build();
                     if (!string.IsNullOrWhiteSpace(Const.ConfigModel.KD.qq))
                     {
-                        var qqs = Const.ConfigModel.KD.qq.Split(",").ToList();
+                        var qqs = Const.ConfigModel.KD.qq.ToListV2();
                         msgModel.Ids = qqs;
                     }
                     else if (!string.IsNullOrWhiteSpace(Const.ConfigModel.QQ.admin))
