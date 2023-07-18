@@ -115,16 +115,7 @@ namespace Helper
             }
             catch (Exception e)
             {
-                var _context = new LiteContext();
-                await _context.Logs.AddAsync(new Logs
-                {
-                    message = e.Message + "\n堆栈信息：\n" + e.StackTrace,
-                    createDate = DateTime.Now,
-                });
-                var b = await _context.SaveChangesAsync();
-                await _context.DisposeAsync();
-                if (b > 0) await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
-                else await Msg.SendFriendMsg(Msg.Admin, "日志写入失败。" + e.Message + "\n" + e.StackTrace);
+                e.AddLog();
                 return;
             }
         }

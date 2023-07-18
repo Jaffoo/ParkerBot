@@ -24,15 +24,7 @@ namespace Helper
             }
             catch (Exception e)
             {
-                var _liteContext = new LiteContext();
-                await _liteContext.Logs.AddAsync(new()
-                {
-                    message =e.Message + "\n堆栈信息：\n" + e.StackTrace,
-                    createDate = DateTime.Now,
-                });
-                await _liteContext.SaveChangesAsync();
-                await _liteContext.DisposeAsync();
-                await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                e.AddLog();
                 return "{'msg':'" + e.Message + "'}";
             }
         }
@@ -47,15 +39,7 @@ namespace Helper
             }
             catch (Exception e)
             {
-                var _liteContext = new LiteContext();
-                await _liteContext.Logs.AddAsync(new()
-                {
-                    message =e.Message + "\n堆栈信息：\n" + e.StackTrace,
-                    createDate = DateTime.Now,
-                });
-                await _liteContext.SaveChangesAsync();
-                await _liteContext.DisposeAsync();
-                await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+                e.AddLog();
                 return "{'msg':'" + e.Message + "'}";
             }
         }

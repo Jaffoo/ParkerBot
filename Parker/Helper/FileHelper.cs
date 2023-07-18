@@ -40,15 +40,7 @@ namespace Helper
             }
             catch (Exception e)
             {
-                var _context = new LiteContext();
-                _context.Logs.Add(new Logs
-                {
-                    message = e.ToString(),
-                    createDate = DateTime.Now,
-                });
-                _context.SaveChanges();
-                _context.Dispose();
-                Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！").Wait();
+                e.AddLog();
                 return false;
             }
         }

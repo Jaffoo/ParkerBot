@@ -33,6 +33,7 @@ namespace ParkerBot
         public string permission { get; set; } = string.Empty;
         public string sensitive { get; set; } = string.Empty;
         public string action { get; set; } = string.Empty;
+        public bool debug { get; set; } = false;
     }
     public class WB
     {
@@ -43,7 +44,7 @@ namespace ParkerBot
         public bool forwardQQ { get; set; }
         public string qq { get; set; } = string.Empty;
         public string cg { get; set; } = string.Empty;
-        public string keyword { get;set; } = string.Empty;
+        public string keyword { get; set; } = string.Empty;
     }
 
     public class KD
@@ -61,7 +62,7 @@ namespace ParkerBot
         public string mP4Domain { get; set; } = string.Empty;
         public string liveRoomId { get; set; } = string.Empty;
         public string msgType { get; set; } = string.Empty;
-        public string msgTypeList { get; set; }= string.Empty;
+        public string msgTypeList { get; set; } = string.Empty;
     }
     public class BD
     {

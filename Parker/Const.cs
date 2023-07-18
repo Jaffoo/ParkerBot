@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using Helper;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json.Linq;
 
 namespace ParkerBot
@@ -92,7 +93,7 @@ namespace ParkerBot
             }
             return obj;
         }
-
+        #region 扩展方法
         public static string FirstLow(this string str)
         {
             List<string> ignore = new() { "QQ" };
@@ -137,5 +138,22 @@ namespace ParkerBot
                 return new List<string>();
             }
         }
+
+
+        public static async void AddLog(this Exception ex)
+        {
+            var _context = new LiteContext();
+            await _context.Logs.AddAsync(new Logs
+            {
+                message = ex.Message + "\n堆栈信息：\n" + ex.StackTrace,
+                createDate = DateTime.Now,
+            });
+            var b = await _context.SaveChangesAsync();
+            await _context.DisposeAsync();
+            if (!ConfigModel.QQ.debug) return;
+            if (b > 0) await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+            else await Msg.SendFriendMsg(Msg.Admin, "日志写入失败。" + ex.Message + "\n" + ex.StackTrace);
+        }
+        #endregion
     }
 }

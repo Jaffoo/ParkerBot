@@ -23,7 +23,12 @@
                                 placeholder="多个用英文逗号,分隔；不填写则qq机器人所在的全部群开启，填写则针对填写的群开启"></el-input>
                         </el-form-item>
                         <el-form-item label="超级管理员" prop="QQ.admin" :rules="rules.input">
-                            <el-input v-model="config.QQ.admin" placeholder="仅支持配置一个账号"></el-input>
+                            <el-col :span="20">
+                                <el-input v-model="config.QQ.admin" placeholder="仅支持配置一个账号"></el-input>
+                            </el-col>
+                            <el-col :span="3" style="margin-left: 3%;">
+                                <el-checkbox v-model="config.QQ.debug" label="开启程序错误通知"></el-checkbox>
+                            </el-col>
                         </el-form-item>
                         <el-form-item label="管理员">
                             <el-input v-model="config.QQ.permission" placeholder="多个用英文逗号,分隔"></el-input>
@@ -147,7 +152,8 @@
                             <el-input v-model="config.KD.qq" placeholder="发新微博转发消息"></el-input>
                             <span style="color:red">*多个用英文逗号,分隔；不填写则默认超管</span>
                         </el-form-item>
-                        <el-form-item label="监听消息类型" v-show="config.KD.forwardGroup === true || config.KD.forwardQQ === true">
+                        <el-form-item label="监听消息类型"
+                            v-show="config.KD.forwardGroup === true || config.KD.forwardQQ === true">
                             <el-checkbox-group v-model="selectType">
                                 <el-checkbox v-for="(item, index) in msgTypeList" :label="item.value" :key="index">{{
                                     item.name
@@ -307,7 +313,8 @@ const config = ref({
         permission: '',
         sensitive: "",
         action: '',
-        actions: Array<string>()
+        actions: Array<string>(),
+        debug: false
     },
     WB: {
         url: '',
