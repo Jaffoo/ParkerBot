@@ -9,7 +9,7 @@ namespace Helper
     public class Pocket
     {
         public static LiteContext? _liteContext { get; set; }
-        private static List<string> MsgType { get; set; } = Const.ConfigModel.KD.msgType.Split(',').ToList();
+        private static List<string> MsgType { get; set; } = Const.ConfigModel.KD.msgType.ToListV2();
         public static async Task PocketMessageReceiver(string str)
         {
             try

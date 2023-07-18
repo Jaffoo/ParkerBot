@@ -9,7 +9,7 @@ namespace Helper
         public static LiteContext? dbContext;
         public static List<string> Uids
         {
-            get { return (Const.ConfigModel.BZ.url ?? "").Split(",").ToList(); }
+            get { return Const.ConfigModel.BZ.url.ToListV2(); }
         }
 
         public static int TimeSpan

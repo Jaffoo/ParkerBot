@@ -12,7 +12,7 @@ namespace Helper
         public static LiteContext? dbContext;
         public static List<string> Uids
         {
-            get { return (Const.ConfigModel.WB.url ?? "").Split(",").ToList(); }
+            get { return Const.ConfigModel.WB.url.ToListV2(); }
         }
         public static int Similarity
         {
@@ -28,11 +28,11 @@ namespace Helper
         }
         public static List<string> Keywords
         {
-            get { return (Const.ConfigModel.WB.keyword ?? "").Split(",").ToList(); }
+            get { return Const.ConfigModel.WB.keyword.ToListV2(); }
         }
         public static List<string> ChiGuaId
         {
-            get { return (Const.ConfigModel.WB.cg ?? "").Split(",").ToList(); }
+            get { return Const.ConfigModel.WB.cg.ToListV2(); }
         }
         public static async Task Seve()
         {

@@ -123,5 +123,19 @@ namespace ParkerBot
             if (!bool.TryParse(str, out var val)) return false;
             return val;
         }
+
+        public static List<string> ToListV2(this string str)
+        {
+            if (string.IsNullOrWhiteSpace(str)) return new List<string>();
+            try
+            {
+                var list = str.Split(",").ToList();
+                return list;
+            }
+            catch (Exception)
+            {
+                return new List<string>();
+            }
+        }
     }
 }
