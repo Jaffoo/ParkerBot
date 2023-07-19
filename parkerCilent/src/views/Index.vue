@@ -202,13 +202,13 @@ const handleLogined = async function () {
     };
     ws.value.onclose = () => {
         wsReady.value = false;
-        log.value.push(new PocketMessage().add("连接消息推送服务器失败。请检查配置后重试，如仍有问题，请联系开发者。"));
+        log.value.push(new PocketMessage().add("连接消息推送服务器失败，请尝试再次启动机器人。请检查配置后重试，如仍有问题，请联系开发者。"));
     };
     if (useMirai.value) {
         if (res.data.mirai) {
             msg = "QQ机器人启动成功。";
         } else {
-            msg = "QQ机器人启动失败。请检查配置后重试，如仍有问题，请联系开发者。";
+            msg = "QQ机器人启动失败，请尝试再次启动机器人。请检查配置后重试，如仍有问题，请联系开发者。";
         }
         log.value.push(new PocketMessage().add(msg));
     }
@@ -227,13 +227,13 @@ const handleMessage = async function (msg: any) {
         log.value.push(new PocketMessage().add(mess));
     }
     else if (msg.type == "image") {
-        log.value.push(new PocketMessage().addImg(`【${msg.channelName}|${msg.time}】${msg.ext.user.nickName}:${msg?.attach?.url}`));
+        log.value.push(new PocketMessage().addImg(`【${msg.channelName}|${msg.time}】${msg.ext.user.nickName}:`,msg?.attach?.url));
     }
     else if (msg.type == "video") {
-        log.value.push(new PocketMessage().addVideo(`【${msg.channelName}|${msg.time}】${msg.ext.user.nickName}:${msg?.attach?.url}`));
+        log.value.push(new PocketMessage().addVideo(`【${msg.channelName}|${msg.time}】${msg.ext.user.nickName}:`,msg?.attach?.url));
     }
     else if (msg.type == "audio") {
-        log.value.push(new PocketMessage().addVoice(`【${msg.channelName}|${msg.time}】${msg.ext.user.nickName}:${msg?.attach?.url}`));
+        log.value.push(new PocketMessage().addVoice(`【${msg.channelName}|${msg.time}】${msg.ext.user.nickName}:`,msg?.attach?.url));
     }
     else if (msg.type == "custom") {
         log.value.push(new PocketMessage().add(`【${msg.channelName}|${msg.time}】${msg.ext.user.nickName}:发送了一条特殊消息！`));

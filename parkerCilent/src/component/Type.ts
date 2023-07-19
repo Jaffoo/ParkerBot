@@ -8,17 +8,20 @@ class PocketMessage {
       this.type = 1;
       return this;
     }
-    public addImg(url: string): PocketMessage {
+    public addImg(content:string,url: string): PocketMessage {
+      this.content=content;
       this.url = url;
       this.type = 2
       return this;
     }
-    public addVoice(url: string): PocketMessage {
+    public addVoice(content:string,url: string): PocketMessage {
+      this.content=content;
       this.url = url;
       this.type = 3
       return this;
     }
-    public addVideo(url: string): PocketMessage {
+    public addVideo(content:string,url: string): PocketMessage {
+      this.content=content;
       this.url = url;
       this.type = 4
       return this;

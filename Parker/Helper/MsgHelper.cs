@@ -877,43 +877,54 @@ namespace Helper
             }
         }
 
-        public static async Task HandlMsg()
+        public static async void HandlMsg()
         {
             while (true)
             {
-                double interval = (DateTime.Now - _lastSendTime).TotalSeconds;
-                if (MsgQueue.Count > 0 && interval >= _interval)
+                try
                 {
-                    var msgModel = MsgQueue.Dequeue();
-                    if (msgModel.Type == 1)
+                    double interval = (DateTime.Now - _lastSendTime).TotalSeconds;
+                    if (MsgQueue.Count > 0 && interval >= _interval)
                     {
-                        if (msgModel.Ids != null)
+                        var msgModel = MsgQueue.Dequeue();
+                        if (msgModel.Type == 1)
                         {
-                            if (msgModel.MsgChain != null) await SendGroupMsg(msgModel.Ids, msgModel.MsgChain);
-                            else if (!string.IsNullOrWhiteSpace(msgModel.MsgStr)) await SendGroupMsg(msgModel.Ids, msgModel.MsgStr);
+                            if (msgModel.Ids != null)
+                            {
+                                if (msgModel.MsgChain?.Count > 0)
+                                {
+                                    await SendGroupMsg(msgModel.Ids, msgModel.MsgChain);
+                                }
+                                else if (!string.IsNullOrWhiteSpace(msgModel.MsgStr)) await SendGroupMsg(msgModel.Ids, msgModel.MsgStr);
+                            }
+                            else if (!string.IsNullOrWhiteSpace(msgModel.Id))
+                            {
+                                if (msgModel.MsgChain?.Count > 0) await SendGroupMsg(msgModel.Id, msgModel.MsgChain);
+                                else if (!string.IsNullOrWhiteSpace(msgModel.MsgStr)) await SendGroupMsg(msgModel.Id, msgModel.MsgStr);
+                            }
                         }
-                        else if (!string.IsNullOrWhiteSpace(msgModel.Id))
+                        if (msgModel.Type == 2)
                         {
-                            if (msgModel.MsgChain != null) await SendGroupMsg(msgModel.Id, msgModel.MsgChain);
-                            else if (!string.IsNullOrWhiteSpace(msgModel.MsgStr)) await SendGroupMsg(msgModel.Id, msgModel.MsgStr);
+                            if (msgModel.Ids != null)
+                            {
+                                if (msgModel.MsgChain?.Count > 0) await SendFriendMsg(msgModel.Ids, msgModel.MsgChain);
+                                else if (!string.IsNullOrWhiteSpace(msgModel.MsgStr)) await SendFriendMsg(msgModel.Ids, msgModel.MsgStr);
+                            }
+                            else if (!string.IsNullOrWhiteSpace(msgModel.Id))
+                            {
+                                if (msgModel.MsgChain?.Count > 0) await SendFriendMsg(msgModel.Id, msgModel.MsgChain);
+                                else if (!string.IsNullOrWhiteSpace(msgModel.MsgStr)) await SendFriendMsg(msgModel.Id, msgModel.MsgStr);
+                            }
                         }
+                        _lastSendTime = DateTime.Now;
                     }
-                    if (msgModel.Type == 2)
-                    {
-                        if (msgModel.Ids != null)
-                        {
-                            if (msgModel.MsgChain != null) await SendFriendMsg(msgModel.Ids, msgModel.MsgChain);
-                            else if (!string.IsNullOrWhiteSpace(msgModel.MsgStr)) await SendFriendMsg(msgModel.Ids, msgModel.MsgStr);
-                        }
-                        else if (!string.IsNullOrWhiteSpace(msgModel.Id))
-                        {
-                            if (msgModel.MsgChain != null) await SendFriendMsg(msgModel.Id, msgModel.MsgChain);
-                            else if (!string.IsNullOrWhiteSpace(msgModel.MsgStr)) await SendFriendMsg(msgModel.Id, msgModel.MsgStr);
-                        }
-                    }
-                    _lastSendTime = DateTime.Now;
+                    Thread.Sleep(100);
                 }
-                Thread.Sleep(1);
+                catch (Exception e)
+                {
+                    e.AddLog();
+                    continue;
+                }
             }
         }
 

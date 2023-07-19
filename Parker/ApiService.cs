@@ -257,7 +257,7 @@ namespace ParkerBot
             if (!StartBot.HasWebSocket) new StartBot().Start();
             if (!StartMirai.HasMirai) new StartMirai();
             StartTimer.Start();
-            Thread.Sleep(3000);
+            Thread.Sleep(5000);
             var obj = new
             {
                 pocket = StartBot.HasWebSocket,

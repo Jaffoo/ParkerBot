@@ -55,27 +55,28 @@ namespace ParkerBot
             {
                 if (!Const.EnableModule.qq) return;
                 if (!UseMirai) return;
-                Task.Run(async () =>
-                {
-                    using var bot = new MiraiBot
-                    {
-                        Address = Const.MiraiConfig.address,
-                        QQ = Const.MiraiConfig.QQNum,
-                        VerifyKey = Const.MiraiConfig.verifykey
-                    };
-                    await bot.LaunchAsync();
-                    Msg.BotStart(bot);
-                    while (true)
-                    {
-                        Thread.Sleep(1);
-                    }
-                });
-                HasMirai = true;
+                Task.Run(BotStart);
             }
             catch (Exception)
             {
                 HasMirai = false;
                 return;
+            }
+        }
+        public async void BotStart()
+        {
+            using var bot = new MiraiBot
+            {
+                Address = Const.MiraiConfig.address,
+                QQ = Const.MiraiConfig.QQNum,
+                VerifyKey = Const.MiraiConfig.verifykey
+            };
+            await bot.LaunchAsync();
+            Msg.BotStart(bot);
+            HasMirai = true;
+            while (true)
+            {
+                Thread.Sleep(1);
             }
         }
     }
