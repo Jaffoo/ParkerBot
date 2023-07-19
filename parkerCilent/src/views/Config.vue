@@ -26,7 +26,7 @@
                             <el-col :span="20">
                                 <el-input v-model="config.QQ.admin" placeholder="仅支持配置一个账号"></el-input>
                             </el-col>
-                            <el-col :span="3" style="margin-left: 3%;">
+                            <el-col :span="3" style="margin-left: 0.5%;">
                                 <el-checkbox v-model="config.QQ.debug" label="开启程序错误通知"></el-checkbox>
                             </el-col>
                         </el-form-item>
