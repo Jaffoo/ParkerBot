@@ -1,8 +1,11 @@
 ﻿using Fleck;
 using FluentScheduler;
 using Helper;
+using Mirai.Net.Data.Messages.Receivers;
+using Mirai.Net.Data.Messages;
 using Mirai.Net.Sessions;
 using Newtonsoft.Json.Linq;
+using System.Reactive.Linq;
 
 namespace ParkerBot
 {
@@ -21,10 +24,10 @@ namespace ParkerBot
                     socket.OnMessage = async msg =>
                     {
                         //1-房间消息 2-直播消息
-                        var fromType = (JObject.Parse(msg)["fromType"]?.ToString()??"1").ToInt();
-                        if(fromType==1)
+                        var fromType = (JObject.Parse(msg)["fromType"]?.ToString() ?? "1").ToInt();
+                        if (fromType == 1)
                             await Pocket.PocketMessageReceiver(msg);
-                        if(fromType==2)
+                        if (fromType == 2)
                             await Pocket.LiveMsgReceiver(msg);
                     };
                 });
