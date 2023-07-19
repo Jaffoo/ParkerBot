@@ -54,7 +54,6 @@ INSERT INTO "config" VALUES (6, 'QQ启用功能', 'FuncEnable', '', 14);
 INSERT INTO "config" VALUES (7, '权限功能', 'FuncAdmin', '', 14);
 INSERT INTO "config" VALUES (8, '用户功能', 'FuncUser', '', 14);
 INSERT INTO "config" VALUES (9, 'QQ功能列表', 'QQFuncList', '', 0);
-INSERT INTO "config" VALUES (10, '程序错误通知', 'Debug', 'false', 13);
 INSERT INTO "config" VALUES (13, '基础', 'BaseConfig', '0', 0);
 INSERT INTO "config" VALUES (14, 'QQ', 'QQ', 'false', 13);
 INSERT INTO "config" VALUES (15, '微博', 'WB', 'false', 13);
@@ -176,7 +175,7 @@ INSERT INTO "config" VALUES (85, '消息类型', 'MsgTypeList', '[{
 INSERT INTO "config" VALUES (86, '吃瓜微博', 'Cg', '', 15);
 INSERT INTO "config" VALUES (87, '吃瓜关键字', 'Keyword', '', 15);
 INSERT INTO "config" VALUES (88, '姓名', 'Name', '', 17);
-
+INSERT INTO "config" VALUES (89, '程序错误通知', 'Debug', 'false', 14);
 -- ----------------------------
 -- Table structure for idol
 -- ----------------------------
