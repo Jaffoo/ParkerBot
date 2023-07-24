@@ -324,7 +324,7 @@ namespace Helper
                     await Msg.SendFriendMsg(Msg.Admin, $"未启用人脸识别，加入待审核，目前有{Msg.Check.Count}张图片待审核");
                     return;
                 }
-                if (await Baidu.IsFaceAndCount(url) == 1)
+                if ((await Baidu.IsFaceAndCount(url)) == 1)
                 {
                     var score = await Baidu.FaceMatch(url);
                     if (score != Audit) await Msg.SendFriendMsg(Msg.Admin, $"人脸对比相似度：{score}");
