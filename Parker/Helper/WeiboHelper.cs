@@ -165,7 +165,7 @@ namespace Helper
                                     if (picInfo.ContainsKey(picId))
                                     {
                                         var imgUrl = picInfo[picId]!["original"]!["url"]!.ToString();
-                                        await FatchFace(imgUrl);
+                                        await FatchFace(imgUrl, true);
                                     }
                                 }
                             }
@@ -280,7 +280,7 @@ namespace Helper
             try
             {
                 await Msg.SendFriendMsg(Msg.Admin, "开始识别微博连接");
-                var url = id.Contains("http") ? id : $"https://m.weibo.cn/statuses/show?id={id}";
+                var url = $"https://m.weibo.cn/statuses/show?id={id}";
                 var handler = new HttpClientHandler() { UseCookies = true };
                 HttpClient httpClient = new(handler);
                 httpClient.DefaultRequestHeaders.Add("user-agent", @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36 Edg/101.0.1210.53");
@@ -297,19 +297,17 @@ namespace Helper
                 foreach (var item in picList)
                 {
                     var img = item["large"]!["url"]!.ToString();
-                    await FatchFace(img);
+                    await FatchFace(img, true);
                     Thread.Sleep(1000);
                 }
-                return;
             }
             catch (Exception e)
             {
-                e.AddLog();
-                return;
+                e.AddLog("微博识别失败，请检查微博ID是否存在！");
             }
         }
 
-        public static async Task FatchFace(string url)
+        public static async Task FatchFace(string url, bool save = false)
         {
             try
             {
@@ -327,6 +325,7 @@ namespace Helper
                     return;
                 }
                 var face = await Baidu.IsFaceAndCount(url);
+                await Msg.SendFriendMsg(Msg.Admin, face.ToString());
                 if (face == 1)
                 {
                     var score = await Baidu.FaceMatch(url);
@@ -380,6 +379,18 @@ namespace Helper
                     await dbContext.DisposeAsync();
                     await Msg.SendFriendMsg(Msg.Admin, $"识别到多个人脸，加入待审核，目前有{Msg.Check.Count}张图片待审核");
                     return;
+                }
+                else if (face == 0 && save)
+                {
+                    dbContext = new();
+                    await dbContext.Caches.AddAsync(new()
+                    {
+                        content = url,
+                        type = 1
+                    });
+                    await dbContext.SaveChangesAsync();
+                    await dbContext.DisposeAsync();
+                    await Msg.SendFriendMsg(Msg.Admin, $"未识别到人脸，加入待审核，目前有{Msg.Check.Count}张图片待审核");
                 }
                 return;
             }

@@ -140,7 +140,7 @@ namespace ParkerBot
         }
 
 
-        public static async void AddLog(this Exception ex)
+        public static async void AddLog(this Exception ex, string msg = "")
         {
             var _context = new LiteContext();
             await _context.Logs.AddAsync(new Logs
@@ -151,7 +151,7 @@ namespace ParkerBot
             var b = await _context.SaveChangesAsync();
             await _context.DisposeAsync();
             if (!ConfigModel.QQ.debug) return;
-            if (b > 0) await Msg.SendFriendMsg(Msg.Admin, "程序报错了，请联系反馈给开发人员！");
+            if (b > 0) await Msg.SendFriendMsg(Msg.Admin, string.IsNullOrWhiteSpace(msg) ? "程序报错了，请联系反馈给开发人员！" : msg);
             else await Msg.SendFriendMsg(Msg.Admin, "日志写入失败。" + ex.Message + "\n" + ex.StackTrace);
         }
         #endregion
