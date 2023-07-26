@@ -29,7 +29,6 @@ namespace Helper
         {
             try
             {
-                var url = img;
                 img = await Base64.UrlImgToBase64(img);
                 if (string.IsNullOrWhiteSpace(img)) return 0;
                 string token = GetBaiduToken();

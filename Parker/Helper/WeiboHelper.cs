@@ -279,7 +279,8 @@ namespace Helper
         {
             try
             {
-                var url = $"https://m.weibo.cn/statuses/show?id={id}";
+                await Msg.SendFriendMsg(Msg.Admin, "开始识别微博连接");
+                var url = id.Contains("http") ? id : $"https://m.weibo.cn/statuses/show?id={id}";
                 var handler = new HttpClientHandler() { UseCookies = true };
                 HttpClient httpClient = new(handler);
                 httpClient.DefaultRequestHeaders.Add("user-agent", @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36 Edg/101.0.1210.53");
@@ -292,6 +293,7 @@ namespace Helper
                 var obj = JObject.Parse(content);
                 var picsStr = obj["data"]!["pics"]!;
                 var picList = JsonConvert.DeserializeObject<List<JObject>>(picsStr.ToString())!;
+                await Msg.SendFriendMsg(Msg.Admin, $"检测到有{picList.Count}张图！开始进行识别保存！");
                 foreach (var item in picList)
                 {
                     var img = item["large"]!["url"]!.ToString();
@@ -324,7 +326,8 @@ namespace Helper
                     await Msg.SendFriendMsg(Msg.Admin, $"未启用人脸识别，加入待审核，目前有{Msg.Check.Count}张图片待审核");
                     return;
                 }
-                if ((await Baidu.IsFaceAndCount(url)) == 1)
+                var face = await Baidu.IsFaceAndCount(url);
+                if (face == 1)
                 {
                     var score = await Baidu.FaceMatch(url);
                     if (score != Audit) await Msg.SendFriendMsg(Msg.Admin, $"人脸对比相似度：{score}");
@@ -364,6 +367,19 @@ namespace Helper
                         }
                         return;
                     }
+                }
+                else if (face > 1)
+                {
+                    dbContext = new();
+                    await dbContext.Caches.AddAsync(new()
+                    {
+                        content = url,
+                        type = 1
+                    });
+                    await dbContext.SaveChangesAsync();
+                    await dbContext.DisposeAsync();
+                    await Msg.SendFriendMsg(Msg.Admin, $"识别到多个人脸，加入待审核，目前有{Msg.Check.Count}张图片待审核");
+                    return;
                 }
                 return;
             }
