@@ -325,7 +325,6 @@ namespace Helper
                     return;
                 }
                 var face = await Baidu.IsFaceAndCount(url);
-                await Msg.SendFriendMsg(Msg.Admin, face.ToString());
                 if (face == 1)
                 {
                     var score = await Baidu.FaceMatch(url);

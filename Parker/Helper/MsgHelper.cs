@@ -219,9 +219,9 @@ namespace Helper
                                 return;
                             }
                             var index = msgText.Replace("#查看#", "").ToInt() - 1;
-                            if (index > Check.Count)
+                            if (index > Check.Count || index < 0)
                             {
-                                await fmr.SendMessageAsync($"未找到第{index}张图片，只有{Check.Count}张图片！");
+                                await fmr.SendMessageAsync($"未找到图片");
                                 return;
                             }
                             var newMsgChain = new MessageChainBuilder().ImageFromBase64(Base64.UrlImgToBase64(Check[index]).Result).Build();
@@ -236,9 +236,9 @@ namespace Helper
                                 return;
                             }
                             var index = msgText.Replace("#保存#", "").ToInt() - 1;
-                            if (index > Check.Count)
+                            if (index > Check.Count || index < 0)
                             {
-                                await fmr.SendMessageAsync($"未找到第{index}张图片，只有{Check.Count}张图片！");
+                                await fmr.SendMessageAsync($"未找到张图片");
                                 return;
                             }
                             if (FileHelper.Save(Check[index]))
@@ -274,9 +274,9 @@ namespace Helper
                                 return;
                             }
                             var index = msgText.Replace("#删除#", "").ToInt() - 1;
-                            if (index > Check.Count)
+                            if (index > Check.Count || index < 0)
                             {
-                                await fmr.SendMessageAsync($"未找到第{index}张图片，只有{Check.Count}张图片！");
+                                await fmr.SendMessageAsync($"未找到张图片");
                                 return;
                             }
                             _liteContext = new();
