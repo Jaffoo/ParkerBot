@@ -15,8 +15,8 @@ namespace Helper
             List<KeyValuePair<string, string>> paraList = new()
             {
                 new KeyValuePair<string, string>("grant_type", "client_credentials"),
-                new KeyValuePair<string, string>("client_id", "8zXHBKFPLNjOxUB1EavgVzgZ"),
-                new KeyValuePair<string, string>("client_secret", "rXc2H9QwlLhrW9BRSdGpHBiye3I1jf9X")
+                new KeyValuePair<string, string>("client_id", appKey),
+                new KeyValuePair<string, string>("client_secret", appSeret)
             };
 
             HttpResponseMessage response = client.PostAsync(authHost, new FormUrlEncodedContent(paraList)).Result;
