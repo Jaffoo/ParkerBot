@@ -2,6 +2,7 @@
 using Manganese.Text;
 using NetDimension.NanUI.Browser.ResourceHandler;
 using NetDimension.NanUI.Resource.Data;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
@@ -298,6 +299,38 @@ namespace ParkerBot
                 b = dbContext.SaveChanges() > 0;
             }
             return Json(b);
+        }
+
+        [RouteGet]
+        public ResourceResponse GetXox(ResourceRequest request)
+        {
+            var group = request.QueryString["group"]?.ToString()?.Split(",").ToList();
+            var name = request.QueryString["name"]!.ToString();
+            string url = @"https://fastly.jsdelivr.net/gh/duan602728596/qqtools@main/packages/NIMTest/node/roomId.json";
+            try
+            {
+                HttpClient client = new();
+                var str = client.GetStringAsync(url).Result;
+                if (str == null) return Json(new { success = false, msg = "文件访问出错", data = url });
+                var res = JObject.Parse(str);
+                var arr = JArray.FromObject(res["roomId"]!);
+                JToken? xox = new JObject();
+                IEnumerable<JToken>? chain = null;
+                if (group != null)
+                {
+                    if (group.Count >= 2)
+                        chain = arr.Where(t => t["groupName"]?.ToString() == group[0] && t["team"]?.ToString() == group[1]);
+                    else
+                        chain = arr.Where(t => t["groupName"]?.ToString() == group[0]);
+                }
+                xox = (chain ?? arr).FirstOrDefault(t => t["ownerName"]?.ToString() == name);
+                if (xox == null) return Json(new { success = false, msg = "未查询到该小偶像", data = url });
+                return Json(new { success = true, msg = "", data = xox.ToString() });
+            }
+            catch (Exception e)
+            {
+                return Json(new { success = false, msg = e.Message, data = url });
+            }
         }
     }
 }

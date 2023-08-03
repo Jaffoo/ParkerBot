@@ -48,11 +48,11 @@ namespace Helper
                         }
                     }
                 }
-                if (!fen && roleId != 3) return;
+                //if (!fen && roleId != 3) return;
                 MessageChainBuilder mcb = new();
                 mcb.Plain($"【{Const.ConfigModel.KD.name}|{channelName}】\n【{time}】\n{name}:");
                 //图片
-                if (MsgType.Contains(msgType)&& msgType == "image")
+                if (MsgType.Contains(msgType) && msgType == "image")
                 {
                     msbBody = result["attach"]!["url"]!.ToString();
                     mcb.ImageFromBase64(Base64.UrlImgToBase64(msbBody).Result);
@@ -162,17 +162,19 @@ namespace Helper
                         string url = attach["expressImgInfo"]!["emotionRemote"]!.ToString();
                         mcb.ImageFromBase64(Base64.UrlImgToBase64(url).Result);
                     }
-                    else
+                    else if (MsgType.Count > 0)
                     {
                         await Msg.SendFriendMsg(Msg.Admin, "custom未知消息\n" + attach.ToString());
                         return;
                     }
+                    else return;
                 }
-                else
+                else if (MsgType.Count > 0)
                 {
                     await Msg.SendFriendMsg(Msg.Admin, "未知消息类型\n" + str);
                     return;
                 }
+                else return;
                 if (!Const.MiraiConfig.useMirai) return;
                 if (Const.ConfigModel.KD.forwardGroup)
                 {

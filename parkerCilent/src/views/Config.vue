@@ -123,18 +123,21 @@
                         <el-form-item label="IMServerId" prop="KD.serverId" :rules="rules.input">
                             <el-input v-model="config.KD.serverId"></el-input>
                         </el-form-item>
+                        <el-form-item label="直播房间Id" prop="KD.liveRoomId" :rules="rules.input">
+                            <el-input v-model="config.KD.liveRoomId"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button @click="searchModel.show = true">查询小偶像信息</el-button>
+                        </el-form-item>
                         <el-form-item label="IM账号" prop="KD.account" :rules="rules.input">
                             <el-input v-model="config.KD.account"></el-input>
                         </el-form-item>
                         <el-form-item label="IMtoken" prop="KD.token" :rules="rules.input">
                             <el-input v-model="config.KD.token"></el-input>
                         </el-form-item>
-                        <el-form-item label="直播房间Id" prop="KD.liveRoomId" :rules="rules.input">
-                            <el-input v-model="config.KD.liveRoomId"></el-input>
-                        </el-form-item>
                         <el-form-item>
                             <el-button @click="loginKD = true">登录口袋48</el-button>
-                            <span style="color:red">*以上信息不知道可点此登录口袋自动获取</span>
+                            <span style="color:red">*IM账号和token可点此登录口袋后自动获取</span>
                         </el-form-item>
                         <el-form-item label="转发至qq群">
                             <el-switch v-model="config.KD.forwardGroup" :active-value="true"
@@ -276,6 +279,25 @@
             </el-form-item>
         </el-form>
     </el-dialog>
+    <el-dialog title="查询小偶像 " v-model="searchModel.show" :before-close="close" :close-on-click-modal="false">
+        <el-form label-width="100px">
+            <el-form-item label="队伍" class="mt-4">
+                <el-cascader :props="{ expandTrigger: 'hover', checkStrictly: 'true' }" placeholder="请选择"
+                    v-model="searchModel.group" :options="groups" style="width:95%"></el-cascader>
+            </el-form-item>
+            <el-form-item label="姓名" required>
+                <el-input v-model="searchModel.name" style="width:95%">
+                </el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" :loading="searchModel.loading" @click="searchXox">查询</el-button>
+            </el-form-item>
+            <div v-if="searchModel.url" style="width:95%;margin-top:5px">
+                <span>未查询到小偶像，检查名称等后重新查询或者自行通过以下地址获取小偶像信息填入：</span>
+                <div style="word-break:break-all">{{ searchModel.url }}</div>
+            </div>
+        </el-form>
+    </el-dialog>
 </template>
 <script setup lang="ts">
 import 'element-plus/es/components/message/style/css'
@@ -290,6 +312,13 @@ const funcsChecked = ref([] as any[]);
 const selectType = ref([] as any[]);
 const msgTypeList = ref([] as any[]);
 const loginKD = ref(false);
+const searchModel = ref({
+    show: false,
+    group: [],
+    name: '',
+    loading: false,
+    url: ''
+})
 const eable = ref({
     qq: false,
     wb: false,
@@ -467,7 +496,7 @@ onMounted(() => {
         config.value.QQ.actions = config.value.QQ.action === '' ? [] : config.value.QQ.action.split(",")
         config.value.KD.area = '86';
         funcsChecked.value = res.data.config.QQ.funcEnable1;
-        selectType.value = config.value.KD.msgType.split(",");
+        selectType.value = config.value.KD.msgType ? config.value.KD.msgType.split(",") : [];
     });
 
     axios({
@@ -510,6 +539,10 @@ const save = async (formEl: FormInstance | undefined) => {
 }
 
 const close = () => {
+    searchModel.value.show = false;
+    searchModel.value.name = '';
+    searchModel.value.url = "";
+    searchModel.value.group = [];
     loginKD.value = false;
     config.value.KD.hasSend = false;
     config.value.KD.sec = 60;
@@ -643,5 +676,61 @@ const onRemove: UploadProps['onRemove'] = (file) => {
     if (i >= 0) {
         config.value.BD.imageList1.splice(i, 1);
     }
+}
+
+const groups = ref(
+    [{
+        label: 'SNH48',
+        value: 'SNH48',
+        children: [
+            { value: "TEAM SII", label: "TEAM SII" },
+            { value: "TEAM HII", label: "TEAM HII" },
+            { value: "TEAM X", label: "TEAM X" },
+        ]
+    }, {
+        label: 'GNZ48',
+        value: 'GNZ48',
+        children: [
+            { value: "TEAM G", label: "TEAM G" },
+            { value: "TEAM NIII", label: "TEAM NIII" },
+            { value: "TEAM Z", label: "TEAM Z" },
+            { value: "TEAM CII", label: "TEAM CII" },
+        ]
+    }, {
+        label: 'CGT48',
+        value: 'CGT48',
+        children: [
+            { value: "TEAM GII", label: "TEAM GII" },
+        ]
+    }, {
+        label: 'BEJ48',
+        value: 'BEJ48',
+    }, {
+        label: 'CKG48',
+        value: 'CKG48',
+    }]
+)
+
+const searchXox = async () => {
+    if (!searchModel.value.name) {
+        ElMessage({ message: "请输入小偶像姓名", type: 'error' });
+        return;
+    }
+    searchModel.value.loading = true;
+    var res = await axios({
+        url: 'http://parkerbot.api/api/getxox?group=' + searchModel.value.group.toString() + "&name=" + searchModel.value.name,
+    }).catch(() => {
+        searchModel.value.loading = false;
+    })
+    if (res.data.success) {
+    var data = JSON.parse(res.data.data);
+        config.value.KD.name = data.ownerName;
+        config.value.KD.liveRoomId = data.liveRoomId;
+        config.value.KD.serverId = data.serverId;
+        close();
+    } else {
+        searchModel.value.url = res.data.data;
+    }
+    searchModel.value.loading = false;
 }
 </script>
