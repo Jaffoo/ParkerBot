@@ -59,6 +59,15 @@
                             </el-select>
                             <span style="color:red">*撤回机器人需要管理员权限，私信需要与机器人为好友</span>
                         </el-form-item>
+                        <el-form-item label="新成员入群">
+                            <el-input></el-input>
+                        </el-form-item>
+                        <el-form-item label="老成员退群">
+                            <el-input></el-input>
+                        </el-form-item>
+                        <el-form-item label="成员撤回消息">
+                            <el-input></el-input>
+                        </el-form-item>
                     </el-collapse-item>
                     <el-collapse-item title="微博" v-if="eable.wb" name="wb">
                         <el-form-item label="用户ID" prop="WB.url" :rules="rules.input">
@@ -293,7 +302,7 @@
                 <el-button type="primary" :loading="searchModel.loading" @click="searchXox">查询</el-button>
             </el-form-item>
             <div v-if="searchModel.url" style="width:95%;margin-top:5px">
-                <span>未查询到小偶像，检查名称等后重新查询或者自行通过以下地址获取小偶像信息填入：</span>
+                <span>未查询到小偶像，检查名称等后重新查询或者自行通过下方地址获取小偶像信息填入：</span>
                 <div style="word-break:break-all">{{ searchModel.url }}</div>
             </div>
         </el-form>
@@ -723,7 +732,7 @@ const searchXox = async () => {
         searchModel.value.loading = false;
     })
     if (res.data.success) {
-    var data = JSON.parse(res.data.data);
+        var data = JSON.parse(res.data.data);
         config.value.KD.name = data.ownerName;
         config.value.KD.liveRoomId = data.liveRoomId;
         config.value.KD.serverId = data.serverId;
