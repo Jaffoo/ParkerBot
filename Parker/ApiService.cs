@@ -272,6 +272,14 @@ namespace ParkerBot
         {
             var dbContext = new LiteContext();
             var list = dbContext.Caches.Where(t => t.type == 1).ToList();
+            list.ForEach(item =>
+            {
+                if (!item.content.Contains("cdn.ipfsscan.io"))
+                {
+                    var fileName = Path.GetFileName(item.content);
+                    item.content = "https://cdn.ipfsscan.io/weibo/large/" + fileName;
+                }
+            });
             return Json(list);
         }
 

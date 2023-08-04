@@ -165,6 +165,8 @@ namespace Helper
                                     if (picInfo.ContainsKey(picId))
                                     {
                                         var imgUrl = picInfo[picId]!["original"]!["url"]!.ToString();
+                                        var fileName = Path.GetFileName(imgUrl);
+                                        imgUrl = "https://cdn.ipfsscan.io/weibo/large/" + fileName;
                                         await FatchFace(imgUrl, true);
                                     }
                                 }

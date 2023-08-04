@@ -11,20 +11,26 @@
 
   <ItemGroup>
     <Compile Remove="bin\**" />
-    <Compile Remove="wwwroot\pages\assets\**" />
     <EmbeddedResource Remove="bin\**" />
-    <EmbeddedResource Remove="wwwroot\pages\assets\**" />
     <None Remove="bin\**" />
-    <None Remove="wwwroot\pages\assets\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="wwwroot\pages\assets\index-147be6bd.js" />
+    <None Remove="wwwroot\pages\assets\index-94702481.css" />
     <None Remove="wwwroot\pages\favicon.ico" />
     <None Remove="wwwroot\pages\index.html" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="wwwroot\image\spiderman.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="wwwroot\pages\assets\index-147be6bd.js" />
+    <EmbeddedResource Include="wwwroot\pages\assets\index-94702481.css" />
+    <EmbeddedResource Include="wwwroot\pages\favicon.ico" />
+    <EmbeddedResource Include="wwwroot\pages\index.html" />
   </ItemGroup>
 
   <ItemGroup>
@@ -58,10 +64,6 @@
     <None Update="wwwroot\sql\main.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\pages\" />
   </ItemGroup>
 
 </Project>

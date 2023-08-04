@@ -485,8 +485,10 @@ onMounted(() => {
     axios({
         url: "http://parkerbot.api/api/GetBaseConfig"
     }).then(res => {
+        console.log(1)
         for (let propName in eable.value) {
             for (let item of res.data.enable) {
+                console.log(item)
                 if (item.key.toLowerCase() == propName) {
                     if (JSON.parse(item.value)) {
                         eable.value[propName] = true;
