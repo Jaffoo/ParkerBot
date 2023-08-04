@@ -53,7 +53,7 @@ namespace Helper
                     var content = await res.Content.ReadAsStringAsync();
                     var data = JObject.Parse(content);
                     var list = JArray.FromObject(data["data"]!["list"]!);
-                    foreach (JObject blog in list)
+                    foreach (JObject blog in list.Cast<JObject>())
                     {
                         DateTime createDate = new();
                         CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("en-US");
