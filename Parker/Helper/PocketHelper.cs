@@ -161,17 +161,7 @@ namespace Helper
                         string url = attach["expressImgInfo"]!["emotionRemote"]!.ToString();
                         mcb.ImageFromBase64(Base64.UrlImgToBase64(url).Result);
                     }
-                    else if (MsgType.Count > 0)
-                    {
-                        await Msg.SendFriendMsg(Msg.Admin, "custom未知消息\n" + attach.ToString());
-                        return;
-                    }
                     else return;
-                }
-                else if (MsgType.Count > 0)
-                {
-                    await Msg.SendFriendMsg(Msg.Admin, "未知消息类型\n" + str);
-                    return;
                 }
                 else return;
                 if (!Const.MiraiConfig.useMirai) return;
