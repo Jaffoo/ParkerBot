@@ -30,7 +30,7 @@ class NimChatroomSocket {
       appKey: atob(appkey),
       chatroomId: this.liveId,
       chatroomAddresses: ['chatweblink01.netease.im:443'],
-      onconnect:this.onConnet,
+      onconnect: this.onConnet,
       onmsgs: this.handleRoomSocketMessage,
       onerror: this.handleRoomSocketError,
       ondisconnect: this.handleRoomSocketDisconnect,
@@ -48,8 +48,8 @@ class NimChatroomSocket {
   };
 
   // 事件监听
-  onConnet: Function = (event: any ): void => {
-    msg = `进入小偶像${baseConfig.value.KD.name}的直播间成功。`;
+  onConnet: Function = (event: any): void => {
+    let msg = `进入小偶像的直播间成功。`;
     console.log(msg);
   };
 

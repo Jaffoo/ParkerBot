@@ -726,7 +726,7 @@ const searchXox = async () => {
         return;
     }
     searchModel.value.loading = true;
-    var res = await axios({
+    var res: any = await axios({
         url: 'http://parkerbot.api/api/getxox?group=' + searchModel.value.group.toString() + "&name=" + searchModel.value.name,
     }).catch(() => {
         searchModel.value.loading = false;
