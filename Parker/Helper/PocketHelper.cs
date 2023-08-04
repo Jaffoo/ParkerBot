@@ -95,7 +95,7 @@ namespace Helper
                         mcb.Plain(msbBody);
                     }
                     //总选计分
-                    else if (fen)
+                    else if (MsgType.Contains(messageType) && fen)
                     {
                         msbBody = "送出了【" + attach["giftInfo"]!["giftName"] + "（" + attach["giftInfo"]!["tpNum"] + "分）】。";
                         mcb.Plain(msbBody);
