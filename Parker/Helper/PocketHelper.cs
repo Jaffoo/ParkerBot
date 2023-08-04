@@ -108,7 +108,6 @@ namespace Helper
                         mcb.Plain(msbBody).ImageFromBase64(Base64.UrlImgToBase64(Const.ConfigModel.KD.imgDomain + attach["livePushInfo"]!["liveCover"]!.ToString()).Result);
                         if (MsgType.FirstOrDefault(t => t == "AtAll")?.ToBool() ?? false)
                             mcb.AtAll();
-
                     }
                     //”Ô“Ù
                     else if (MsgType.Contains(messageType.ToLower()) && messageType == "AUDIO")
