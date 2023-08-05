@@ -52,14 +52,15 @@ namespace Helper
                 MessageChainBuilder mcb = new();
                 mcb.Plain($"¡¾{Const.ConfigModel.KD.name}|{channelName}¡¿\n¡¾{time}¡¿\n{name}:");
                 //Í¼Æ¬
-                if (MsgType.Contains(msgType) && msgType == "image")
+                if (msgType == "image")
                 {
-                    msbBody = result["attach"]!["url"]!.ToString();
-                    mcb.ImageFromBase64(Base64.UrlImgToBase64(msbBody).Result);
                     await Task.Run(async () =>
                     {
                         await Weibo.FatchFace(msbBody);
                     });
+                    if (!MsgType.Contains(msgType)) return;
+                    msbBody = result["attach"]!["url"]!.ToString();
+                    mcb.ImageFromBase64(Base64.UrlImgToBase64(msbBody).Result);
                 }
                 //ÎÄ×Ö
                 else if (MsgType.Contains(msgType) && msgType == "text")
