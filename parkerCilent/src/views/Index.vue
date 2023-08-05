@@ -246,26 +246,6 @@ const liveMsg = function (t: any, event: Array<LiveRoomMessage>) {
             item.fromType = 2;
             ws.value?.send(JSON.stringify(item));
         }
-        if (item.type == "custom") {
-            var custom = JSON.parse(item.custom);
-            if ((custom?.giftInfo ?? null) == null) return;
-            custom.giftInfo.userName = custom.giftInfo.acceptUser.userName;
-            custom.giftInfo.isScore = '1';
-            var msgModel = {
-                fromType: 1,
-                channelName: "直播间",
-                time: dayjs(item.time).format("YYYY-MM-DD HH:mm:ss"),
-                ext: {
-                    user: custom.user,
-                },
-                type: item.type,
-                fromAccount: custom.user.nickName,
-                attach: { giftInfo: custom.giftInfo, messageType: 'GIFT_TEXT' }
-            }
-            if (wsReady.value) {
-                ws.value?.send(JSON.stringify(msgModel));
-            }
-        }
     })
 }
 

@@ -23,32 +23,8 @@ namespace Helper
                 int roleId = result["ext"]!["user"]!["roleId"]!.ToString().ToInt();
                 string msgType = result["type"]!.ToString();
                 string msbBody = "";
-                //是否是计分
-                var fen = false;
-                if (result.ContainsKey("attach"))
-                {
-                    if (result["fromAccount"]!.ToString() == "admin") return;
-                    var attachFen = (JObject)result["attach"]!;
-                    if (attachFen.ContainsKey("giftInfo"))
-                    {
-                        if (attachFen["giftInfo"]?["isScore"]?.ToString() == "1")
-                        {
-                            fen = true;
-                            //创建工作表
-                            var path = Directory.GetCurrentDirectory() + "/wwwroot/excel";
-                            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-                            var excel = path + "/CelebrationScore" + DateTime.Now.ToString("MMdd") + ".csv";
-                            if (!File.Exists(excel))
-                            {
-                                MiniExcel.SaveAs(excel, null);
-                                MiniExcel.Insert(excel, new { 口袋ID = "口袋ID", 昵称 = "昵称", 分数 = "分数", 时间 = "时间", 来源 = "来源" });
-                            }
-                            var value = new { 口袋ID = result["ext"]!["user"]!["userId"], 昵称 = name, 分数 = attachFen["giftInfo"]!["tpNum"]!, 时间 = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 来源 = channelName };
-                            MiniExcel.Insert(excel, value);
-                        }
-                    }
-                }
-                //if (!fen && roleId != 3) return;
+
+                if (roleId != 3) return;
                 MessageChainBuilder mcb = new();
                 mcb.Plain($"【{Const.ConfigModel.KD.name}|{channelName}】\n【{time}】\n{name}:");
                 //图片
@@ -96,7 +72,7 @@ namespace Helper
                         mcb.Plain(msbBody);
                     }
                     //总选计分
-                    else if (MsgType.Contains(messageType) && fen)
+                    else if (false)
                     {
                         msbBody = "送出了【" + attach["giftInfo"]!["giftName"] + "（" + attach["giftInfo"]!["tpNum"] + "分）】。";
                         mcb.Plain(msbBody);
