@@ -30,12 +30,12 @@ namespace Helper
                 //Í¼Æ¬
                 if (msgType == "image")
                 {
+                    msbBody = result["attach"]!["url"]!.ToString();
                     await Task.Run(async () =>
                     {
                         await Weibo.FatchFace(msbBody);
                     });
                     if (!MsgType.Contains(msgType)) return;
-                    msbBody = result["attach"]!["url"]!.ToString();
                     mcb.ImageFromBase64(Base64.UrlImgToBase64(msbBody).Result);
                 }
                 //ÎÄ×Ö
