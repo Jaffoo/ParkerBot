@@ -36,13 +36,14 @@ namespace Helper
         }
         public static async Task Seve()
         {
+            string url = "";
             try
             {
                 var index = -1;
                 foreach (var item in Uids)
                 {
                     index++;
-                    var url = "https://weibo.com/ajax/statuses/mymblog?uid=" + item;
+                    url = "https://weibo.com/ajax/statuses/mymblog?uid=" + item;
                     var handler = new HttpClientHandler() { UseCookies = true };
                     HttpClient httpClient = new(handler);
                     httpClient.DefaultRequestHeaders.Add("user-agent", @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36 Edg/101.0.1210.53");
@@ -177,7 +178,7 @@ namespace Helper
             }
             catch (Exception e)
             {
-                e.AddLog();
+                e.AddLog("报错链接：" + url + "\n错误信息：" + e.Message);
                 return;
             }
         }
