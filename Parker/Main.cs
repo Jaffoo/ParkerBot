@@ -1,6 +1,8 @@
 ﻿using NetDimension.NanUI;
 using NetDimension.NanUI.HostWindow;
 using NetDimension.NanUI.JavaScript;
+using ParkerBot.Helper;
+using System.Diagnostics;
 
 namespace ParkerBot
 {
@@ -9,8 +11,16 @@ namespace ParkerBot
         // 设置窗体样式类型
         public override HostWindowType WindowType => HostWindowType.System;
         // 指定启动 Url
-        public override string StartUrl => "http://parkerbot/";
-        //public override string StartUrl => "http://localhost:5173/";
+        public override string StartUrl
+        {
+            get
+            {
+                if (Debugger.IsAttached)
+                    return "http://localhost:5173/";
+                else
+                    return "http://parkerbot/";
+            }
+        }
 
         public Main()
         {
@@ -49,6 +59,10 @@ namespace ParkerBot
         private void PageLoadEnd(object? sender, NetDimension.NanUI.Browser.LoadEndEventArgs e)
         {
             //预留
+            if (Debugger.IsAttached)
+            {
+               var res = QQFunction.WenAn("昆明");
+            }
         }
 
         private void RegistJs()

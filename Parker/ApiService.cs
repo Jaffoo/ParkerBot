@@ -119,9 +119,6 @@ namespace ParkerBot
                 } as object).ToList();
                 model!.BD.imageList1 = list1;
             }
-            model.QQ.funcEnable1 = model.QQ.funcEnable.ToListV2();
-            model.QQ.funcAdmin1 = model.QQ.funcAdmin.ToListV2();
-            model.QQ.funcUser1 = model.QQ.funcUser.ToListV2();
             data.config = model;
             data.mirai = Const.Mirai.ToObject<Mirai>();
             return Json(data);

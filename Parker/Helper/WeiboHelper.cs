@@ -10,30 +10,13 @@ namespace Helper
     public class Weibo
     {
         public static LiteContext? dbContext;
-        public static List<string> Uids
-        {
-            get { return Const.ConfigModel.WB.url.ToListV2(); }
-        }
-        public static int Similarity
-        {
-            get { return Const.ConfigModel.BD.similarity.ToInt(); }
-        }
-        public static int Audit
-        {
-            get { return Const.ConfigModel.BD.audit.ToInt(); }
-        }
-        public static int TimeSpan
-        {
-            get { return Const.ConfigModel.WB.timeSpan.ToInt(); }
-        }
-        public static List<string> Keywords
-        {
-            get { return Const.ConfigModel.WB.keyword.ToListV2(); }
-        }
-        public static List<string> ChiGuaId
-        {
-            get { return Const.ConfigModel.WB.cg.ToListV2(); }
-        }
+        public static List<string> Uids => Const.ConfigModel.WB.url.ToListV2();
+        public static int Similarity => Const.ConfigModel.BD.similarity.ToInt();
+        public static int Audit => Const.ConfigModel.BD.audit.ToInt();
+        public static int TimeSpan => Const.ConfigModel.WB.timeSpan.ToInt();
+        public static List<string> Keywords => Const.ConfigModel.WB.keyword.ToListV2();
+        public static List<string> ChiGuaId => Const.ConfigModel.WB.cg.ToListV2();
+
         public static async Task Seve()
         {
             string url = "";

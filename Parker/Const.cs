@@ -138,7 +138,19 @@ namespace ParkerBot
                 return new List<string>();
             }
         }
-
+        public static List<int> ToIntList(this string str)
+        {
+            if (string.IsNullOrWhiteSpace(str)) return new List<int>();
+            try
+            {
+                var list = str.Split(",").Select(t => t.ToInt()).ToList();
+                return list;
+            }
+            catch (Exception)
+            {
+                return new List<int>();
+            }
+        }
 
         public static async void AddLog(this Exception ex, string msg = "")
         {

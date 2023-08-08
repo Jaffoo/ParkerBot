@@ -12,6 +12,11 @@ using System.Reactive.Linq;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using System.Text;
+using Mirai.Net.Data.Events.Concretes.Message;
+using ParkerBot.Helper;
+using Microsoft.VisualBasic.Devices;
+using Newtonsoft.Json;
+using Vanara.Extensions;
 
 namespace Helper
 {
@@ -32,10 +37,10 @@ namespace Helper
         public static Queue<MsgModel> MsgQueue = new();
         private static DateTime _lastSendTime = DateTime.Now;
         private static double _interval = 3;//单位秒
-        public static MiraiBot _bot { get; set; }
+        private static MiraiBot _bot = new();
         public static LiteContext? _liteContext { get; set; }
         #region 全局变量
-        public static string Admin { get { return Const.ConfigModel.QQ.admin ?? ""; } }
+        public static string Admin => Const.ConfigModel.QQ.admin ?? "";
         public static List<string> Check
         {
             get
@@ -44,34 +49,13 @@ namespace Helper
                 return _liteContext.Caches.Where(t => t.type == 1).Select(t => t.content).ToList();
             }
         }
-        public static List<string> Permission
-        {
-            get
-            {
-                return Const.ConfigModel.QQ.permission.ToListV2();
-            }
-        }
-        public static List<string> Sensitive
-        {
-            get { return Const.ConfigModel.QQ.sensitive.ToListV2(); }
-        }
-        public static List<int> SensitiveAction
-        {
-            get { return Const.ConfigModel.QQ.action.ToListV2().Select(t => t.ToInt()).ToList(); }
-        }
-        public static List<string> FuncEnable
-        {
-            get { return Const.ConfigModel.QQ.funcEnable.ToListV2(); }
-        }
-        public static List<string> FuncAdmin
-        {
-            get { return Const.ConfigModel.QQ.funcAdmin.ToListV2(); }
-        }
-        public static List<string> FuncUser
-        {
-            get { return Const.ConfigModel.QQ.funcUser.ToListV2(); }
-        }
-        public static List<string> Group { get { return Const.ConfigModel.QQ.group.ToListV2(); } }
+        public static List<string> Permission => Const.ConfigModel.QQ.permission.ToListV2();
+        public static List<string> Sensitive => Const.ConfigModel.QQ.sensitive.ToListV2();
+        public static List<int> SensitiveAction => Const.ConfigModel.QQ.action.ToListV2().Select(t => t.ToInt()).ToList();
+        public static List<Config> FuncEnable => JsonConvert.DeserializeObject<List<Config>>(Const.ConfigModel.QQ.funcEnable) ?? new();
+        public static List<string> FuncAdmin => Const.ConfigModel.QQ.funcAdmin.ToListV2();
+        public static List<string> FuncUser => Const.ConfigModel.QQ.funcUser.ToListV2();
+        public static List<string> Group => Const.ConfigModel.QQ.group.ToListV2();
         public static List<RequestedEventBase> Event { get; set; } = new();
         #endregion
 
@@ -166,6 +150,21 @@ namespace Helper
                             return;
                         }
                     }
+
+                    #region 互动
+                    //at消息
+                    if (msgChain.Any(t => t.Type == Messages.At) && QQFunction.Keywrods.Contains(msgText.Trim()) && IsAuth("艾特作图", gmr.Sender.Id))
+                    {
+                        var model = msgChain.FirstOrDefault(t => t.Type == Messages.At);
+                        if (model == null) return;
+                        var atQQ = (model as AtMessage)!.Target;
+                        var res = await QQFunction.AtPic(atQQ, msgText.Trim());
+                        if (string.IsNullOrWhiteSpace(res)) return;
+                        MessageChain builder = new MessageChainBuilder().ImageFromBase64(res).Build();
+                        await gmr.SendMessageAsync(builder);
+                        return;
+                    }
+                    #endregion
                     return;
                 }
                 catch (Exception e)
@@ -689,22 +688,55 @@ namespace Helper
                         case Events.NewFriendRequested:
                             {
                                 var qq = e as NewFriendRequestedEvent;
+                                if (qq == null) return;
                                 await SendFriendMsg(Admin, $"机器人收到添加好友请求\n事件标识：{qq.EventId}\n附加消息：{qq.Message}\n请求人：{qq.FromId}\n昵称：{qq.Nick}" + (string.IsNullOrWhiteSpace(qq.GroupId) ? "" : "\n来自群：" + qq.GroupId));
                                 Event.Add(qq);
                             };
-                            break;
-                        default:
-                            break;
+                            return;
                         case Events.At:
                             {
+                                var qq = e as AtEvent;
+                                if (qq == null) return;
+                                var text = qq.Receiver.MessageChain.GetPlainMessage().Trim();
+                                var sender = qq.Receiver.Sender.Id;
+                                if (text.Substring(text.Length - 2, 2) == "文案" && IsAuth("文案", sender))
+                                {
+                                    var keyword = text.Replace("文案", "");
+                                    var res = await QQFunction.WenAn(keyword);
+                                    await qq.Receiver.SendMessageAsync(res);
+                                    return;
+                                }
+                                if (text.Substring(text.Length - 2, 2) == "天气" && IsAuth("天气", sender))
+                                {
+                                    var keyword = text.Replace("天气", "");
+                                    var res = await QQFunction.Weather(keyword);
+                                    await qq.Receiver.SendMessageAsync(res);
+                                    return;
+                                }
+                                if (text == "舔狗" && IsAuth("舔狗", sender))
+                                {
+                                    var res = await QQFunction.Dog();
+                                    await qq.Receiver.SendMessageAsync(res);
+                                    return;
+                                }
+                                if (IsAuth("问答", sender))
+                                {
+                                    var result = await QQFunction.ChatGPT(text);
+                                    if (string.IsNullOrWhiteSpace(result))
+                                        result = await QQFunction.XiaoAi(text);
+                                    if (string.IsNullOrWhiteSpace(result)) return;
+                                    var a = result.Replace(@"\n", Environment.NewLine).Replace("\\\"", "\"");
+                                    await qq.Receiver.SendMessageAsync(a);
+                                }
                             };
-                            break;
+                            return;
                         case Events.MemberJoined:
                             {
                             };
-                            break;
+                            return;
+                        default:
+                            return;
                     }
-                    return;
                 }
                 catch (Exception ex)
                 {
@@ -712,6 +744,14 @@ namespace Helper
                     return;
                 }
             });
+        }
+        private static bool IsAuth(string keyword, string qq)
+        {
+            if (!FuncEnable.Any(t => t.value == keyword)) return false;
+            if (!Permission.Contains(qq) && qq != Admin)
+                if (!FuncUser.Any(t => t == keyword))
+                    return false;
+            return true;
         }
         private static string GetMoudel(string name)
         {

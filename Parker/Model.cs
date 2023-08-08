@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Newtonsoft.Json.Linq;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ParkerBot
 {
@@ -23,11 +24,8 @@ namespace ParkerBot
     public class QQ
     {
         public string funcEnable { get; set; } = string.Empty;
-        public List<string> funcEnable1 { get; set; } = new();
         public string funcAdmin { get; set; } = string.Empty;
-        public List<string> funcAdmin1 { get; set; } = new();
         public string funcUser { get; set; } = string.Empty;
-        public List<string> funcUser1 { get; set; } = new();
         public string group { get; set; } = string.Empty;
         public string admin { get; set; } = string.Empty;
         public string permission { get; set; } = string.Empty;

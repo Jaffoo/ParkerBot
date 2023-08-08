@@ -41,8 +41,7 @@
                         </el-form-item>
                         <el-form-item label="功能分类">
                             <el-transfer v-model="config.QQ.funcUser1" :data="config.QQ.funcEnable1"
-                                :titles="['管理员可用', '普通用户可用']" :left-default-checked=config.QQ.funcAdmin1
-                                :right-default-checked=config.QQ.funcUser1 :props="{ key: 'value', label: 'name' }">
+                                :titles="['管理员', '普通用户']" :props="{ key: 'value', label: 'name' }">
                             </el-transfer>
                         </el-form-item>
                         <el-form-item label="敏感词">
@@ -447,13 +446,9 @@ const rules = ref({
         trigger: ['blur', 'change']
     }],
 })
-watch(funcsChecked.value, (newVal, oldVal) => {
+watch(funcsChecked, (newVal, oldVal) => {
     if (newVal.length <= 0) {
         config.value.QQ.funcEnable1 = [];
-        return;
-    }
-    if (oldVal.length <= 0) {
-        config.value.QQ.funcEnable1 = newVal;
         return;
     }
     var ids = newVal.filter(function (v) {
@@ -485,10 +480,8 @@ onMounted(() => {
     axios({
         url: "http://parkerbot.api/api/GetBaseConfig"
     }).then(res => {
-        console.log(1)
         for (let propName in eable.value) {
             for (let item of res.data.enable) {
-                console.log(item)
                 if (item.key.toLowerCase() == propName) {
                     if (JSON.parse(item.value)) {
                         eable.value[propName] = true;
@@ -500,13 +493,15 @@ onMounted(() => {
             }
         }
         msgTypeList.value = JSON.parse(res.data.config.KD.msgTypeList);
-        res.data.config.QQ.funcEnable1 = res.data.config.QQ.funcEnable1 ?? new Array();
-        res.data.config.QQ.funcAdmin1 = res.data.config.QQ.funcAdmin1 ?? new Array();
-        res.data.config.QQ.funcUser1 = res.data.config.QQ.funcUser1 ?? new Array();
+        res.data.config.QQ.funcEnable1 = res.data.config.QQ.funcEnable ? JSON.parse(res.data.config.QQ.funcEnable) : new Array();
+        res.data.config.QQ.funcAdmin1 = res.data.config.QQ.funcAdmin ?res.data.config.QQ.funcAdmin.split(",") : [];
+        res.data.config.QQ.funcUser1 = res.data.config.QQ.funcUser ?res.data.config.QQ.funcUser.split(",") : [];
         config.value = res.data.config;
         config.value.QQ.actions = config.value.QQ.action === '' ? [] : config.value.QQ.action.split(",")
         config.value.KD.area = '86';
-        funcsChecked.value = res.data.config.QQ.funcEnable1;
+        funcsChecked.value = res.data.config.QQ.funcEnable1.map((item: any) => {
+            return item.value;
+        });
         selectType.value = config.value.KD.msgType ? config.value.KD.msgType.split(",") : [];
     });
 
@@ -525,12 +520,20 @@ const back = () => {
 const save = async (formEl: FormInstance | undefined) => {
     if (!formEl) return;
     await formEl.validate((valid, fields) => {
-        config.value.BD.imageList = config.value.BD.imageList1.map(item => {
-            return item.url;
-        }).toString();
         if (valid) {
+            config.value.BD.imageList = config.value.BD.imageList1.map(item => {
+                return item.url;
+            }).toString();
             config.value.QQ.action = config.value.QQ.actions.toString();
+            config.value.QQ.funcEnable = JSON.stringify(config.value.QQ.funcEnable1);
+            var temp = config.value.QQ.funcEnable1.map(item => {
+                return item.value
+            });
+            var d = temp.filter(function (v) { return config.value.QQ.funcUser.indexOf(v) == -1 })
+            config.value.QQ.funcAdmin = d.toString();
+            config.value.QQ.funcUser = config.value.QQ.funcUser1.toString();
             config.value.KD.msgType = selectType.value.toString();
+            console.log(config.value.QQ)
             axios({
                 url: "http://parkerbot.api/api/SetConfig",
                 method: "post",
