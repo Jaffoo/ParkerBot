@@ -113,7 +113,6 @@ namespace Helper
                         {
                             var mcb = new MessageChainBuilder().At(gmr.Sender.Id).Plain(" 您发送的消息文字中包含敏感词！").Build();
                             await gmr.SendMessageAsync(mcb);
-                            return;
                         }
                         //私信群管
                         if (SensitiveAction.Contains(2))
@@ -124,7 +123,6 @@ namespace Helper
                             {
                                 if (friends.Any(t => t == item)) await SendFriendMsg(item, $"群【{gmr.GroupName}】用户【{gmr.Sender.Name}】发送的“{msgText}”中含有敏感词！");
                             }
-                            return;
                         }
                         //私信机器人管理员
                         if (SensitiveAction.Contains(3))
@@ -134,13 +132,11 @@ namespace Helper
                             {
                                 if (friends.Any(t => t == item)) await SendFriendMsg(item, $"群【{gmr.GroupName}】用户【{gmr.Sender.Name}】发送的“{msgText}”中含有敏感词！");
                             }
-                            return;
                         }
                         //私信超管
                         if (SensitiveAction.Contains(4))
                         {
                             await SendFriendMsg(Admin, $"群【{gmr.GroupName}】用户【{gmr.Sender.Name}】发送的“ {msgText} ”中含有敏感词！");
-                            return;
                         }
                         //撤回
                         if (SensitiveAction.Contains(5))
@@ -148,7 +144,6 @@ namespace Helper
                             await gmr.RecallAsync();
                             var mcb = new MessageChainBuilder().At(gmr.Sender.Id).Plain(" 消息已被撤回，撤回原因：文字中包含敏感词！").Build();
                             await gmr.SendMessageAsync(mcb);
-                            return;
                         }
                     }
 
