@@ -47,8 +47,8 @@ namespace ParkerBot
             }
 
             //数据库有更新时执行
-            SqlHelper.ExecuteNonQuery(@"DELETE FROM config WHERE Id IN (SELECT Id FROM config WHERE ParentId=13 AND ""Key""='Debug')");
-            SqlHelper.ExecuteNonQuery(@"INSERT INTO config (""Name"",""Key"",""Value"",""ParentId"") SELECT '程序错误通知','Debug','false',14 WHERE NOT EXISTS (SELECT 1 FROM config WHERE ParentId=14 AND ""Key""='Debug')");
+            var sqls = File.ReadAllText(Environment.CurrentDirectory + @"/wwwroot/sql/update.sql");
+            SqlHelper.ExecuteNonQuery(sqls);
 
             Const.SetCache();
             RegistJs();
@@ -61,7 +61,7 @@ namespace ParkerBot
             //预留
             if (Debugger.IsAttached)
             {
-               var res = QQFunction.WenAn("昆明");
+                var res = QQFunction.WenAn("昆明");
             }
         }
 
