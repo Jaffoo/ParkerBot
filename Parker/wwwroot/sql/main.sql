@@ -1,7 +1,7 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : config_1
+ Source Server         : config_2
  Source Server Type    : SQLite
  Source Server Version : 3035005
  Source Schema         : main
@@ -10,7 +10,7 @@
  Target Server Version : 3035005
  File Encoding         : 65001
 
- Date: 13/07/2023 16:54:16
+ Date: 09/08/2023 13:54:14
 */
 
 PRAGMA foreign_keys = false;
@@ -54,7 +54,7 @@ INSERT INTO "config" VALUES (6, 'QQ启用功能', 'FuncEnable', '', 14);
 INSERT INTO "config" VALUES (7, '权限功能', 'FuncAdmin', '', 14);
 INSERT INTO "config" VALUES (8, '用户功能', 'FuncUser', '', 14);
 INSERT INTO "config" VALUES (9, 'QQ功能列表', 'QQFuncList', '', 0);
-INSERT INTO "config" VALUES (13, '基础', 'BaseConfig', '0', 0);
+INSERT INTO "config" VALUES (13, '基础', 'BaseConfig', '', 0);
 INSERT INTO "config" VALUES (14, 'QQ', 'QQ', 'false', 13);
 INSERT INTO "config" VALUES (15, '微博', 'WB', 'false', 13);
 INSERT INTO "config" VALUES (16, 'B站', 'BZ', 'false', 13);
@@ -91,9 +91,9 @@ INSERT INTO "config" VALUES (46, '是否转发', 'ForwardGroup', 'false', 19);
 INSERT INTO "config" VALUES (47, 'AppKey', 'AppKey', '', 20);
 INSERT INTO "config" VALUES (48, 'AppSeret', 'AppSeret', '', 20);
 INSERT INTO "config" VALUES (49, '标准图片', 'ImageList', '', 20);
-INSERT INTO "config" VALUES (50, '相似度', 'Similarity', '70', 20);
-INSERT INTO "config" VALUES (51, '保存云盘', 'SaveAliyunDisk', 'false', 20);
-INSERT INTO "config" VALUES (52, '审核相似度', 'Audit', '50', 20);
+INSERT INTO "config" VALUES (50, '相似度', 'Similarity', '0', 20);
+INSERT INTO "config" VALUES (51, '保存云盘', 'SaveAliyunDisk', 'true', 20);
+INSERT INTO "config" VALUES (52, '审核相似度', 'Audit', '0', 20);
 INSERT INTO "config" VALUES (53, '相册名称', 'AlbumName', '', 20);
 INSERT INTO "config" VALUES (54, '转发好友', 'ForwardQQ', 'false', 15);
 INSERT INTO "config" VALUES (55, '好友', 'QQ', '', 15);
@@ -126,11 +126,11 @@ INSERT INTO "config" VALUES (85, '消息类型', 'MsgTypeList', '[{
 },
 {
     "name":"视频消息",
-    "value":"video"
+    "value":"video,VIDEO"
 },
 {
     "name":"音频消息",
-    "value":"audio"
+    "value":"audio,AUDIO"
 },
 {
     "name":"回复消息",
@@ -173,9 +173,15 @@ INSERT INTO "config" VALUES (85, '消息类型', 'MsgTypeList', '[{
     "value":"PRESENT_NORMAL"
 }]', 17);
 INSERT INTO "config" VALUES (86, '吃瓜微博', 'Cg', '', 15);
-INSERT INTO "config" VALUES (87, '吃瓜关键字', 'Keyword', '', 15);
+INSERT INTO "config" VALUES (87, '吃瓜关键字', 'keyword', '', 15);
 INSERT INTO "config" VALUES (88, '姓名', 'Name', '', 17);
-INSERT INTO "config" VALUES (89, '程序错误通知', 'Debug', 'false', 14);
+INSERT INTO "config" VALUES (89, '问答', '问答', '问答', 9);
+INSERT INTO "config" VALUES (90, '文案', '文案', '文案', 9);
+INSERT INTO "config" VALUES (91, '天气', '天气', '天气', 9);
+INSERT INTO "config" VALUES (92, '舔狗', '舔狗', '舔狗', 9);
+INSERT INTO "config" VALUES (93, '程序错误通知', 'Debug', 'false', 14);
+INSERT INTO "config" VALUES (94, '艾特作图', '艾特作图', '艾特作图', 9);
+
 -- ----------------------------
 -- Table structure for idol
 -- ----------------------------
@@ -205,6 +211,10 @@ CREATE TABLE "log" (
 );
 
 -- ----------------------------
+-- Records of log
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for message
 -- ----------------------------
 DROP TABLE IF EXISTS "message";
@@ -224,3 +234,46 @@ CREATE TABLE "message" (
   "Type" TEXT NOT NULL DEFAULT 1,
   "MsgType" integer NOT NULL DEFAULT 1
 );
+
+-- ----------------------------
+-- Records of message
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for sqlite_sequence
+-- ----------------------------
+DROP TABLE IF EXISTS "sqlite_sequence";
+CREATE TABLE "sqlite_sequence" (
+  "name",
+  "seq"
+);
+
+-- ----------------------------
+-- Records of sqlite_sequence
+-- ----------------------------
+INSERT INTO "sqlite_sequence" VALUES ('config', 94);
+INSERT INTO "sqlite_sequence" VALUES ('cache', 38);
+INSERT INTO "sqlite_sequence" VALUES ('message', 11365);
+INSERT INTO "sqlite_sequence" VALUES ('log', 151);
+
+-- ----------------------------
+-- Auto increment value for cache
+-- ----------------------------
+UPDATE "sqlite_sequence" SET seq = 38 WHERE name = 'cache';
+
+-- ----------------------------
+-- Auto increment value for config
+-- ----------------------------
+UPDATE "sqlite_sequence" SET seq = 94 WHERE name = 'config';
+
+-- ----------------------------
+-- Auto increment value for log
+-- ----------------------------
+UPDATE "sqlite_sequence" SET seq = 151 WHERE name = 'log';
+
+-- ----------------------------
+-- Auto increment value for message
+-- ----------------------------
+UPDATE "sqlite_sequence" SET seq = 11365 WHERE name = 'message';
+
+PRAGMA foreign_keys = true;
