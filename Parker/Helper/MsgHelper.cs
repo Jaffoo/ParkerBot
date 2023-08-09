@@ -17,6 +17,7 @@ using ParkerBot.Helper;
 using Microsoft.VisualBasic.Devices;
 using Newtonsoft.Json;
 using Vanara.Extensions;
+using FluentScheduler;
 
 namespace Helper
 {
@@ -189,9 +190,11 @@ namespace Helper
                         if (msgText == "#菜单")
                         {
                             string menu = "1、审核功能：\n#查看全部\n#查看#{第几张}\n#保存#{第几张}\n#保存全部\n#删除#{第几张}\n#删除全部\n2、好友申请：\n#同意/拒绝#{事件标识}" +
-                            "\n3、微博：\n#立即同步微博\n#同步微博#{链接地址}\n4、发送消息：\n#发送#{群/好友}#文字/图片/语音/视频/图文/{qq号/群号}/{文字/图片链接/{文字}-{图片链接}}" +
+                            "\n3、微博：\n#立即同步微博\n#同步微博#{链接地址}" +
+                            "\n4、发送消息：\n#发送#{群/好友}#文字/图片/语音/视频/图文/{qq号/群号}/{文字/图片链接/{文字}-{图片链接}}" +
                             "\n#微博用户搜索#{关键词}\n#关注微博用户#{用户id}\n#添加/删除微博关键词#{词}\n#重置微博关键词" +
-                            "\n5、功能开关：\n#开启/关闭模块{模块名称}\n#开启/关闭转发#{模块}#qq/群\n#修改转发#{模块}#qq/群#{值}\n6、管理员：\n#添加/删除管理员#{qq}\n#删除全部管理员";
+                            "\n5、功能开关：\n#开启/关闭模块{模块名称}\n#开启/关闭转发#{模块}#qq/群\n#修改转发#{模块}#qq/群#{值}\n6、管理员：\n#添加/删除管理员#{qq}\n#删除全部管理员" +
+                            "\n6、系统功能：\n#SQL#{sql}\n#清空聊天记录";
                             await fmr.SendMessageAsync(menu);
                             return;
                         }
@@ -409,6 +412,27 @@ namespace Helper
                             await fmr.SendMessageAsync("删除成功！");
                             return;
                         }
+                        if (msgText.Contains("#SQL#"))
+                        {
+                            var sql = msgText.Replace("#SQL#", "");
+                            if (string.IsNullOrWhiteSpace(sql))
+                            {
+                                await fmr.SendMessageAsync("sql语句为空");
+                                return;
+                            }
+                            _liteContext = new();
+                            var res = await _liteContext.Database.ExecuteSqlRawAsync(sql);
+                            await fmr.SendMessageAsync("执行成功，受影响行数：" + res + "行；");
+                            return;
+                        }
+                        if (msgText.Contains("#清空聊天记录"))
+                        {
+                            _liteContext = new();
+                            var sql = "delete from message;";
+                            var res = await _liteContext.Database.ExecuteSqlRawAsync(sql);
+                            await fmr.SendMessageAsync("清空成功");
+                            return;
+                        }
                     }
                     if (Permission.Contains(fmr.Sender.Id) || fmr.Sender.Id == Admin)
                     {
@@ -451,14 +475,16 @@ namespace Helper
                             var moudel = msgText.Replace("#开启模块#", "");
                             var old = moudel;
                             moudel = GetMoudel(moudel);
-                            Const.Enable[moudel] = "True";
+                            Const.Enable[moudel] = "true";
                             Const._EnableModule = null;
                             await fmr.SendMessageAsync($"模块【{old}】已开启！");
+                            JobManager.RemoveAllJobs();
+                            JobManager.Initialize(new FluentSchedulerFactory());
                             _liteContext = new();
                             var model = await _liteContext.Config.FirstOrDefaultAsync(t => t.parentId == 13 && t.key == moudel);
                             if (model != null)
                             {
-                                model.value = "True";
+                                model.value = "true";
                                 _liteContext.Update(model);
                                 await _liteContext.SaveChangesAsync();
                             }
@@ -470,14 +496,15 @@ namespace Helper
                             var moudel = msgText.Replace("#关闭模块#", "");
                             var old = moudel;
                             moudel = GetMoudel(moudel);
-                            Const.Enable[moudel] = "False";
+                            Const.Enable[moudel] = "false";
                             Const._EnableModule = null;
                             await fmr.SendMessageAsync($"模块【{old}】已关闭！");
+                            JobManager.RemoveJob(moudel);
                             _liteContext = new();
                             var model = await _liteContext.Config.FirstOrDefaultAsync(t => t.parentId == 13 && t.key == moudel);
                             if (model != null)
                             {
-                                model.value = "False";
+                                model.value = "false";
                                 _liteContext.Update(model);
                                 await _liteContext.SaveChangesAsync();
                             }
@@ -759,6 +786,7 @@ namespace Helper
             switch (name)
             {
                 case "微博": moudel = "WB"; break;
+                case "微博吃瓜": moudel = "WBChiGua"; break;
                 case "口袋": moudel = "KD"; break;
                 case "口袋48": moudel = "KD"; break;
                 case "B站": moudel = "BZ"; break;

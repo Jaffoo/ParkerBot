@@ -9,12 +9,12 @@ namespace Helper
         {
             if (Const.EnableModule.wb)
             {
-                Schedule(async () => await Weibo.Seve()).WithName("WB").NonReentrant().ToRunNow().AndEvery(Const.ConfigModel.WB.timeSpan.ToInt()).Minutes();
-                Schedule(async () => await Weibo.ChiGua()).WithName("WBChiGua").NonReentrant().ToRunNow().AndEvery(Const.ConfigModel.WB.timeSpan.ToInt()).Minutes();
+                Schedule(async () => await Weibo.Seve()).WithName("WB").NonReentrant().ToRunEvery(Const.ConfigModel.WB.timeSpan.ToInt()).Minutes();
+                Schedule(async () => await Weibo.ChiGua()).WithName("WBChiGua").NonReentrant().ToRunEvery(Const.ConfigModel.WB.timeSpan.ToInt()).Minutes();
             }
             if (Const.EnableModule.bz)
             {
-                Schedule(async () => await Bilibili.Monitor()).WithName("BZ").NonReentrant().ToRunNow().AndEvery(Const.ConfigModel.WB.timeSpan.ToInt()).Minutes();
+                Schedule(async () => await Bilibili.Monitor()).WithName("BZ").NonReentrant().ToRunEvery(Const.ConfigModel.WB.timeSpan.ToInt()).Minutes();
             }
             if (Const.EnableModule.xhs)
             {
@@ -24,6 +24,16 @@ namespace Helper
             {
 
             }
+        }
+
+        public async Task WbJob()
+        {
+            await Weibo.Seve();
+        }
+
+        public async Task WbChiGuaJob()
+        {
+            await Weibo.ChiGua();
         }
 
         public void BzJob()
