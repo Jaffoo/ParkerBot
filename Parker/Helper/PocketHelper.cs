@@ -108,11 +108,9 @@ namespace Helper
                     //ÎÄ×Ö·­ÅÆ
                     else if (MsgType.Contains(messageType) && messageType == "FLIPCARD")
                     {
-                        await Msg.SendFriendMsg(Msg.Admin, "ÎÄ×Ö·­ÅÆ:\n" + attach.ToString());
-                        return;
                         var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
-                        mcb.Plain(answer.ToString());
                         mcb.Plain("ÎÄ×Ö·­ÅÆ£º" + attach["filpCardInfo"]!["question"]);
+                        mcb.Plain("\n»Ø¸´£º" + answer.ToString());
                     }
                     //ÓïÒô·­ÅÆ
                     else if (MsgType.Contains(messageType) && messageType == "FLIPCARD_AUDIO")
