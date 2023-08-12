@@ -36,7 +36,7 @@ namespace Helper
                         await Weibo.FatchFace(msbBody);
                     });
                     if (!MsgType.Contains(msgType)) return;
-                    mcb.ImageFromBase64(Base64.UrlImgToBase64(msbBody).Result);
+                    mcb.ImageFromUrl(msbBody);
                 }
                 //文字
                 else if (MsgType.Contains(msgType) && msgType == "text")
@@ -82,7 +82,7 @@ namespace Helper
                     {
                         //判断是否at所有人
                         msbBody = "直播啦！\n标题：" + attach["livePushInfo"]!["liveTitle"];
-                        mcb.Plain(msbBody).ImageFromBase64(Base64.UrlImgToBase64(Const.ConfigModel.KD.imgDomain + attach["livePushInfo"]!["liveCover"]!.ToString()).Result);
+                        mcb.Plain(msbBody).ImageFromUrl(Const.ConfigModel.KD.imgDomain + attach["livePushInfo"]!["liveCover"]!.ToString());
                         if (MsgType.FirstOrDefault(t => t == "AtAll")?.ToBool() ?? false)
                             mcb.AtAll();
                     }
@@ -136,7 +136,7 @@ namespace Helper
                     else if (MsgType.Contains(messageType) && messageType == "EXPRESSIMAGE")
                     {
                         string url = attach["expressImgInfo"]!["emotionRemote"]!.ToString();
-                        mcb.ImageFromBase64(Base64.UrlImgToBase64(url).Result);
+                        mcb.ImageFromUrl(url);
                     }
                     else return;
                 }

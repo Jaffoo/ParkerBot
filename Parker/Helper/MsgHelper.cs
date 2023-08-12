@@ -202,7 +202,7 @@ namespace Helper
                             }
                             foreach (var item in Check)
                             {
-                                var newMsgChain = new MessageChainBuilder().ImageFromBase64(Base64.UrlImgToBase64(item).Result).Build();
+                                var newMsgChain = new MessageChainBuilder().ImageFromUrl(item).Build();
                                 await fmr.SendMessageAsync(newMsgChain);
                                 Thread.Sleep(1000);
                             }
@@ -221,7 +221,7 @@ namespace Helper
                                 await fmr.SendMessageAsync($"未找到图片");
                                 return;
                             }
-                            var newMsgChain = new MessageChainBuilder().ImageFromBase64(Base64.UrlImgToBase64(Check[index]).Result).Build();
+                            var newMsgChain = new MessageChainBuilder().ImageFromUrl(Check[index]).Build();
                             await fmr.SendMessageAsync(newMsgChain);
                             return;
                         }
@@ -337,6 +337,7 @@ namespace Helper
                         {
                             _liteContext = new();
                             var log = await _liteContext.Logs.OrderByDescending(t => t.createDate).FirstOrDefaultAsync();
+                            if (log.message.Length > 500) log.message = log.message.Substring(0, 100);
                             MessageChain mc = new()
                             {
                                 new PlainMessage("时间：" + log?.createDate.ToString("yyyy-MM-dd HH:mm:ss") ?? ""),
@@ -451,13 +452,13 @@ namespace Helper
                             if (list[1] == "文字")
                                 msgBuild.Plain(list[3]);
                             if (list[1] == "图片")
-                                msgBuild.ImageFromBase64(Base64.UrlImgToBase64(list[3]).Result);
+                                msgBuild.ImageFromUrl(list[3]);
                             if (list[1] == "语音")
                                 msgBuild.VoiceFromUrl(list[3]);
                             if (list[1] == "视频")
                                 msgBuild.Plain(list[3]);
                             if (list[1] == "图文")
-                                msgBuild.Plain(list[3].Split('-')[0]).ImageFromBase64(Base64.UrlImgToBase64(list[3].Split('-')[1]).Result);
+                                msgBuild.Plain(list[3].Split('-')[0]).ImageFromUrl(list[3].Split('-')[1]);
                             if (list[0] == "好友")
                                 await SendFriendMsg(list[2], msgBuild.Build());
                             if (list[0] == "群")
