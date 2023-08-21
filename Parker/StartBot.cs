@@ -65,18 +65,25 @@ namespace ParkerBot
         }
         public async void BotStart()
         {
-            using var bot = new MiraiBot
+            try
             {
-                Address = Const.MiraiConfig.address,
-                QQ = Const.MiraiConfig.QQNum,
-                VerifyKey = Const.MiraiConfig.verifykey
-            };
-            await bot.LaunchAsync();
-            Msg.BotStart(bot);
-            HasMirai = true;
-            while (true)
+                using var bot = new MiraiBot
+                {
+                    Address = Const.MiraiConfig.address,
+                    QQ = Const.MiraiConfig.QQNum,
+                    VerifyKey = Const.MiraiConfig.verifykey
+                };
+                await bot.LaunchAsync();
+                Msg.BotStart(bot);
+                HasMirai = true;
+                while (true)
+                {
+                    Thread.Sleep(1);
+                }
+            }
+            catch (Exception)
             {
-                Thread.Sleep(1);
+                HasMirai = false;
             }
         }
     }

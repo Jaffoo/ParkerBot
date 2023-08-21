@@ -736,7 +736,7 @@ namespace Helper
                                     await qq.Receiver.SendMessageAsync(res);
                                     return;
                                 }
-                                if (text == "舔狗" && IsAuth("舔狗", sender))
+                                if (text == "舔狗文学" && IsAuth("舔狗", sender))
                                 {
                                     var res = await QQFunction.Dog();
                                     await qq.Receiver.SendMessageAsync(res);
