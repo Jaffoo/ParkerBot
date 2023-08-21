@@ -163,8 +163,8 @@ namespace ParkerBot
             var b = await _context.SaveChangesAsync();
             await _context.DisposeAsync();
             if (!ConfigModel.QQ.debug) return;
-            if (b > 0) await Msg.SendFriendMsg(Msg.Admin, string.IsNullOrWhiteSpace(msg) ? "程序报错了，请联系反馈给开发人员！" : msg);
-            else await Msg.SendFriendMsg(Msg.Admin, "日志写入失败。" + ex.Message + "\n" + ex.StackTrace);
+            if (b > 0) await Msg.SendAdminMsg(string.IsNullOrWhiteSpace(msg) ? "程序报错了，请联系反馈给开发人员！" : msg);
+            else await Msg.SendAdminMsg("日志写入失败。" + ex.Message + "\n" + ex.StackTrace);
         }
         #endregion
     }

@@ -28,6 +28,7 @@ namespace ParkerBot
         public string funcUser { get; set; } = string.Empty;
         public string group { get; set; } = string.Empty;
         public string admin { get; set; } = string.Empty;
+        public bool notice { get; set; } = true;
         public string permission { get; set; } = string.Empty;
         public string sensitive { get; set; } = string.Empty;
         public string action { get; set; } = string.Empty;

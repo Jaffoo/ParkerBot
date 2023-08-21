@@ -115,7 +115,7 @@ namespace Helper
                     //”Ô“Ù∑≠≈∆
                     else if (MsgType.Contains(messageType) && messageType == "FLIPCARD_AUDIO")
                     {
-                        await Msg.SendFriendMsg(Msg.Admin, "”Ô“Ù∑≠≈∆:\n" + attach.ToString());
+                        await Msg.SendAdminMsg("”Ô“Ù∑≠≈∆:\n" + attach.ToString());
                         return;
                         var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
                         mcb.VoiceFromUrl(Const.ConfigModel.KD.mP4Domain + answer["url"]);
@@ -124,7 +124,7 @@ namespace Helper
                     // ”∆µ∑≠≈∆
                     else if (MsgType.Contains(messageType) && messageType == "FLIPCARD_VIDEO")
                     {
-                        await Msg.SendFriendMsg(Msg.Admin, " ”∆µ∑≠≈∆:\n" + attach.ToString());
+                        await Msg.SendAdminMsg(" ”∆µ∑≠≈∆:\n" + attach.ToString());
                         return;
                         var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
                         mcb.Plain(Const.ConfigModel.KD.mP4Domain + answer["url"]);

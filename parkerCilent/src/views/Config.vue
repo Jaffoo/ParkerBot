@@ -23,10 +23,13 @@
                                 placeholder="多个用英文逗号,分隔；不填写则qq机器人所在的全部群开启，填写则针对填写的群开启"></el-input>
                         </el-form-item>
                         <el-form-item label="超级管理员" prop="QQ.admin" :rules="rules.input">
-                            <el-col :span="20">
+                            <el-col :span="16">
                                 <el-input v-model="config.QQ.admin" placeholder="仅支持配置一个账号"></el-input>
                             </el-col>
-                            <el-col :span="3" style="margin-left: 0.5%;">
+                            <el-col :span="3" style="margin-left: 2%;">
+                                <el-checkbox v-model="config.QQ.adminNotice" label="开启消息通知"></el-checkbox>
+                            </el-col>
+                            <el-col :span="3" style="margin-left: 2%;">
                                 <el-checkbox v-model="config.QQ.debug" label="开启程序错误通知"></el-checkbox>
                             </el-col>
                         </el-form-item>
@@ -347,6 +350,7 @@ const config = ref({
         funcUser: "",
         funcUser1: [] as any[],
         admin: '',
+        adminNotice: false,
         permission: '',
         sensitive: "",
         action: '',
@@ -494,8 +498,8 @@ onMounted(() => {
         }
         msgTypeList.value = JSON.parse(res.data.config.KD.msgTypeList);
         res.data.config.QQ.funcEnable1 = res.data.config.QQ.funcEnable ? JSON.parse(res.data.config.QQ.funcEnable) : new Array();
-        res.data.config.QQ.funcAdmin1 = res.data.config.QQ.funcAdmin ?res.data.config.QQ.funcAdmin.split(",") : [];
-        res.data.config.QQ.funcUser1 = res.data.config.QQ.funcUser ?res.data.config.QQ.funcUser.split(",") : [];
+        res.data.config.QQ.funcAdmin1 = res.data.config.QQ.funcAdmin ? res.data.config.QQ.funcAdmin.split(",") : [];
+        res.data.config.QQ.funcUser1 = res.data.config.QQ.funcUser ? res.data.config.QQ.funcUser.split(",") : [];
         config.value = res.data.config;
         config.value.QQ.actions = config.value.QQ.action === '' ? [] : config.value.QQ.action.split(",")
         config.value.KD.area = '86';

@@ -47,8 +47,7 @@ namespace ParkerBot
             }
 
             //数据库有更新时执行
-            var sqls = File.ReadAllText(Environment.CurrentDirectory + @"/wwwroot/sql/update.sql");
-            SqlHelper.ExecuteNonQuery(sqls);
+            SqlUpdate.ExecuteSql();
 
             Const.SetCache();
             RegistJs();

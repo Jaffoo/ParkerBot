@@ -42,6 +42,7 @@ namespace Helper
         public static LiteContext? _liteContext { get; set; }
         #region 全局变量
         public static string Admin => Const.ConfigModel.QQ.admin ?? "";
+        public static bool Notice => Const.ConfigModel.QQ.notice;
         public static List<string> Check
         {
             get
@@ -136,7 +137,7 @@ namespace Helper
                         //私信超管
                         if (SensitiveAction.Contains(4))
                         {
-                            await SendFriendMsg(Admin, $"群【{gmr.GroupName}】用户【{gmr.Sender.Name}】发送的“ {msgText} ”中含有敏感词！");
+                            await SendAdminMsg($"群【{gmr.GroupName}】用户【{gmr.Sender.Name}】发送的“ {msgText} ”中含有敏感词！");
                         }
                         //撤回
                         if (SensitiveAction.Contains(5))
@@ -932,6 +933,39 @@ namespace Helper
                     if (friend == null) continue;
                     await friend.SendFriendMessageAsync(msg);
                 }
+                return;
+            }
+            catch (Exception ex)
+            {
+                ex.AddLog();
+                return;
+            }
+        }
+
+        public static async Task SendAdminMsg(string msg)
+        {
+            try
+            {
+                if (_bot == null || !Notice) return;
+                var friend = _bot.Friends.Value.FirstOrDefault(t => t.Id == Admin);
+                if (friend == null) return;
+                await friend.SendFriendMessageAsync(msg);
+                return;
+            }
+            catch (Exception ex)
+            {
+                ex.AddLog();
+                return;
+            }
+        }
+        public static async Task SendAdminMsg(MessageChain msg)
+        {
+            try
+            {
+                if (_bot == null || !Notice) return;
+                var friend = _bot.Friends.Value.FirstOrDefault(t => t.Id == Admin);
+                if (friend == null) return;
+                await friend.SendFriendMessageAsync(msg);
                 return;
             }
             catch (Exception ex)

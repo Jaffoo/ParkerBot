@@ -265,7 +265,7 @@ namespace Helper
         {
             try
             {
-                await Msg.SendFriendMsg(Msg.Admin, "开始识别微博连接");
+                await Msg.SendAdminMsg("开始识别微博连接");
                 var url = $"https://m.weibo.cn/statuses/show?id={id}";
                 var handler = new HttpClientHandler() { UseCookies = true };
                 HttpClient httpClient = new(handler);
@@ -279,7 +279,7 @@ namespace Helper
                 var obj = JObject.Parse(content);
                 var picsStr = obj["data"]!["pics"]!;
                 var picList = JsonConvert.DeserializeObject<List<JObject>>(picsStr.ToString())!;
-                await Msg.SendFriendMsg(Msg.Admin, $"检测到有{picList.Count}张图！开始进行识别保存！");
+                await Msg.SendAdminMsg($"检测到有{picList.Count}张图！开始进行识别保存！");
                 foreach (var item in picList)
                 {
                     var img = item["large"]!["url"]!.ToString();
@@ -307,14 +307,14 @@ namespace Helper
                     });
                     await dbContext.SaveChangesAsync();
                     await dbContext.DisposeAsync();
-                    await Msg.SendFriendMsg(Msg.Admin, $"未启用人脸识别，加入待审核，目前有{Msg.Check.Count}张图片待审核");
+                    await Msg.SendAdminMsg($"未启用人脸识别，加入待审核，目前有{Msg.Check.Count}张图片待审核");
                     return;
                 }
                 var face = await Baidu.IsFaceAndCount(url);
                 if (face == 1)
                 {
                     var score = await Baidu.FaceMatch(url);
-                    if (score != Audit) await Msg.SendFriendMsg(Msg.Admin, $"人脸对比相似度：{score}");
+                    if (score != Audit) await Msg.SendAdminMsg($"人脸对比相似度：{score}");
 
                     if (score >= Audit && score < Similarity)
                     {
@@ -326,7 +326,7 @@ namespace Helper
                         });
                         await dbContext.SaveChangesAsync();
                         await dbContext.DisposeAsync();
-                        await Msg.SendFriendMsg(Msg.Admin, $"相似度低于{Similarity}，加入待审核，目前有{Msg.Check.Count}张图片待审核");
+                        await Msg.SendAdminMsg($"相似度低于{Similarity}，加入待审核，目前有{Msg.Check.Count}张图片待审核");
                         return;
                     }
                     if (score >= Similarity && score <= 100)
@@ -341,13 +341,13 @@ namespace Helper
                             });
                             await dbContext.SaveChangesAsync();
                             await dbContext.DisposeAsync();
-                            await Msg.SendFriendMsg(Msg.Admin, $"保存失败，加入待审核，目前有{Msg.Check.Count}张图片待审核");
+                            await Msg.SendAdminMsg($"保存失败，加入待审核，目前有{Msg.Check.Count}张图片待审核");
                         }
                         else
                         {
                             string msg = $"相似大于{Similarity}，已保存本地";
                             if (FileHelper.SaveAliyunDisk) msg += $"，正在上传至阿里云盘【{Const.ConfigModel.BD.albumName}】相册";
-                            await Msg.SendFriendMsg(Msg.Admin, msg);
+                            await Msg.SendAdminMsg(msg);
                         }
                         return;
                     }
@@ -362,7 +362,7 @@ namespace Helper
                     });
                     await dbContext.SaveChangesAsync();
                     await dbContext.DisposeAsync();
-                    await Msg.SendFriendMsg(Msg.Admin, $"识别到多个人脸，加入待审核，目前有{Msg.Check.Count}张图片待审核");
+                    await Msg.SendAdminMsg($"识别到多个人脸，加入待审核，目前有{Msg.Check.Count}张图片待审核");
                     return;
                 }
                 else if (face == 0 && save)
@@ -375,7 +375,7 @@ namespace Helper
                     });
                     await dbContext.SaveChangesAsync();
                     await dbContext.DisposeAsync();
-                    await Msg.SendFriendMsg(Msg.Admin, $"未识别到人脸，加入待审核，目前有{Msg.Check.Count}张图片待审核");
+                    await Msg.SendAdminMsg($"未识别到人脸，加入待审核，目前有{Msg.Check.Count}张图片待审核");
                 }
                 return;
             }
