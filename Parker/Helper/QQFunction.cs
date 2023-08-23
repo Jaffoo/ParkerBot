@@ -12,21 +12,35 @@ namespace ParkerBot.Helper
         #region chatgpt3.5
         public static async Task<string> ChatGPT(string question)
         {
-            if (string.IsNullOrWhiteSpace(question)) return "请输入问题！";
-            string url = "/other/gpt.php?msg=" + HttpUtility.UrlEncode(question);
-            var response = await _httpHelper.GetAsync(url);
-            return response ?? "";
+            try
+            {
+                if (string.IsNullOrWhiteSpace(question)) return "请输入问题！";
+                string url = "/other/gpt.php?msg=" + HttpUtility.UrlEncode(question);
+                var response = await _httpHelper.GetAsync(url);
+                return response ?? "";
+            }
+            catch (Exception)
+            {
+                return "";
+            }
         }
         #endregion
 
         #region 小爱闲聊
         public static async Task<string> XiaoAi(string question)
         {
-            if (string.IsNullOrWhiteSpace(question)) return "请输入问题！";
-            string url = "/other/xiaoai.php?data=&msg=" + HttpUtility.UrlEncode(question);
-            var response = await _httpHelper.GetAsync(url);
-            var res = JObject.Parse(response);
-            return res["text"]?.ToString() ?? "";
+            try
+            {
+                if (string.IsNullOrWhiteSpace(question)) return "请输入问题！";
+                string url = "/other/xiaoai.php?data=&msg=" + HttpUtility.UrlEncode(question);
+                var response = await _httpHelper.GetAsync(url);
+                var res = JObject.Parse(response);
+                return res["text"]?.ToString() ?? "";
+            }
+            catch (Exception)
+            {
+                return "";
+            }
         }
         #endregion
 
