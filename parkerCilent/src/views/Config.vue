@@ -27,7 +27,7 @@
                                 <el-input v-model="config.QQ.admin" placeholder="仅支持配置一个账号"></el-input>
                             </el-col>
                             <el-col :span="3" style="margin-left: 2%;">
-                                <el-checkbox v-model="config.QQ.adminNotice" label="开启消息通知"></el-checkbox>
+                                <el-checkbox v-model="config.QQ.notice" label="开启消息通知"></el-checkbox>
                             </el-col>
                             <el-col :span="3" style="margin-left: 2%;">
                                 <el-checkbox v-model="config.QQ.debug" label="开启程序错误通知"></el-checkbox>
@@ -350,7 +350,7 @@ const config = ref({
         funcUser: "",
         funcUser1: [] as any[],
         admin: '',
-        adminNotice: false,
+        notice: false,
         permission: '',
         sensitive: "",
         action: '',
