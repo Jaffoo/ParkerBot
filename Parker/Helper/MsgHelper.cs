@@ -745,7 +745,7 @@ namespace Helper
                                 }
                                 if (IsAuth("问答", sender))
                                 {
-                                    var result = await QQFunction.ChatGPT(text);
+                                    var result = await QQFunction.ChatGPTV2(text);
                                     if (string.IsNullOrWhiteSpace(result))
                                         result = await QQFunction.XiaoAi(text);
                                     if (string.IsNullOrWhiteSpace(result)) return;

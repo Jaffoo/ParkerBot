@@ -24,6 +24,26 @@ namespace ParkerBot.Helper
                 return "";
             }
         }
+
+        /// <summary>
+        /// 支持上下文
+        /// </summary>
+        /// <param name="question"></param>
+        /// <returns></returns>
+        public static async Task<string> ChatGPTV2(string question)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(question)) return "请输入问题！";
+                string url = "/chat/gpt3.5-f.php?msg=" + HttpUtility.UrlEncode(question);
+                var response = await _httpHelper.GetAsync(url);
+                return response ?? "";
+            }
+            catch (Exception)
+            {
+                return "";
+            }
+        }
         #endregion
 
         #region 小爱闲聊
