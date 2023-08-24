@@ -18,6 +18,7 @@ using Microsoft.VisualBasic.Devices;
 using Newtonsoft.Json;
 using Vanara.Extensions;
 using FluentScheduler;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Helper
 {
@@ -160,6 +161,14 @@ namespace Helper
                         MessageChain builder = new MessageChainBuilder().ImageFromBase64(res).Build();
                         await gmr.SendMessageAsync(builder);
                         return;
+                    }
+
+                    if (msgText.Contains("问：") && IsAuth("问答", msgModel.fromId))
+                    {
+                        var result = await QQFunction.ChatGPTV2(msgText.Replace("问：", ""));
+                        if (string.IsNullOrWhiteSpace(result)) return;
+                        result = result.Replace(@"\n", Environment.NewLine).Replace("\\\"", "\"");
+                        await gmr.SendMessageAsync(result);
                     }
                     #endregion
                     return;
@@ -745,12 +754,10 @@ namespace Helper
                                 }
                                 if (IsAuth("问答", sender))
                                 {
-                                    var result = await QQFunction.ChatGPTV2(text);
-                                    if (string.IsNullOrWhiteSpace(result))
-                                        result = await QQFunction.XiaoAi(text);
+                                    var result = await QQFunction.XiaoAi(text);
                                     if (string.IsNullOrWhiteSpace(result)) return;
-                                    var a = result.Replace(@"\n", Environment.NewLine).Replace("\\\"", "\"");
-                                    await qq.Receiver.SendMessageAsync(a);
+                                    result = result.Replace(@"\n", Environment.NewLine).Replace("\\\"", "\"");
+                                    await qq.Receiver.SendMessageAsync(result);
                                 }
                             };
                             return;

@@ -35,7 +35,7 @@ namespace ParkerBot.Helper
             try
             {
                 if (string.IsNullOrWhiteSpace(question)) return "请输入问题！";
-                string url = "/chat/gpt3.5-f.php?msg=" + HttpUtility.UrlEncode(question);
+                string url = "/chat/gpt3.5-f.php?key=1615842006&msg=" + HttpUtility.UrlEncode(question);
                 var response = await _httpHelper.GetAsync(url);
                 return response ?? "";
             }
