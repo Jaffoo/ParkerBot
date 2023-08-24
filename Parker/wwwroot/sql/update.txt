@@ -1,1 +1,1 @@
-INSERT INTO config ("Name","Key","Value","ParentId") SELECT '消息通知','Notice','true',14 WHERE NOT EXISTS (SELECT 1 FROM config WHERE ParentId=14 AND "Key"='Notice')
+INSERT INTO config ("Name","Key","Value","ParentId") SELECT '娑堟伅閫氱煡','Notice','true',14 WHERE NOT EXISTS (SELECT 1 FROM config WHERE ParentId=14 AND "Key"='Notice')
