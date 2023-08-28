@@ -283,6 +283,8 @@ namespace Helper
                 foreach (var item in picList)
                 {
                     var img = item["large"]!["url"]!.ToString();
+                    var fileName = Path.GetFileName(img);
+                    img = "https://cdn.ipfsscan.io/weibo/large/" + fileName;
                     await FatchFace(img, true);
                     Thread.Sleep(1000);
                 }

@@ -271,10 +271,15 @@ namespace ParkerBot
             var list = dbContext.Caches.Where(t => t.type == 1).ToList();
             list.ForEach(item =>
             {
-                if (!item.content.Contains("cdn.ipfsscan.io"))
+                if (!item.content.Contains("cdn.ipfsscan.io") && item.content.Contains("sinaimg.cn"))
                 {
                     var fileName = Path.GetFileName(item.content);
                     item.content = "https://cdn.ipfsscan.io/weibo/large/" + fileName;
+                }
+                var list = new List<string> { ".jpg", ".JPG", ".jpeg", ".JPEG", ".png", ".PNG" };
+                if (!list.Any(item.content.Contains))
+                {
+                    item.content = Base64Helper.UrlImgToBase64(item.content).Result;
                 }
             });
             return Json(list);

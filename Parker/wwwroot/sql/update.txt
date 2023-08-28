@@ -1,1 +1,3 @@
-INSERT INTO config ("Name","Key","Value","ParentId") SELECT '消息通知','Notice','true',14 WHERE NOT EXISTS (SELECT 1 FROM config WHERE ParentId=14 AND "Key"='Notice')
+INSERT INTO config ("Name","Key","Value","ParentId") SELECT '消息通知','Notice','true',14 WHERE NOT EXISTS (SELECT 1 FROM config WHERE ParentId=14 AND "Key"='Notice');
+INSERT INTO config ("Name","Key","Value","ParentId") SELECT '查缩写','查缩写','查缩写',9 WHERE NOT EXISTS (SELECT 1 FROM config WHERE ParentId=9 AND "Key"='查缩写');
+DELETE FROM config WHERE "Key"='舔狗';

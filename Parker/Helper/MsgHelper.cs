@@ -155,21 +155,42 @@ namespace Helper
                     if (msgChain.Any(t => t.Type == Messages.At) && QQFunction.Keywrods.Contains(msgText.Trim()) && IsAuth("艾特作图", gmr.Sender.Id))
                     {
                         var model = msgChain.FirstOrDefault(t => t.Type == Messages.At);
-                        if (model == null) return;
-                        var atQQ = (model as AtMessage)!.Target;
-                        var res = await QQFunction.AtPic(atQQ, msgText.Trim());
-                        if (string.IsNullOrWhiteSpace(res)) return;
-                        MessageChain builder = new MessageChainBuilder().ImageFromBase64(res).Build();
-                        await gmr.SendMessageAsync(builder);
-                        return;
+                        if (model != null)
+                        {
+                            var atQQ = (model as AtMessage)!.Target;
+                            var res = await QQFunction.AtPic(atQQ, msgText.Trim());
+                            if (!string.IsNullOrWhiteSpace(res))
+                            {
+                                MessageChain builder = new MessageChainBuilder().ImageFromBase64(res).Build();
+                                await gmr.SendMessageAsync(builder);
+                                return;
+                            }
+                        }
                     }
 
                     if (msgText.Contains("问：") && IsAuth("问答", msgModel.fromId))
                     {
                         var result = await QQFunction.ChatGPTV2(msgText.Replace("问：", ""));
-                        if (string.IsNullOrWhiteSpace(result)) return;
-                        result = result.Replace(@"\n", Environment.NewLine).Replace("\\\"", "\"");
-                        await gmr.SendMessageAsync(result);
+                        if (!string.IsNullOrWhiteSpace(result))
+                        {
+                            result = result.Replace(@"\n", Environment.NewLine).Replace("\\\"", "\"");
+                            await gmr.SendMessageAsync(result);
+                            return;
+                        }
+                    }
+
+                    if (msgText[0] == '?' && IsAuth("查缩写", msgModel.fromId))
+                    {
+                        var abbreviations = msgText[1..];
+                        if (!string.IsNullOrWhiteSpace(abbreviations))
+                        {
+                            var msg = await QQFunction.Abbreviations(abbreviations);
+                            if (!string.IsNullOrWhiteSpace(msg))
+                            {
+                                await gmr.SendMessageAsync(msg);
+                                return;
+                            }
+                        }
                     }
                     #endregion
                     return;
@@ -708,9 +729,12 @@ namespace Helper
                     if (msgText.Contains("问："))
                     {
                         var result = await QQFunction.ChatGPTV2(msgText.Replace("问：", ""));
-                        if (string.IsNullOrWhiteSpace(result)) return;
-                        result = result.Replace(@"\n", Environment.NewLine).Replace("\\\"", "\"");
-                        await fmr.SendMessageAsync(result);
+                        if (!string.IsNullOrWhiteSpace(result))
+                        {
+                            result = result.Replace(@"\n", Environment.NewLine).Replace("\\\"", "\"");
+                            await fmr.SendMessageAsync(result);
+                            return;
+                        }
                     }
                 }
                 catch (Exception e)

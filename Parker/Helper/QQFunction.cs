@@ -115,5 +115,36 @@ namespace ParkerBot.Helper
             return response;
         }
         #endregion
+
+        #region 缩写查询
+        /// <summary>
+        /// 支持上下文
+        /// </summary>
+        /// <param name="words"></param>
+        /// <returns></returns>
+        public static async Task<string> Abbreviations(string words)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(words)) return "请输入问题！";
+                string url = "https://api.pearktrue.cn/api/suoxie/?word=" + words;
+                var response = await _httpHelper.GetAsync(url);
+                var data = JObject.Parse(response);
+                if (data["code"]!.ToString() == "200")
+                {
+                    return string.Join(",", data["data"] ?? new JArray());
+                }
+                if (data["code"]!.ToString() == "201")
+                {
+                    return data["msg"]!.ToString();
+                }
+                return data["msg"]?.ToString() ?? "";
+            }
+            catch (Exception)
+            {
+                return "";
+            }
+        }
+        #endregion
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Helper
 {
-    public class Base64
+    public class Base64Helper
     {
         public static async Task<string> UrlImgToBase64(string url)
         {

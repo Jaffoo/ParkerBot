@@ -29,7 +29,7 @@ namespace Helper
         {
             try
             {
-                img = await Base64.UrlImgToBase64(img);
+                img = await Base64Helper.UrlImgToBase64(img);
                 if (string.IsNullOrWhiteSpace(img)) return 0;
                 string token = GetBaiduToken();
                 string host = "https://aip.baidubce.com/rest/2.0/face/v3/detect?access_token=" + token;
@@ -56,7 +56,7 @@ namespace Helper
         {
             try
             {
-                img = await Base64.UrlImgToBase64(img);
+                img = await Base64Helper.UrlImgToBase64(img);
                 if (string.IsNullOrWhiteSpace(img)) return 0;
                 var imageList = Const.ConfigModel.BD.imageList;
                 if (string.IsNullOrWhiteSpace(imageList)) return 0;
@@ -64,7 +64,7 @@ namespace Helper
                 List<float> scores = new();
                 foreach (var item in faceStandard)
                 {
-                    string img64 = Base64.PathToBase64(Directory.GetCurrentDirectory() + "/wwwroot" + item);
+                    string img64 = Base64Helper.PathToBase64(Directory.GetCurrentDirectory() + "/wwwroot" + item);
                     if (string.IsNullOrWhiteSpace(img64)) return 0;
                     string token = GetBaiduToken();
                     string host = "https://aip.baidubce.com/rest/2.0/face/v3/match?access_token=" + token;
