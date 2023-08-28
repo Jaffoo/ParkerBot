@@ -35,7 +35,7 @@ namespace Helper
                     httpClient.DefaultRequestHeaders.Add("cookie", "SINAGLOBAL=5941175256214.382.1642773872907; ALF=1679281645; SCF=AhRx5Mk_RQnso6fKaohKePld2ACjdhTBOnxiAuojS-dpOKDZ28Z_zCDf8sNRIBYNX9eloeTXveotTWb5RnxcuTM.; SUB=_2AkMVObiwf8NxqwJRmP0Sz2_hZYt2zw_EieKjZUlrJRMxHRl-yT92qhYdtRB6PrmWX9HM2ihb-yVCcUUmaIfpbzQFEJoB; SUBP=0033WrSXqPxfM72-Ws9jqgMF55529P9D9WFencmWZyNhNlrzI6f0SiqP; login_sid_t=feb5d6bbda373d92c0c6e139217b5db3; cross_origin_proto=SSL; _s_tentry=cn.bing.com; UOR=,,cn.bing.com; Apache=6304595585897.093.1653402506204; ULV=1653402506208:6:1:1:6304595585897.093.1653402506204:1650801573670; wb_view_log=1920*10801; XSRF-TOKEN=HGapIzQJMJSifxxET5AdtejC; WBPSESS=a_YZA6I5qCR3U8i3Rfvlpuuut1qO7V23G4iYU50rBIh48BgY8rLDiveiRcJ7gBViMW4yXZTrlj1ALj997n-skQeQkUEuApt0KJq31YKkNMQPi9GTi0yYk7gm2rXw-ymmx_tg2neuAfVC1UZcHK4O3JCatmXj_y8HEVwjPjcFNls=");
                     var res = await httpClient.GetAsync(url);
                     var content = await res.Content.ReadAsStringAsync();
-                    var data = JObject.Parse(content);
+                    var data = JObject.Parse(content.Replace("&lt;", ""));
                     var list = JArray.FromObject(data["data"]!["list"]!);
                     foreach (JObject blog in list.Cast<JObject>())
                     {
