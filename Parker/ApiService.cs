@@ -319,21 +319,17 @@ namespace ParkerBot
             string url = @"https://fastly.jsdelivr.net/gh/duan602728596/qqtools@main/packages/NIMTest/node/roomId.json";
             try
             {
-                HttpClient client = new();
-                var str = client.GetStringAsync(url).Result;
-                if (str == null) return Json(new { success = false, msg = "文件访问出错", data = url });
-                var res = JObject.Parse(str);
-                var arr = JArray.FromObject(res["roomId"]!);
-                JToken? xox = new JObject();
-                IEnumerable<JToken>? chain = null;
+                LiteContext dbContext = new();
+                Idol? xox = new();
+                IQueryable<Idol>? chain = null;
                 if (group != null)
                 {
                     if (group.Count >= 2)
-                        chain = arr.Where(t => t["groupName"]?.ToString() == group[0] && t["team"]?.ToString() == group[1]);
+                        chain = dbContext.Idol.Where(t => t.groupName == group[0] && t.team == group[1]);
                     else
-                        chain = arr.Where(t => t["groupName"]?.ToString() == group[0]);
+                        chain = dbContext.Idol.Where(t => t.groupName == group[0]);
                 }
-                xox = (chain ?? arr).FirstOrDefault(t => t["ownerName"]?.ToString() == name);
+                xox = chain?.FirstOrDefault(t => t.name == name);
                 if (xox == null) return Json(new { success = false, msg = "未查询到该小偶像", data = url });
                 return Json(new { success = true, msg = "", data = xox.ToString() });
             }

@@ -111,6 +111,12 @@ namespace ParkerBot
             return val;
         }
 
+        public static int ToInt(this object str)
+        {
+            if (str == null) return 0;
+            return Convert.ToInt32(str);
+        }
+
         public static long Tolong(this string str)
         {
             if (string.IsNullOrWhiteSpace(str)) return 0;

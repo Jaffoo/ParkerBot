@@ -44,13 +44,18 @@ namespace ParkerBot
     public class Idol
     {
         [Key]
-        public int id { get; set; }
+        public string id { get; set; } = "";
         public string? name { get; set; }
-        public string? code { get; set; }
         public string? roomId { get; set; }
         public string? serverId { get; set; }
         public string? account { get; set; }
+        public int? teamId { get; set; }
         public string? team { get; set; }
+        public string? liveId { get; set; }
+        public string? groupName { get; set; }
+        public string? periodName { get; set; }
+        public string? pinyin { get; set; }
+        public string? channelId { get; set; }
     }
 
     [Table("cache")]

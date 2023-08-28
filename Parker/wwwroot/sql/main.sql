@@ -10,7 +10,7 @@
  Target Server Version : 3035005
  File Encoding         : 65001
 
- Date: 09/08/2023 13:54:14
+ Date: 28/08/2023 16:19:59
 */
 
 PRAGMA foreign_keys = false;
@@ -178,22 +178,30 @@ INSERT INTO "config" VALUES (88, '姓名', 'Name', '', 17);
 INSERT INTO "config" VALUES (89, '问答', '问答', '问答', 9);
 INSERT INTO "config" VALUES (90, '文案', '文案', '文案', 9);
 INSERT INTO "config" VALUES (91, '天气', '天气', '天气', 9);
-INSERT INTO "config" VALUES (92, '舔狗', '舔狗', '舔狗', 9);
+INSERT INTO "config" VALUES (92, '舔狗文案', '舔狗文案', '舔狗文案', 9);
 INSERT INTO "config" VALUES (93, '程序错误通知', 'Debug', 'false', 14);
 INSERT INTO "config" VALUES (94, '艾特作图', '艾特作图', '艾特作图', 9);
+INSERT INTO "config" VALUES (95, '查缩写', '查缩写', '查缩写', 9);
+INSERT INTO "config" VALUES (96, '消息通知', 'Notice', 'true', 14);
 
 -- ----------------------------
 -- Table structure for idol
 -- ----------------------------
 DROP TABLE IF EXISTS "idol";
 CREATE TABLE "idol" (
-  "Id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "Id" TEXT NOT NULL,
   "Name" TEXT NOT NULL,
-  "Code" TEXT NOT NULL,
   "RoomId" text NOT NULL,
   "Account" TEXT NOT NULL,
-  "ServerId" INTEGER NOT NULL,
-  "Team" TEXT NOT NULL
+  "ServerId" INTEGER,
+  "TeamId" integer,
+  "LiveId" text,
+  "Team" TEXT,
+  "GroupName" TEXT,
+  "PeriodName" TEXT,
+  "PinYin" TEXT,
+  "ChannelId" text,
+  PRIMARY KEY ("Id")
 );
 
 -- ----------------------------
@@ -251,7 +259,7 @@ CREATE TABLE "sqlite_sequence" (
 -- ----------------------------
 -- Records of sqlite_sequence
 -- ----------------------------
-INSERT INTO "sqlite_sequence" VALUES ('config', 94);
+INSERT INTO "sqlite_sequence" VALUES ('config', 96);
 INSERT INTO "sqlite_sequence" VALUES ('cache', 38);
 INSERT INTO "sqlite_sequence" VALUES ('message', 11365);
 INSERT INTO "sqlite_sequence" VALUES ('log', 151);
@@ -264,7 +272,7 @@ UPDATE "sqlite_sequence" SET seq = 38 WHERE name = 'cache';
 -- ----------------------------
 -- Auto increment value for config
 -- ----------------------------
-UPDATE "sqlite_sequence" SET seq = 94 WHERE name = 'config';
+UPDATE "sqlite_sequence" SET seq = 96 WHERE name = 'config';
 
 -- ----------------------------
 -- Auto increment value for log
