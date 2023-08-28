@@ -321,17 +321,17 @@ namespace ParkerBot
             {
                 LiteContext dbContext = new();
                 Idol? xox = new();
-                IQueryable<Idol>? chain = null;
+                IQueryable<Idol> chain = dbContext.Idol.AsQueryable();
                 if (group != null)
                 {
                     if (group.Count >= 2)
-                        chain = dbContext.Idol.Where(t => t.groupName == group[0] && t.team == group[1]);
+                        chain = chain.Where(t => t.groupName == group[0] && t.team == group[1]);
                     else
-                        chain = dbContext.Idol.Where(t => t.groupName == group[0]);
+                        chain = chain.Where(t => t.groupName == group[0]);
                 }
                 xox = chain?.FirstOrDefault(t => t.name == name);
                 if (xox == null) return Json(new { success = false, msg = "未查询到该小偶像", data = url });
-                return Json(new { success = true, msg = "", data = xox.ToString() });
+                return Json(new { success = true, msg = "", data = xox });
             }
             catch (Exception e)
             {

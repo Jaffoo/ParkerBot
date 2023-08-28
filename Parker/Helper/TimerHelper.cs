@@ -51,7 +51,7 @@ namespace Helper
                         serverId = item["serverId"]?.ToString(),
                         team = item["team"]?.ToString(),
                         teamId = item["teamId"]?.ToInt(),
-                        liveId = item["liveId"]?.ToString(),
+                        liveId = item["liveRoomId"]?.ToString(),
                         groupName = item["groupName"]?.ToString(),
                         periodName = item["periodName"]?.ToString(),
                         pinyin = item["pinyin"]?.ToString(),

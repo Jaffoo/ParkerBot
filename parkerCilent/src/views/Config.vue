@@ -557,6 +557,7 @@ const save = async (formEl: FormInstance | undefined) => {
 }
 
 const close = () => {
+    searchModel.value.loading = false;
     searchModel.value.show = false;
     searchModel.value.name = '';
     searchModel.value.url = "";
@@ -741,9 +742,9 @@ const searchXox = async () => {
         searchModel.value.loading = false;
     })
     if (res.data.success) {
-        var data = JSON.parse(res.data.data);
-        config.value.KD.name = data.ownerName;
-        config.value.KD.liveRoomId = data.liveRoomId;
+        var data =res.data.data;
+        config.value.KD.name = data.name;
+        config.value.KD.liveRoomId = data.liveId;
         config.value.KD.serverId = data.serverId;
         close();
     } else {
