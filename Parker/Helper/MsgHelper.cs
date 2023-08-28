@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 using Vanara.Extensions;
 using FluentScheduler;
 using static System.Net.Mime.MediaTypeNames;
+using static Vanara.PInvoke.User32;
 
 namespace Helper
 {
@@ -475,7 +476,6 @@ namespace Helper
                                 await SendGroupMsg(list[2], msgBuild.Build());
                             return;
                         }
-
                         if (msgText.Contains("#开启模块#"))
                         {
                             var moudel = msgText.Replace("#开启模块#", "");
@@ -657,6 +657,7 @@ namespace Helper
                             }
                             msg.Append("注：结果有多个时，仅展示前三个！");
                             await fmr.SendMessageAsync(msg.ToString());
+                            return;
                         }
                         if (msgText.Contains("#删除微博关键词#"))
                         {
@@ -673,6 +674,7 @@ namespace Helper
                             _liteContext.SaveChanges();
                             Const._ConfigModel = null;
                             await fmr.SendMessageAsync($"已删除关键词【{keywords}】");
+                            return;
                         }
                         if (msgText.Contains("#添加微博关键词#"))
                         {
@@ -689,6 +691,7 @@ namespace Helper
                             _liteContext.SaveChanges();
                             Const._ConfigModel = null;
                             await fmr.SendMessageAsync($"已添加关键词【{keywords}】");
+                            return;
                         }
                         if (msgText.Contains("#重置微博关键词"))
                         {
@@ -699,7 +702,15 @@ namespace Helper
                             _liteContext.SaveChanges();
                             Const._ConfigModel = null;
                             await fmr.SendMessageAsync($"已重置关键词");
+                            return;
                         }
+                    }
+                    if (msgText.Contains("问："))
+                    {
+                        var result = await QQFunction.ChatGPTV2(msgText.Replace("问：", ""));
+                        if (string.IsNullOrWhiteSpace(result)) return;
+                        result = result.Replace(@"\n", Environment.NewLine).Replace("\\\"", "\"");
+                        await fmr.SendMessageAsync(result);
                     }
                 }
                 catch (Exception e)

@@ -1,8 +1,6 @@
 using Mirai.Net.Utils.Scaffolds;
 using Newtonsoft.Json.Linq;
 using ParkerBot;
-using MiniExcelLibs;
-using System.Linq;
 
 namespace Helper
 {
@@ -108,6 +106,15 @@ namespace Helper
                     //Œƒ◊÷∑≠≈∆
                     else if (MsgType.Contains(messageType) && messageType == "FLIPCARD")
                     {
+                        _liteContext = new();
+                        Logs log = new()
+                        {
+                            message = attach.ToString(),
+                            createDate = DateTime.Now,
+                        };
+                        await _liteContext.Logs.AddAsync(log);
+                        await _liteContext.SaveChangesAsync();
+                        await _liteContext.DisposeAsync();
                         var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
                         mcb.Plain("Œƒ◊÷∑≠≈∆£∫" + attach["filpCardInfo"]!["question"]);
                         mcb.Plain("\nªÿ∏¥£∫" + answer.ToString());
@@ -115,8 +122,6 @@ namespace Helper
                     //”Ô“Ù∑≠≈∆
                     else if (MsgType.Contains(messageType) && messageType == "FLIPCARD_AUDIO")
                     {
-                        await Msg.SendAdminMsg("”Ô“Ù∑≠≈∆:\n" + attach.ToString());
-                        return;
                         var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
                         mcb.VoiceFromUrl(Const.ConfigModel.KD.mP4Domain + answer["url"]);
                         mcb.Plain("”Ô“Ù∑≠≈∆£∫" + attach["filpCardInfo"]!["question"]);
@@ -124,8 +129,6 @@ namespace Helper
                     // ”∆µ∑≠≈∆
                     else if (MsgType.Contains(messageType) && messageType == "FLIPCARD_VIDEO")
                     {
-                        await Msg.SendAdminMsg(" ”∆µ∑≠≈∆:\n" + attach.ToString());
-                        return;
                         var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
                         mcb.Plain(Const.ConfigModel.KD.mP4Domain + answer["url"]);
                         mcb.Plain(" ”∆µ∑≠≈∆£∫" + attach["filpCardInfo"]!["question"]);
