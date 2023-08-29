@@ -203,6 +203,7 @@ namespace Helper
                                 return;
                             var mcb = new MessageChainBuilder();
                             mcb.Plain($"{blog["user"]!["screen_name"]}发了一条相关微博！");
+                            mcb.Plain($"\n链接：https://weibo.com/{blog["user"]!["id"]}/{blog["mid"]}");
                             if (mblogtype == 2)
                             {
                                 //获取第一张图片发送
