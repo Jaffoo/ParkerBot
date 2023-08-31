@@ -16,7 +16,13 @@ namespace Helper
         public static int TimeSpan => Const.ConfigModel.WB.timeSpan.ToInt();
         public static List<string> Keywords => Const.ConfigModel.WB.keyword.ToListV2();
         public static List<string> ChiGuaId => Const.ConfigModel.WB.cg.ToListV2();
-
+        public static List<string> cookies = new()
+        {
+            "SINAGLOBAL=5941175256214.382.1642773872907; ALF=1679281645; SCF=AhRx5Mk_RQnso6fKaohKePld2ACjdhTBOnxiAuojS-dpOKDZ28Z_zCDf8sNRIBYNX9eloeTXveotTWb5RnxcuTM.; SUB=_2AkMVObiwf8NxqwJRmP0Sz2_hZYt2zw_EieKjZUlrJRMxHRl-yT92qhYdtRB6PrmWX9HM2ihb-yVCcUUmaIfpbzQFEJoB; SUBP=0033WrSXqPxfM72-Ws9jqgMF55529P9D9WFencmWZyNhNlrzI6f0SiqP; login_sid_t=feb5d6bbda373d92c0c6e139217b5db3; cross_origin_proto=SSL; _s_tentry=cn.bing.com; UOR=,,cn.bing.com; Apache=6304595585897.093.1653402506204; ULV=1653402506208:6:1:1:6304595585897.093.1653402506204:1650801573670; wb_view_log=1920*10801; XSRF-TOKEN=HGapIzQJMJSifxxET5AdtejC; WBPSESS=a_YZA6I5qCR3U8i3Rfvlpuuut1qO7V23G4iYU50rBIh48BgY8rLDiveiRcJ7gBViMW4yXZTrlj1ALj997n-skQeQkUEuApt0KJq31YKkNMQPi9GTi0yYk7gm2rXw-ymmx_tg2neuAfVC1UZcHK4O3JCatmXj_y8HEVwjPjcFNls=",
+            "XSRF-TOKEN=ji0Rkx11EBux4xaDJ38qAIx9; SUB=_2AkMTs3tOf8NxqwJRmP4UzG3kbYR3ywzEieKl74qVJRMxHRl-yT9kqhIltRB6ODNVoSg8aV7S48enuJ8lPjb2_OSRexlD; SUBP=0033WrSXqPxfM72-Ws9jqgMF55529P9D9WFHbfBsiWwJ-vZmSOpT4pwc; WBPSESS=kErNolfXeoisUDB3d9TFHyMeFa4MatmXrjbaDwQ35JmUiCBV9ntrwO_7jHZvQQsGjt5MTmQTrTkp_O6VsTRBg7si96MRfJGEYK0ewg2taBKb4sXOG5QkGajFN6QFCxQn",
+            "SUB=_2AkMTlAHbf8NxqwFRmP0dz27mb451zQHEieKlyPAAJRMxHRl-yT9yqlJatRB6OBQvNHhBYU7kxXWHB1-EwDqkKUQbTjgf; SUBP=0033WrSXqPxfM72-Ws9jqgMF55529P9D9WWWWE.F2zR8Z2g.NATx-cNb; SINAGLOBAL=2225783411272.795.1690865387497; ULV=1692782461137:4:4:1:9037311383567.621.1692782461097:1691376008407; XSRF-TOKEN=-acpBqK8az6xMw7By6HJ0fsn; WBPSESS=lGn6cRy34B6AsqM-wzgd2Bandv2Zo_jKV-l0F-cuuHQj5YA0_HNBDOnhOVym67_MWEaqd2677yOOdx5Bx3TZh0Emt2Hphj0iAbhzU-9FF3ZlMbcJcTXpnMdcEfXTivoS",
+            "_T_WM=77461816220; MLOGIN=0; WEIBOCN_FROM=1110006030; M_WEIBOCN_PARAMS=oid%3D4820613401674865%26luicode%3D20000061%26lfid%3D4820613401674865; XSRF-TOKEN=1a9e6c; mweibo_short_token=8dbe1b1ab1"
+        };
         public static async Task Seve()
         {
             string url = "";
@@ -32,7 +38,9 @@ namespace Helper
                     httpClient.DefaultRequestHeaders.Add("user-agent", @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36 Edg/101.0.1210.53");
                     httpClient.DefaultRequestHeaders.Add("sec-ch-ua", "\" Not A; Brand\";v=\"99\", \"Chromium\";v=\"101\", \"Microsoft Edge\";v=\"101\"");
                     httpClient.DefaultRequestHeaders.Add("sec-ch-ua-platform", "Windows");
-                    httpClient.DefaultRequestHeaders.Add("cookie", "SINAGLOBAL=5941175256214.382.1642773872907; ALF=1679281645; SCF=AhRx5Mk_RQnso6fKaohKePld2ACjdhTBOnxiAuojS-dpOKDZ28Z_zCDf8sNRIBYNX9eloeTXveotTWb5RnxcuTM.; SUB=_2AkMVObiwf8NxqwJRmP0Sz2_hZYt2zw_EieKjZUlrJRMxHRl-yT92qhYdtRB6PrmWX9HM2ihb-yVCcUUmaIfpbzQFEJoB; SUBP=0033WrSXqPxfM72-Ws9jqgMF55529P9D9WFencmWZyNhNlrzI6f0SiqP; login_sid_t=feb5d6bbda373d92c0c6e139217b5db3; cross_origin_proto=SSL; _s_tentry=cn.bing.com; UOR=,,cn.bing.com; Apache=6304595585897.093.1653402506204; ULV=1653402506208:6:1:1:6304595585897.093.1653402506204:1650801573670; wb_view_log=1920*10801; XSRF-TOKEN=HGapIzQJMJSifxxET5AdtejC; WBPSESS=a_YZA6I5qCR3U8i3Rfvlpuuut1qO7V23G4iYU50rBIh48BgY8rLDiveiRcJ7gBViMW4yXZTrlj1ALj997n-skQeQkUEuApt0KJq31YKkNMQPi9GTi0yYk7gm2rXw-ymmx_tg2neuAfVC1UZcHK4O3JCatmXj_y8HEVwjPjcFNls=");
+                    var random = new Random();
+                    var cookieIndex = random.Next(0, cookies.Count);
+                    httpClient.DefaultRequestHeaders.Add("cookie", cookies[cookieIndex]);
                     var res = await httpClient.GetAsync(url);
                     var content = await res.Content.ReadAsStringAsync();
                     var data = JObject.Parse(content.Replace("&lt;", ""));
@@ -178,7 +186,9 @@ namespace Helper
                     httpClient.DefaultRequestHeaders.Add("user-agent", @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36 Edg/101.0.1210.53");
                     httpClient.DefaultRequestHeaders.Add("sec-ch-ua", "\" Not A; Brand\";v=\"99\", \"Chromium\";v=\"101\", \"Microsoft Edge\";v=\"101\"");
                     httpClient.DefaultRequestHeaders.Add("sec-ch-ua-platform", "Windows");
-                    httpClient.DefaultRequestHeaders.Add("cookie", "SINAGLOBAL=5941175256214.382.1642773872907; ALF=1679281645; SCF=AhRx5Mk_RQnso6fKaohKePld2ACjdhTBOnxiAuojS-dpOKDZ28Z_zCDf8sNRIBYNX9eloeTXveotTWb5RnxcuTM.; SUB=_2AkMVObiwf8NxqwJRmP0Sz2_hZYt2zw_EieKjZUlrJRMxHRl-yT92qhYdtRB6PrmWX9HM2ihb-yVCcUUmaIfpbzQFEJoB; SUBP=0033WrSXqPxfM72-Ws9jqgMF55529P9D9WFencmWZyNhNlrzI6f0SiqP; login_sid_t=feb5d6bbda373d92c0c6e139217b5db3; cross_origin_proto=SSL; _s_tentry=cn.bing.com; UOR=,,cn.bing.com; Apache=6304595585897.093.1653402506204; ULV=1653402506208:6:1:1:6304595585897.093.1653402506204:1650801573670; wb_view_log=1920*10801; XSRF-TOKEN=HGapIzQJMJSifxxET5AdtejC; WBPSESS=a_YZA6I5qCR3U8i3Rfvlpuuut1qO7V23G4iYU50rBIh48BgY8rLDiveiRcJ7gBViMW4yXZTrlj1ALj997n-skQeQkUEuApt0KJq31YKkNMQPi9GTi0yYk7gm2rXw-ymmx_tg2neuAfVC1UZcHK4O3JCatmXj_y8HEVwjPjcFNls=");
+                    var random = new Random();
+                    var cookieIndex = random.Next(0, cookies.Count);
+                    httpClient.DefaultRequestHeaders.Add("cookie", cookies[cookieIndex]);
                     var res = await httpClient.GetAsync(url);
                     var content = await res.Content.ReadAsStringAsync();
                     var data = JObject.Parse(content);
@@ -273,7 +283,9 @@ namespace Helper
                 httpClient.DefaultRequestHeaders.Add("user-agent", @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36 Edg/101.0.1210.53");
                 httpClient.DefaultRequestHeaders.Add("sec-ch-ua", "\" Not A; Brand\";v=\"99\", \"Chromium\";v=\"101\", \"Microsoft Edge\";v=\"101\"");
                 httpClient.DefaultRequestHeaders.Add("sec-ch-ua-platform", "Windows");
-                httpClient.DefaultRequestHeaders.Add("cookie", "_T_WM=77461816220; MLOGIN=0; WEIBOCN_FROM=1110006030; M_WEIBOCN_PARAMS=oid%3D4820613401674865%26luicode%3D20000061%26lfid%3D4820613401674865; XSRF-TOKEN=1a9e6c; mweibo_short_token=8dbe1b1ab1");
+                var random = new Random();
+                var cookieIndex = random.Next(0, cookies.Count);
+                httpClient.DefaultRequestHeaders.Add("cookie", cookies[cookieIndex]);
                 var res = await httpClient.GetAsync(url);
                 var content = await res.Content.ReadAsStringAsync();
                 if (string.IsNullOrWhiteSpace(content)) return;
