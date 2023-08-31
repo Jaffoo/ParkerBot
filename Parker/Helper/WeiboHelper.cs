@@ -366,6 +366,19 @@ namespace Helper
                         }
                         return;
                     }
+                    if (save)
+                    {
+                        dbContext = new();
+                        await dbContext.Caches.AddAsync(new()
+                        {
+                            content = url,
+                            type = 1
+                        });
+                        await dbContext.SaveChangesAsync();
+                        await dbContext.DisposeAsync();
+                        await Msg.SendAdminMsg($"加入待审核，目前有{Msg.Check.Count}张图片待审核");
+                        return;
+                    }
                 }
                 else if (face > 1)
                 {
