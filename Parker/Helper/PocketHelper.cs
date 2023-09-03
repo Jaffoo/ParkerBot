@@ -1,6 +1,8 @@
 using Mirai.Net.Utils.Scaffolds;
 using Newtonsoft.Json.Linq;
 using ParkerBot;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
+using System.Xml.Linq;
 
 namespace Helper
 {
@@ -115,7 +117,7 @@ namespace Helper
                         await _liteContext.Logs.AddAsync(log);
                         await _liteContext.SaveChangesAsync();
                         await _liteContext.DisposeAsync();
-                        var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
+                        var answer = attach["filpCardInfo"]!["answer"]!.ToString();
                         mcb.Plain("文字翻牌：" + attach["filpCardInfo"]!["question"]);
                         mcb.Plain("\n回复：" + answer.ToString());
                     }
@@ -178,17 +180,56 @@ namespace Helper
                 return;
             }
         }
-        public static async Task LiveMsgReceiver(string str)
+        public static void LiveMsgReceiver(string str)
         {
-            _liteContext = new();
-            Logs log = new()
+            try
             {
-                message = str,
-                createDate = DateTime.Now,
-            };
-            await _liteContext.Logs.AddAsync(log);
-            await _liteContext.SaveChangesAsync();
-            await _liteContext.DisposeAsync();
+                var result = JObject.Parse(str);
+                var custom = JObject.Parse(result["custom"]?.ToString() ?? "");
+                var roleId = custom["roleId"]?.ToInt();
+                var messageType = result["type"]?.ToString();
+                double timeVal = double.Parse(result["time"]?.ToString() ?? "0");
+                var time = Convert.ToDateTime(DateTime.Parse(DateTime.Now.ToString("1970-01-01 08:00:00")).AddMilliseconds(timeVal).ToString());//返回为时间格式;
+                if (roleId != 3) return;
+                MessageChainBuilder mcb = new();
+                mcb.Plain($"【{Const.ConfigModel.KD.name}|直播间】\n【{time}】\n{result["fromNick"]}:");
+                if (messageType == "text")
+                    mcb.Plain(result["text"]?.ToString());
+                if (!Const.MiraiConfig.useMirai) return;
+                if (Const.ConfigModel.KD.forwardGroup)
+                {
+                    string group = !string.IsNullOrWhiteSpace(Const.ConfigModel.KD.group) ? Const.ConfigModel.KD.group : Const.ConfigModel.QQ.group;
+                    List<string> groups = group.ToListV2();
+                    MsgModel msgModel = new()
+                    {
+                        MsgChain = mcb.Build(),
+                        Ids = groups,
+                    };
+                    msgModel.AddMsg();
+                }
+                if (Const.ConfigModel.KD.forwardQQ)
+                {
+                    MsgModel msgModel = new();
+                    msgModel.Type = 2;
+                    msgModel.MsgChain = mcb.Build();
+                    if (!string.IsNullOrWhiteSpace(Const.ConfigModel.KD.qq))
+                    {
+                        var qqs = Const.ConfigModel.KD.qq.ToListV2();
+                        msgModel.Ids = qqs;
+                    }
+                    else if (!string.IsNullOrWhiteSpace(Const.ConfigModel.QQ.admin))
+                    {
+                        msgModel.Id = Const.ConfigModel.QQ.admin;
+                    }
+                    msgModel.AddMsg();
+                }
+                return;
+            }
+            catch (Exception e)
+            {
+                e.AddLog();
+                return;
+            }
         }
     }
 }
