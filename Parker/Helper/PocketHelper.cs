@@ -108,15 +108,6 @@ namespace Helper
                     //ÎÄ×Ö·­ÅÆ
                     else if (MsgType.Contains(messageType) && messageType == "FLIPCARD")
                     {
-                        _liteContext = new();
-                        Logs log = new()
-                        {
-                            message = attach.ToString(),
-                            createDate = DateTime.Now,
-                        };
-                        await _liteContext.Logs.AddAsync(log);
-                        await _liteContext.SaveChangesAsync();
-                        await _liteContext.DisposeAsync();
                         var answer = attach["filpCardInfo"]!["answer"]!.ToString();
                         mcb.Plain("ÎÄ×Ö·­ÅÆ£º" + attach["filpCardInfo"]!["question"]);
                         mcb.Plain("\n»Ø¸´£º" + answer.ToString());
