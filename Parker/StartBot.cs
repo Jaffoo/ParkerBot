@@ -28,7 +28,7 @@ namespace ParkerBot
                         if (fromType == 1)
                             await Pocket.PocketMessageReceiver(msg);
                         if (fromType == 2)
-                            await Pocket.LiveMsgReceiver(msg);
+                            Pocket.LiveMsgReceiver(msg);
                     };
                 });
                 HasWebSocket = true;

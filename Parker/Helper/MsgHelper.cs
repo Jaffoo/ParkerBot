@@ -369,7 +369,8 @@ namespace Helper
                         {
                             _liteContext = new();
                             var log = await _liteContext.Logs.OrderByDescending(t => t.createDate).FirstOrDefaultAsync();
-                            if (log?.message.Length > 500) log.message = log.message.Substring(0, 100);
+                            if (log == null) return;
+                            if (log.message.Length > 500) log.message = log.message.Substring(0, 100);
                             MessageChain mc = new()
                             {
                                 new PlainMessage("时间：" + log?.createDate.ToString("yyyy-MM-dd HH:mm:ss") ?? ""),
