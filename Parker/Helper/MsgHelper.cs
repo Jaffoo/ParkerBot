@@ -170,7 +170,7 @@ namespace Helper
 
                     if (msgText.Contains("问：") && IsAuth("问答", msgModel.fromId))
                     {
-                        var result = await QQFunction.ChatGPTV2(msgText.Replace("问：", ""));
+                        var result = await QQFunction.ChatGPT(msgText.Replace("问：", ""));
                         if (!string.IsNullOrWhiteSpace(result))
                         {
                             result = result.Replace(@"\n", Environment.NewLine).Replace("\\\"", "\"");
@@ -369,7 +369,7 @@ namespace Helper
                         {
                             _liteContext = new();
                             var log = await _liteContext.Logs.OrderByDescending(t => t.createDate).FirstOrDefaultAsync();
-                            if (log.message.Length > 500) log.message = log.message.Substring(0, 100);
+                            if (log?.message.Length > 500) log.message = log.message.Substring(0, 100);
                             MessageChain mc = new()
                             {
                                 new PlainMessage("时间：" + log?.createDate.ToString("yyyy-MM-dd HH:mm:ss") ?? ""),
@@ -728,7 +728,7 @@ namespace Helper
                     }
                     if (msgText.Contains("问："))
                     {
-                        var result = await QQFunction.ChatGPTV2(msgText.Replace("问：", ""));
+                        var result = await QQFunction.ChatGPT(msgText.Replace("问：", ""));
                         if (!string.IsNullOrWhiteSpace(result))
                         {
                             result = result.Replace(@"\n", Environment.NewLine).Replace("\\\"", "\"");
