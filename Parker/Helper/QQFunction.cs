@@ -14,7 +14,7 @@ namespace ParkerBot.Helper
         public static List<int> Enables => Const.ConfigModel.QQ.funcEnable.ToIntList();
         private static readonly HttpHelper _httpHelper = new("https://xiaobai.klizi.cn/API");
         public static string ChatGPTKey => Const.ConfigModel.QQ.gptKey;
-
+        public static object LastMsg => new { role = "assistant", content = "" };
         #region chatgpt3.5
         /// <summary>
         /// chatgpt
@@ -30,11 +30,15 @@ namespace ParkerBot.Helper
                 var obj = new
                 {
                     model = "gpt-3.5-turbo",
-                    messages = new List<object>() { new
+                    messages = new List<object>()
                     {
-                        role="user",
-                        content=question
-                    } }
+                        LastMsg,
+                        new
+                        {
+                            role="user",
+                            content=question
+                        }
+                    }
                 };
                 var body = JsonConvert.SerializeObject(obj);
                 var request = new HttpRequestMessage
