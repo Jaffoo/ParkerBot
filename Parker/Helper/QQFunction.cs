@@ -27,18 +27,17 @@ namespace ParkerBot.Helper
             {
                 if (string.IsNullOrWhiteSpace(question)) return "请输入问题！";
                 var url = "https://api.chatanywhere.com.cn/v1/chat/completions";
+                var objs = new List<object>();
+                objs.AddRange(LastMsg);
+                objs.Add(new
+                {
+                    role = "user",
+                    content = question
+                });
                 var obj = new
                 {
                     model = "gpt-3.5-turbo",
-                    messages = new List<object>()
-                    {
-                        LastMsg,
-                        new
-                        {
-                            role="user",
-                            content=question
-                        }
-                    }
+                    messages = objs
                 };
                 var body = JsonConvert.SerializeObject(obj);
                 var request = new HttpRequestMessage
@@ -65,8 +64,8 @@ namespace ParkerBot.Helper
                         {
                             foreach (JObject item in list)
                             {
-                                str.Append("答案" + (item["index"]?.ToInt() + 1) + "：\n" + item["message"]!["content"]!.ToString());
-                                if (LastMsg.Count > 10) LastMsg = new();
+                                str.Append(item["message"]!["content"]!.ToString());
+                                if (LastMsg.Count > 100) LastMsg = new();
                                 LastMsg.Add(new
                                 {
                                     role = "assistant",
