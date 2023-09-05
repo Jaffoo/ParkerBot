@@ -2,4 +2,4 @@ INSERT INTO config ("Name","Key","Value","ParentId") SELECT '消息通知','Noti
 INSERT INTO config ("Name","Key","Value","ParentId") SELECT '查缩写','查缩写','查缩写',9 WHERE NOT EXISTS (SELECT 1 FROM config WHERE ParentId=9 AND "Key"='查缩写');
 DELETE FROM config WHERE "Key"='舔狗';
 INSERT INTO config ("Name","Key","Value","ParentId") SELECT '舔狗文案','舔狗文案','舔狗文案',9 WHERE NOT EXISTS (SELECT 1 FROM config WHERE ParentId=9 AND "Key"='舔狗文案');
-INSERT INTO config ("Name","Key","Value","ParentId") SELECT 'ChatGPT','ChatGPT','sk-8Ci1V7sLkwqDIF1lCqYdAzNN5QE2yVsULUUu4y1oAjXnFOUC',14 WHERE NOT EXISTS (SELECT 1 FROM config WHERE ParentId=14 AND "Key"='ChatGPT');
+INSERT INTO config ("Name","Key","Value","ParentId") SELECT 'GptKey','GptKey','sk-8Ci1V7sLkwqDIF1lCqYdAzNN5QE2yVsULUUu4y1oAjXnFOUC',14 WHERE NOT EXISTS (SELECT 1 FROM config WHERE ParentId=14 AND "Key"='GptKey');
