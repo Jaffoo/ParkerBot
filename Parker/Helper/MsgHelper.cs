@@ -221,7 +221,7 @@ namespace Helper
                             "\n4、发送消息：\n#发送#{群/好友}#文字/图片/语音/视频/图文/{qq号/群号}/{文字/图片链接/{文字}-{图片链接}}" +
                             "\n#微博用户搜索#{关键词}\n#关注微博用户#{用户id}\n#添加/删除微博关键词#{词}\n#重置微博关键词" +
                             "\n5、功能开关：\n#开启/关闭模块{模块名称}\n#开启/关闭转发#{模块}#qq/群\n#修改转发#{模块}#qq/群#{值}\n6、管理员：\n#添加/删除管理员#{qq}\n#删除全部管理员" +
-                            "\n6、系统功能：\n#SQL#{sql}\n#清空聊天记录";
+                            "\n6、系统功能：\n#SQL#{sql}\n#清空聊天记录\n#修改#key/id#{key/id}#{value}";
                             await fmr.SendMessageAsync(menu);
                             return;
                         }
@@ -460,6 +460,66 @@ namespace Helper
                             var sql = "delete from message;";
                             var res = await _liteContext.Database.ExecuteSqlRawAsync(sql);
                             await fmr.SendMessageAsync("清空成功");
+                            return;
+                        }
+                        if (msgText.Contains("#修改#key#"))
+                        {
+                            var words = msgText.Replace("#修改#key#", "");
+                            if (string.IsNullOrWhiteSpace(words))
+                            {
+                                await fmr.SendMessageAsync("格式错误！");
+                                return;
+                            }
+                            var list = words.Split('#');
+                            if (list.Length != 2)
+                            {
+                                await fmr.SendMessageAsync("格式错误！");
+                                return;
+                            }
+                            var key = list[0];
+                            var value = list[1];
+                            _liteContext = new();
+                            var model = _liteContext.Config.FirstOrDefault(t => t.key == key);
+                            if (model == null)
+                            {
+                                await fmr.SendMessageAsync("key不存在！");
+                                return;
+                            }
+                            var old = model.value;
+                            model.value = value;
+                            _liteContext.Update(model);
+                            _liteContext.SaveChanges();
+                            await fmr.SendMessageAsync($"【{key}】值已修改。{old} -> {value}");
+                            return;
+                        }
+                        if (msgText.Contains("#修改#id#"))
+                        {
+                            var words = msgText.Replace("#修改#id#", "");
+                            if (string.IsNullOrWhiteSpace(words))
+                            {
+                                await fmr.SendMessageAsync("格式错误！");
+                                return;
+                            }
+                            var list = words.Split('#');
+                            if (list.Length != 2)
+                            {
+                                await fmr.SendMessageAsync("格式错误！");
+                                return;
+                            }
+                            var id = list[0];
+                            var value = list[1];
+                            _liteContext = new();
+                            var model = _liteContext.Config.FirstOrDefault(t => t.id == id.ToInt());
+                            if (model == null)
+                            {
+                                await fmr.SendMessageAsync("数据不存在！");
+                                return;
+                            }
+                            var old = model.value;
+                            model.value = value;
+                            _liteContext.Update(model);
+                            _liteContext.SaveChanges();
+                            await fmr.SendMessageAsync($"id:{id}【{model.key}】值已修改。{old} -> {value}");
                             return;
                         }
                     }
