@@ -14,7 +14,7 @@ namespace ParkerBot.Helper
         public static List<int> Enables => Const.ConfigModel.QQ.funcEnable.ToIntList();
         private static readonly HttpHelper _httpHelper = new("https://xiaobai.klizi.cn/API");
         public static string ChatGPTKey => Const.ConfigModel.QQ.gptKey;
-        public static object LastMsg => new { role = "assistant", content = "" };
+        public static List<object> LastMsg = new();
         #region chatgpt3.5
         /// <summary>
         /// chatgpt
@@ -65,7 +65,13 @@ namespace ParkerBot.Helper
                         {
                             foreach (JObject item in list)
                             {
-                                str.Append("答案" + item["index"] + "：" + item["message"]!["content"]!.ToString());
+                                str.Append("答案" + (item["index"]?.ToInt() + 1) + "：\n" + item["message"]!["content"]!.ToString());
+                                if (LastMsg.Count > 10) LastMsg = new();
+                                LastMsg.Add(new
+                                {
+                                    role = "assistant",
+                                    content = item["message"]!["content"]
+                                });
                             }
                         }
                     }
