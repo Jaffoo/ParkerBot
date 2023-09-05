@@ -1,4 +1,6 @@
-﻿using NetDimension.NanUI.Browser.ResourceHandler;
+﻿using Mirai.Net.Data.Messages;
+using NetDimension.NanUI.Browser.ResourceHandler;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
 using System.Text;
@@ -25,10 +27,16 @@ namespace ParkerBot.Helper
             {
                 if (string.IsNullOrWhiteSpace(question)) return "请输入问题！";
                 var url = "https://api.chatanywhere.com.cn/v1/chat/completions";
-                var body = @"{" + "\n" +
-    @"  ""model"": ""gpt-3.5-turbo""," + "\n" +
-    @"  ""messages"": [{""role"": ""user"", ""content"": ""dotnet写一个httpclient通用帮助类""}]" + "\n" +
-    @"}";
+                var obj = new
+                {
+                    model = "gpt-3.5-turbo",
+                    messages = new List<object>() { new
+                    {
+                        role="user",
+                        content=question
+                    } }
+                };
+                var body = JsonConvert.SerializeObject(obj);
                 var request = new HttpRequestMessage
                 {
                     Method = HttpMethod.Post,
