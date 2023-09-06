@@ -1,4 +1,5 @@
-﻿using Mirai.Net.Data.Messages;
+﻿using Manganese.Array;
+using Mirai.Net.Data.Messages;
 using NetDimension.NanUI.Browser.ResourceHandler;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -14,21 +15,21 @@ namespace ParkerBot.Helper
         public static List<int> Enables => Const.ConfigModel.QQ.funcEnable.ToIntList();
         private static readonly HttpHelper _httpHelper = new("https://xiaobai.klizi.cn/API");
         public static string ChatGPTKey => Const.ConfigModel.QQ.gptKey;
-        public static List<object> LastMsg = new();
+        public static Dictionary<string, List<object>> LastMsg = new();
         #region chatgpt3.5
         /// <summary>
         /// chatgpt
         /// </summary>
         /// <param name="question"></param>
         /// <returns></returns>
-        public static async Task<string> ChatGPT(string question)
+        public static async Task<string> ChatGPT(string question, string qq)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(question)) return "请输入问题！";
                 var url = "https://api.chatanywhere.com.cn/v1/chat/completions";
                 var objs = new List<object>();
-                objs.AddRange(LastMsg);
+                if (LastMsg.ContainsKey(qq)) objs.AddRange(LastMsg[qq]);
                 objs.Add(new
                 {
                     role = "user",
@@ -65,12 +66,24 @@ namespace ParkerBot.Helper
                             foreach (JObject item in list)
                             {
                                 str.Append(item["message"]!["content"]!.ToString());
-                                if (LastMsg.Count > 100) LastMsg = new();
-                                LastMsg.Add(new
+                                if (LastMsg.ContainsKey(qq))
                                 {
-                                    role = "assistant",
-                                    content = item["message"]!["content"]
-                                });
+                                    if (LastMsg[qq].Count > 10) LastMsg[qq].Clear();
+                                    LastMsg[qq].Add(new
+                                    {
+                                        role = "assistant",
+                                        content = item["message"]!["content"]
+                                    });
+                                }
+                                else
+                                {
+                                    LastMsg.Add(qq, new());
+                                    LastMsg[qq].Add(new
+                                    {
+                                        role = "assistant",
+                                        content = item["message"]!["content"]
+                                    });
+                                }
                             }
                         }
                     }
