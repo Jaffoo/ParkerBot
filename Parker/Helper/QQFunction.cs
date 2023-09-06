@@ -27,7 +27,7 @@ namespace ParkerBot.Helper
             try
             {
                 if (string.IsNullOrWhiteSpace(question)) return "请输入问题！";
-                var url = "https://api.chatanywhere.com.cn/v1/chat/completions";
+                var url = "https://api.chatanywhere.cn/v1/chat/completions";
                 var objs = new List<object>();
                 if (LastMsg.ContainsKey(qq)) objs.AddRange(LastMsg[qq]);
                 objs.Add(new
