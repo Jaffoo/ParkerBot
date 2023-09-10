@@ -14,12 +14,8 @@ using Newtonsoft.Json.Linq;
 using System.Text;
 using Mirai.Net.Data.Events.Concretes.Message;
 using ParkerBot.Helper;
-using Microsoft.VisualBasic.Devices;
 using Newtonsoft.Json;
-using Vanara.Extensions;
 using FluentScheduler;
-using static System.Net.Mime.MediaTypeNames;
-using static Vanara.PInvoke.User32;
 
 namespace Helper
 {
