@@ -67,7 +67,7 @@ namespace ParkerBot
         {
             try
             {
-                using var bot = new MiraiBot
+                var bot = new MiraiBot
                 {
                     Address = Const.MiraiConfig.address,
                     QQ = Const.MiraiConfig.QQNum,

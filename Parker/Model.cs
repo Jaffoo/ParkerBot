@@ -33,6 +33,7 @@ namespace ParkerBot
         public string sensitive { get; set; } = string.Empty;
         public string action { get; set; } = string.Empty;
         public bool debug { get; set; } = false;
+        public string gptKey { get; set; } = string.Empty;
     }
     public class WB
     {

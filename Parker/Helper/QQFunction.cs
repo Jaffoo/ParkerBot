@@ -1,4 +1,10 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Manganese.Array;
+using Mirai.Net.Data.Messages;
+using NetDimension.NanUI.Browser.ResourceHandler;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Web;
 
 namespace ParkerBot.Helper
@@ -8,36 +14,81 @@ namespace ParkerBot.Helper
         public static readonly List<string> Keywrods = new() { "爬", "比心", "丢", "处对象" };
         public static List<int> Enables => Const.ConfigModel.QQ.funcEnable.ToIntList();
         private static readonly HttpHelper _httpHelper = new("https://xiaobai.klizi.cn/API");
-
+        public static string ChatGPTKey => Const.ConfigModel.QQ.gptKey;
+        public static Dictionary<string, List<object>> LastMsg = new();
         #region chatgpt3.5
-        public static async Task<string> ChatGPT(string question)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(question)) return "请输入问题！";
-                string url = "/other/gpt.php?msg=" + HttpUtility.UrlEncode(question);
-                var response = await _httpHelper.GetAsync(url);
-                return response ?? "";
-            }
-            catch (Exception)
-            {
-                return "";
-            }
-        }
-
         /// <summary>
-        /// 支持上下文
+        /// chatgpt
         /// </summary>
         /// <param name="question"></param>
         /// <returns></returns>
-        public static async Task<string> ChatGPTV2(string question)
+        public static async Task<string> ChatGPT(string question, string qq)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(question)) return "请输入问题！";
-                string url = "/chat/gpt3.5-f.php?key=1615842006&msg=" + HttpUtility.UrlEncode(question);
-                var response = await _httpHelper.GetAsync(url);
-                return response ?? "";
+                var url = "https://api.chatanywhere.cn/v1/chat/completions";
+                var objs = new List<object>();
+                if (LastMsg.ContainsKey(qq)) objs.AddRange(LastMsg[qq]);
+                objs.Add(new
+                {
+                    role = "user",
+                    content = question
+                });
+                var obj = new
+                {
+                    model = "gpt-3.5-turbo",
+                    messages = objs
+                };
+                var body = JsonConvert.SerializeObject(obj);
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Post,
+                    RequestUri = new Uri(url),
+                    Content = new StringContent(body)
+                };
+                request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {ChatGPTKey}");
+                client.DefaultRequestHeaders.UserAgent.ParseAdd("Apifox/1.0.0 (https://apifox.com)");
+
+                var response = await client.SendAsync(request);
+                var res = await response.Content.ReadAsStringAsync();
+                var data = JObject.Parse(res);
+                StringBuilder str = new();
+                if (data.ContainsKey("choices"))
+                {
+                    if (data["choices"] != null)
+                    {
+                        var list = JArray.FromObject(data["choices"]!);
+                        if (list.Count > 0)
+                        {
+                            foreach (JObject item in list)
+                            {
+                                str.Append(item["message"]!["content"]!.ToString());
+                                if (LastMsg.ContainsKey(qq))
+                                {
+                                    if (LastMsg[qq].Count > 10) LastMsg[qq].Clear();
+                                    LastMsg[qq].Add(new
+                                    {
+                                        role = "assistant",
+                                        content = item["message"]!["content"]
+                                    });
+                                }
+                                else
+                                {
+                                    LastMsg.Add(qq, new());
+                                    LastMsg[qq].Add(new
+                                    {
+                                        role = "assistant",
+                                        content = item["message"]!["content"]
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+                return str.ToString();
             }
             catch (Exception)
             {

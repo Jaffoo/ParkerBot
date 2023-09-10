@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="wwwroot\pages\assets\index-12e351b4.js" />
-    <None Remove="wwwroot\pages\assets\index-8cc76ab4.css" />
+    <None Remove="wwwroot\pages\assets\index-94702481.css" />
+    <None Remove="wwwroot\pages\assets\index-974053c5.js" />
     <None Remove="wwwroot\pages\favicon.ico" />
     <None Remove="wwwroot\pages\index.html" />
   </ItemGroup>
@@ -27,8 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="wwwroot\pages\assets\index-12e351b4.js" />
-    <EmbeddedResource Include="wwwroot\pages\assets\index-8cc76ab4.css" />
+    <EmbeddedResource Include="wwwroot\pages\assets\index-94702481.css" />
+    <EmbeddedResource Include="wwwroot\pages\assets\index-974053c5.js" />
     <EmbeddedResource Include="wwwroot\pages\favicon.ico" />
     <EmbeddedResource Include="wwwroot\pages\index.html" />
   </ItemGroup>
@@ -38,7 +38,6 @@
     <PackageReference Include="FluentScheduler" Version="5.5.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.9" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0" />
-    <PackageReference Include="MiniExcel" Version="1.31.0" />
     <PackageReference Include="Mirai.Net" Version="2.5.1" />
     <PackageReference Include="NetDimension.NanUI" Version="0.9.100" />
     <PackageReference Include="NetDimension.NanUI.Runtime" Version="100.0.24.1" />
