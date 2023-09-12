@@ -15,9 +15,9 @@ namespace ParkerBot
         {
             get
             {
-                if (Debugger.IsAttached)
-                    return "http://localhost:5173/";
-                else
+                //if (Debugger.IsAttached)
+                //    return "http://localhost:5173/";
+                //else
                     return "http://parkerbot/";
             }
         }
