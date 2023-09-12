@@ -96,7 +96,6 @@ namespace ParkerBot.Helper
             }
         }
         #endregion
-
         #region 小爱闲聊
         public static async Task<string> XiaoAi(string question)
         {
