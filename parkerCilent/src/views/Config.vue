@@ -70,18 +70,22 @@
                         <el-form-item label="成员撤回消息">
                             <el-input></el-input>
                         </el-form-item>
+                        <el-form-item label="ChatGpt密钥">
+                            <el-input v-model="config.QQ.gptKey" placeholder="启用【问答功能时需要提供】"></el-input>
+                        </el-form-item>
                     </el-collapse-item>
                     <el-collapse-item title="微博" v-if="eable.wb" name="wb">
-                        <el-form-item label="用户ID" prop="WB.url" :rules="rules.input">
+                        <el-form-item label="主要用户" prop="WB.url" :rules="rules.input">
                             <el-input v-model="config.WB.url" placeholder="多个用英文,分隔"></el-input>
+                            <span style="color:red">*用户微博人脸识别</span>
                         </el-form-item>
-                        <el-form-item label="吃瓜用户ID">
+                        <el-form-item label="关注用户">
                             <el-input v-model="config.WB.cg" placeholder="多个用英文,分隔"></el-input>
                             <span style="color:red">*多个用英文逗号,分隔</span>
                         </el-form-item>
-                        <el-form-item label="吃瓜微博过滤">
-                            <el-input v-model="config.WB.keyword" placeholder="关键词"></el-input>
-                            <span style="color:red">*多个用英文逗号,分隔。当微博文案中含有这些词汇是监听生效</span>
+                        <el-form-item label="微博关键词">
+                            <el-input v-model="config.WB.keyword" placeholder="多个用英文逗号,分隔"></el-input>
+                            <span style="color:red">*当【关注用户】发的微博文案中含有这些词汇时监听生效</span>
                         </el-form-item>
                         <el-form-item label="监听间隔" prop="WB.timeSpan" :rules="rules.input">
                             <el-input type="number" v-model="config.WB.timeSpan" placeholder="单位分钟"></el-input>
@@ -355,7 +359,8 @@ const config = ref({
         sensitive: "",
         action: '',
         actions: Array<string>(),
-        debug: false
+        debug: false,
+        gptKey: ''
     },
     WB: {
         url: '',
@@ -742,7 +747,7 @@ const searchXox = async () => {
         searchModel.value.loading = false;
     })
     if (res.data.success) {
-        var data =res.data.data;
+        var data = res.data.data;
         config.value.KD.name = data.name;
         config.value.KD.liveRoomId = data.liveId;
         config.value.KD.serverId = data.serverId;

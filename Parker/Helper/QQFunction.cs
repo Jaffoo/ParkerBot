@@ -24,6 +24,7 @@ namespace ParkerBot.Helper
         /// <returns></returns>
         public static async Task<string> ChatGPT(string question, string qq)
         {
+            if (string.IsNullOrWhiteSpace(ChatGPTKey)) return "请配置ChatGPT密钥！";
             try
             {
                 if (string.IsNullOrWhiteSpace(question)) return "请输入问题！";
