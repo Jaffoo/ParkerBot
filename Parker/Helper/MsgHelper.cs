@@ -164,7 +164,7 @@ namespace Helper
                         }
                     }
 
-                    if (msgText.Contains("问：") && IsAuth("问答", msgModel.fromId))
+                    if ((msgText.Contains("问：") || msgText.Contains("问:")) && IsAuth("问答", msgModel.fromId))
                     {
                         var result = await QQFunction.ChatGPT(msgText.Replace("问：", ""), msgModel.fromId);
                         if (!string.IsNullOrWhiteSpace(result))
@@ -783,7 +783,7 @@ namespace Helper
                             return;
                         }
                     }
-                    if (msgText.Contains("问："))
+                    if ((msgText.Contains("问：") || msgText.Contains("问:")))
                     {
                         var result = await QQFunction.ChatGPT(msgText.Replace("问：", ""), fmr.Sender.Id);
                         if (!string.IsNullOrWhiteSpace(result))
