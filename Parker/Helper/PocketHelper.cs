@@ -1,8 +1,6 @@
 using Mirai.Net.Utils.Scaffolds;
 using Newtonsoft.Json.Linq;
 using ParkerBot;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
-using System.Xml.Linq;
 
 namespace Helper
 {
@@ -109,8 +107,8 @@ namespace Helper
                     else if (MsgType.Contains(messageType) && messageType == "FLIPCARD")
                     {
                         var answer = attach["filpCardInfo"]!["answer"]!.ToString();
+                        mcb.Plain(answer.ToString());
                         mcb.Plain("Œƒ◊÷∑≠≈∆£∫" + attach["filpCardInfo"]!["question"]);
-                        mcb.Plain("\nªÿ∏¥£∫" + answer.ToString());
                     }
                     //”Ô“Ù∑≠≈∆
                     else if (MsgType.Contains(messageType) && messageType == "FLIPCARD_AUDIO")

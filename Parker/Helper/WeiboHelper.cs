@@ -57,48 +57,49 @@ namespace Helper
                             //需要发送通知则发送通知
                             if (index == 0)
                             {
+                                var mcb = new MessageChainBuilder();
+                                //预留是否要at所有人
+                                //if (false)
+                                //{
+                                //    mcb.AtAll();
+                                //}
+
+                                if (mblogtype == 2)
+                                {
+                                    mcb.Plain($"{blog["user"]!["screen_name"]}发微博啦！\n");
+                                    //获取第一张图片发送
+                                    var first = blog["pic_infos"]![JArray.FromObject(blog["pic_ids"]!)[0]!.ToString()]!["large"]!["url"]!.ToString();
+                                    mcb.Plain(blog["text_raw"]!.ToString()).ImageFromUrl(first);
+                                }
+                                else if (mblogtype == 0)
+                                {
+                                    mcb.Plain($"{blog["user"]!["screen_name"]}发微博啦！\n");
+                                    var pageInfo = (JObject?)blog["page_info"];
+                                    if (pageInfo != null)
+                                    {
+                                        var objType = pageInfo["object_type"]!.ToString();
+                                        if (objType == "video")
+                                        {
+                                            mcb.Plain(blog["text_raw"]!.ToString());
+                                            mcb.Plain("视频链接：" + pageInfo["media_info"]!["h5_url"]!);
+                                        }
+                                    }
+                                }
+                                else if (mblogtype == 1)
+                                {
+                                    mcb.Plain($"{blog["user"]!["screen_name"]}转发了微博\n");
+                                    mcb.Plain(blog["text_raw"]!.ToString());
+                                }
+                                else
+                                {
+                                    mcb.Plain($"{blog["user"]!["screen_name"]}发微博啦！\n");
+                                    mcb.Plain(blog["text_raw"]?.ToString() ?? "");
+                                }
+                                mcb.Plain($"\n链接：https://m.weibo.cn/status/{blog["mid"]}");
                                 if (Const.ConfigModel.WB.forwardGroup)
                                 {
                                     var groups = string.IsNullOrWhiteSpace(Const.ConfigModel.WB.group) ? Const.ConfigModel.QQ.group : Const.ConfigModel.WB.group;
                                     var glist = groups.ToListV2();
-                                    var mcb = new MessageChainBuilder();
-                                    //预留是否要at所有人
-                                    //if (false)
-                                    //{
-                                    //    mcb.AtAll();
-                                    //}
-
-                                    if (mblogtype == 2)
-                                    {
-                                        mcb.Plain($"{blog["user"]!["screen_name"]}发微博啦！(https://weibo.com/{blog["user"]!["id"]}/{blog["mid"]})\n");
-                                        //获取第一张图片发送
-                                        var first = blog["pic_infos"]![JArray.FromObject(blog["pic_ids"]!)[0]!.ToString()]!["large"]!["url"]!.ToString();
-                                        mcb.Plain(blog["text_raw"]!.ToString()).ImageFromUrl(first);
-                                    }
-                                    else if (mblogtype == 0)
-                                    {
-                                        mcb.Plain($"{blog["user"]!["screen_name"]}发微博啦！(https://weibo.com/{blog["user"]!["id"]}/{blog["mid"]})\n");
-                                        var pageInfo = (JObject?)blog["page_info"];
-                                        if (pageInfo != null)
-                                        {
-                                            var objType = pageInfo["object_type"]!.ToString();
-                                            if (objType == "video")
-                                            {
-                                                mcb.Plain(blog["text_raw"]!.ToString());
-                                                mcb.Plain("视频链接：" + pageInfo["media_info"]!["h5_url"]!);
-                                            }
-                                        }
-                                    }
-                                    else if (mblogtype == 1)
-                                    {
-                                        mcb.Plain($"{blog["user"]!["screen_name"]}转发微博(https://weibo.com/{blog["user"]!["id"]}/{blog["mid"]})\n");
-                                        mcb.Plain(blog["text_raw"]!.ToString());
-                                    }
-                                    else
-                                    {
-                                        mcb.Plain($"{blog["user"]!["screen_name"]}发微博啦！(https://weibo.com/{blog["user"]!["id"]}/{blog["mid"]})\n");
-                                        mcb.Plain(blog["text_raw"]?.ToString() ?? "");
-                                    }
                                     foreach (var group in glist)
                                     {
                                         await Msg.SendGroupMsg(group, mcb.Build());
@@ -108,31 +109,6 @@ namespace Helper
                                 {
                                     var qqs = string.IsNullOrWhiteSpace(Const.ConfigModel.WB.qq) ? Msg.Admin : Const.ConfigModel.WB.qq;
                                     var qlist = qqs.ToListV2();
-                                    var mcb = new MessageChainBuilder();
-                                    mcb.Plain($"{blog["user"]!["screen_name"]}发微博啦！");
-                                    if (mblogtype == 2)
-                                    {
-                                        //获取第一张图片发送
-                                        var first = blog["pic_infos"]![JArray.FromObject(blog["pic_ids"]!)[0]!.ToString()]!["large"]!["url"]!.ToString();
-                                        mcb.Plain(blog["text_raw"]!.ToString()).ImageFromUrl(first);
-                                    }
-                                    else if (mblogtype == 0)
-                                    {
-                                        var pageInfo = (JObject?)blog["page_info"];
-                                        if (pageInfo != null)
-                                        {
-                                            var objType = pageInfo["object_type"]!.ToString();
-                                            if (objType == "video")
-                                            {
-                                                mcb.Plain(blog["text_raw"]!.ToString());
-                                                mcb.Plain("视频链接：" + pageInfo["media_info"]!["h5_url"]!);
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        mcb.Plain("未知类型微博，更多类型通知尽请期待！");
-                                    }
                                     foreach (var qq in qlist)
                                     {
                                         await Msg.SendFriendMsg(qq, mcb.Build());
@@ -202,27 +178,36 @@ namespace Helper
                             mcb.Plain($"\n链接：https://weibo.com/{blog["user"]!["id"]}/{blog["mid"]}");
                             if (mblogtype == 2)
                             {
+                                mcb.Plain($"{blog["user"]!["screen_name"]}发微博啦！\n");
                                 //获取第一张图片发送
                                 var first = blog["pic_infos"]![JArray.FromObject(blog["pic_ids"]!)[0]!.ToString()]!["large"]!["url"]!.ToString();
-                                mcb.Plain(blogContent).ImageFromUrl(first);
+                                mcb.Plain(blog["text_raw"]!.ToString()).ImageFromUrl(first);
                             }
                             else if (mblogtype == 0)
                             {
+                                mcb.Plain($"{blog["user"]!["screen_name"]}发微博啦！\n");
                                 var pageInfo = (JObject?)blog["page_info"];
                                 if (pageInfo != null)
                                 {
                                     var objType = pageInfo["object_type"]!.ToString();
                                     if (objType == "video")
                                     {
-                                        mcb.Plain(blogContent);
+                                        mcb.Plain(blog["text_raw"]!.ToString());
                                         mcb.Plain("视频链接：" + pageInfo["media_info"]!["h5_url"]!);
                                     }
                                 }
                             }
+                            else if (mblogtype == 1)
+                            {
+                                mcb.Plain($"{blog["user"]!["screen_name"]}转发了微博\n");
+                                mcb.Plain(blog["text_raw"]!.ToString());
+                            }
                             else
                             {
-                                mcb.Plain("未知类型微博，更多类型通知尽请期待！");
+                                mcb.Plain($"{blog["user"]!["screen_name"]}发微博啦！\n");
+                                mcb.Plain(blog["text_raw"]?.ToString() ?? "");
                             }
+                            mcb.Plain($"\n链接：https://m.weibo.cn/status/{blog["mid"]}");
                             //需要发送通知则发送通知
                             if (Const.ConfigModel.WB.forwardGroup)
                             {
