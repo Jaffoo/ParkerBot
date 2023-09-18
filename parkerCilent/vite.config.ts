@@ -23,5 +23,12 @@ export default defineConfig({
   },
   build:{
     chunkSizeWarningLimit: 2048*2,
+    rollupOptions:{
+      output:{
+        entryFileNames:'index.js',
+        assetFileNames:'[name][extname]',
+        chunkFileNames:'[name].js'
+      }
+    }
   }
 })
