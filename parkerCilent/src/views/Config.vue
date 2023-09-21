@@ -729,6 +729,10 @@ const groups = ref(
     }, {
         label: 'BEJ48',
         value: 'BEJ48',
+        children: [
+            { value: "TEAM B", label: "TEAM B" },
+            { value: "TEAM E", label: "TEAM E" }
+        ]
     }, {
         label: 'CKG48',
         value: 'CKG48',
