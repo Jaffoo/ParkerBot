@@ -32,8 +32,12 @@ namespace Helper
                 foreach (var item in Uids)
                 {
                     index++;
-                    url = "https://xiaobai.klizi.cn/API/other/weibo_jx.php?uid=" + item;
-                    HttpClient httpClient = new();
+                    url = "https://weibo.com/ajax/statuses/mymblog?uid=" + item;
+                    var handler = new HttpClientHandler() { UseCookies = true };
+                    HttpClient httpClient = new(handler);
+                    httpClient.DefaultRequestHeaders.Add("user-agent", @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36 Edg/101.0.1210.53");
+                    httpClient.DefaultRequestHeaders.Add("sec-ch-ua", "\" Not A; Brand\";v=\"99\", \"Chromium\";v=\"101\", \"Microsoft Edge\";v=\"101\"");
+                    httpClient.DefaultRequestHeaders.Add("sec-ch-ua-platform", "Windows");
                     var res = await httpClient.GetAsync(url);
                     var content = await res.Content.ReadAsStringAsync();
                     var data = JObject.Parse(content.Replace("&lt;", ""));
