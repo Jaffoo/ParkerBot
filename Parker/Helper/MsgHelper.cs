@@ -16,6 +16,7 @@ using Mirai.Net.Data.Events.Concretes.Message;
 using ParkerBot.Helper;
 using Newtonsoft.Json;
 using FluentScheduler;
+using System.Data;
 
 namespace Helper
 {
@@ -205,7 +206,7 @@ namespace Helper
             {
                 //消息链
                 var msgChain = fmr.MessageChain;
-                var msgText = fmr.MessageChain.GetPlainMessage().Replace(" ","");
+                var msgText = fmr.MessageChain.GetPlainMessage().Replace(" #", "");
                 try
                 {
                     if (Admin == fmr.Sender.Id)
@@ -217,7 +218,7 @@ namespace Helper
                             "\n4、发送消息：\n#发送#{群/好友}#文字/图片/语音/视频/图文/{qq号/群号}/{文字/图片链接/{文字}-{图片链接}}" +
                             "\n#微博用户搜索#{关键词}\n#关注微博用户#{用户id}\n#添加/删除微博关键词#{词}\n#重置微博关键词" +
                             "\n5、功能开关：\n#开启/关闭模块{模块名称}\n#开启/关闭转发#{模块}#qq/群\n#修改转发#{模块}#qq/群#{值}\n6、管理员：\n#添加/删除管理员#{qq}\n#删除全部管理员" +
-                            "\n6、系统功能：\n#SQL#{sql}\n#清空聊天记录\n#修改#key/id#{key/id}#{value}";
+                            "\n6、系统功能：\n#查询#{sql}\n#SQL#{sql}\n#清空聊天记录\n#修改#key/id#{key/id}#{value}";
                             await fmr.SendMessageAsync(menu);
                             return;
                         }
@@ -448,6 +449,37 @@ namespace Helper
                             _liteContext = new();
                             var res = await _liteContext.Database.ExecuteSqlRawAsync(sql);
                             await fmr.SendMessageAsync("执行成功，受影响行数：" + res + "行；");
+                            return;
+                        }
+                        if (msgText.Contains("#查询#"))
+                        {
+                            var sql = msgText.Replace("#查询#", "");
+                            if (string.IsNullOrWhiteSpace(sql))
+                            {
+                                await fmr.SendMessageAsync("sql语句为空");
+                                return;
+                            }
+                            _liteContext = new();
+                            var cmd = _liteContext.Database.GetDbConnection().CreateCommand();
+                            cmd.CommandText = sql;
+                            cmd.CommandType = CommandType.Text;
+                            await _liteContext.Database.OpenConnectionAsync();
+                            var da = await cmd.ExecuteReaderAsync();
+                            var dt = new DataTable();
+                            dt.Load(da);
+                            await fmr.SendMessageAsync("查询成功，共" + dt.Rows.Count + "行数据");
+                            int index = 1;
+                            foreach (DataRow item in dt.Rows)
+                            {
+                                string msg = "";
+                                foreach (DataColumn col in dt.Columns)
+                                {
+                                    msg += $"[{col.ColumnName}]:[{item[col]}] ";
+                                }
+                                await fmr.SendMessageAsync($"{index}:{msg.TrimEnd()}");
+                                index++;
+                            }
+
                             return;
                         }
                         if (msgText.Contains("#清空聊天记录"))
