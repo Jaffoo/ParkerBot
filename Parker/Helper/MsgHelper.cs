@@ -78,7 +78,7 @@ namespace Helper
                     if (!Group.Contains(gmr.GroupId)) return;
                     //消息链
                     var msgChain = gmr.MessageChain;
-                    var msgText = gmr.MessageChain.GetPlainMessage();
+                    var msgText = gmr.MessageChain.GetPlainMessage().Trim();
                     _liteContext = new();
                     var msgModel = new ParkerBot.Message()
                     {
@@ -205,7 +205,7 @@ namespace Helper
             {
                 //消息链
                 var msgChain = fmr.MessageChain;
-                var msgText = fmr.MessageChain.GetPlainMessage();
+                var msgText = fmr.MessageChain.GetPlainMessage().Replace(" ","");
                 try
                 {
                     if (Admin == fmr.Sender.Id)
