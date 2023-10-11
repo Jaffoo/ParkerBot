@@ -61,7 +61,7 @@
                             </el-select>
                             <span style="color:red">*撤回机器人需要管理员权限，私信需要与机器人为好友</span>
                         </el-form-item>
-                        <el-form-item label="新成员入群">
+                        <!-- <el-form-item label="新成员入群">
                             <el-input></el-input>
                         </el-form-item>
                         <el-form-item label="老成员退群">
@@ -69,7 +69,7 @@
                         </el-form-item>
                         <el-form-item label="成员撤回消息">
                             <el-input></el-input>
-                        </el-form-item>
+                        </el-form-item> -->
                         <el-form-item label="ChatGpt密钥">
                             <el-input v-model="config.QQ.gptKey" placeholder="启用【问答功能时需要提供】"></el-input>
                         </el-form-item>
