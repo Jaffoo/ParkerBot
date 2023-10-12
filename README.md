@@ -16,7 +16,8 @@
 ## 安装教程
 
 1.  由于仓库限制上传文件大小，需要自行下载源码编译。
-2.  编译完成，目录找到ParkerBot.exe，运行即可。
+2.  编译完成（绿色版无需安装），目录找到ParkerBot.exe，运行即可。
+注：如不会编译或者需要安装版，加作者[QQ](https://gitee.com/jaffoo/ParkerBotV2/edit/master/README.md#问题反馈)
 
 ## 配置教程
 
