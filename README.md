@@ -39,7 +39,7 @@
 - 转发至qq，和上述转发至群功能大同小异。
 3. B站
 - 用户ID，需要关注的用户ID，获取方式如图：![输入图片说明](images/Blibiliimage.png)    
-得到连接https://space.bilibili.com/2832224?share_medium=android&share_source=copy_link&bbid=XU94CF99666A8BB964A01C7379DC4B2AC3F95&ts=1689298684776，找到com/后面的数字2832224就是用户ID。
+得到连接（https://space.bilibili.com/2832224?share_medium=android&share_source=copy_link&bbid=XU94CF99666A8BB964A01C7379DC4B2AC3F95&ts=1689298684776）找到com/后面的数字2832224就是用户ID。
 - 监听间隔，和微博一样，不做赘述。
 - 转发至qq群和转发至qq好友和微博一样。
 4. 口袋48
@@ -87,5 +87,4 @@
 
 ## 问题反馈
 1. 此仓库提交Issue。
-2. 加入qq：1615842006，答案：gitee
-- 这里是列表文本
+2. 加作者qq：1615842006，添加答案：gitee
