@@ -5,10 +5,10 @@
 /parkerCilent/auto-imports.d.ts
 /parkerCilent/components.d.ts
 /parkerCilent/package-lock.json
-/Parker/.vs/*
-/Parker/bin/*
-/Parker/obj/*
-/Parker/.vs/ParkerBot/v17/.suo
-/Parker/wwwroot/pages/*
+/**/.vs/*
+/**/bin/*
+/**/obj/*
+/**/.vs/ParkerBot/v17/.suo
+/**/wwwroot/pages/*
 /.vs
 /Parker/Properties/*
