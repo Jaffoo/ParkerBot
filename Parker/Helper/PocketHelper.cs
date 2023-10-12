@@ -108,21 +108,21 @@ namespace Helper
                     {
                         var answer = attach["filpCardInfo"]!["answer"]!.ToString();
                         mcb.Plain(answer.ToString());
-                        mcb.Plain("Œƒ◊÷∑≠≈∆£∫" + attach["filpCardInfo"]!["question"]);
+                        mcb.Plain("\n∑€ÀøÃ·Œ £∫" + attach["filpCardInfo"]!["question"]);
                     }
                     //”Ô“Ù∑≠≈∆
                     else if (MsgType.Contains(messageType) && messageType == "FLIPCARD_AUDIO")
                     {
                         var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
                         mcb.VoiceFromUrl(Const.ConfigModel.KD.mP4Domain + answer["url"]);
-                        mcb.Plain("”Ô“Ù∑≠≈∆£∫" + attach["filpCardInfo"]!["question"]);
+                        mcb.Plain("\n∑€ÀøÃ·Œ £∫" + attach["filpCardInfo"]!["question"]);
                     }
                     // ”∆µ∑≠≈∆
                     else if (MsgType.Contains(messageType) && messageType == "FLIPCARD_VIDEO")
                     {
                         var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
                         mcb.Plain(Const.ConfigModel.KD.mP4Domain + answer["url"]);
-                        mcb.Plain(" ”∆µ∑≠≈∆£∫" + attach["filpCardInfo"]!["question"]);
+                        mcb.Plain("\n∑€ÀøÃ·Œ £∫" + attach["filpCardInfo"]!["question"]);
                     }
                     //±Ì«È
                     else if (MsgType.Contains(messageType) && messageType == "EXPRESSIMAGE")
