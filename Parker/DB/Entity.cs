@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ParkerBot
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:命名样式", Justification = "<挂起>")]
     [Table("message")]
     public class Message
     {
@@ -29,6 +29,7 @@ namespace ParkerBot
         public int msgType { get; set; }
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:命名样式", Justification = "<挂起>")]
     [Table("config")]
     public class Config
     {
@@ -40,6 +41,7 @@ namespace ParkerBot
         public int parentId { get; set; }
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:命名样式", Justification = "<挂起>")]
     [Table("idol")]
     public class Idol
     {
@@ -58,6 +60,7 @@ namespace ParkerBot
         public string? channelId { get; set; }
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:命名样式", Justification = "<挂起>")]
     [Table("cache")]
     public class Caches
     {
@@ -70,6 +73,7 @@ namespace ParkerBot
         public DateTime createDate { get; set; }
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:命名样式", Justification = "<挂起>")]
     [Table("log")]
     public class Logs
     {
