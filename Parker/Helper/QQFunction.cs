@@ -1,6 +1,4 @@
-﻿using Manganese.Array;
-using Mirai.Net.Data.Messages;
-using NetDimension.NanUI.Browser.ResourceHandler;
+﻿using Helper;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
@@ -15,7 +13,7 @@ namespace ParkerBot.Helper
         public static List<int> Enables => Const.ConfigModel.QQ.funcEnable.ToIntList();
         private static readonly HttpHelper _httpHelper = new("https://xiaobai.klizi.cn/API");
         public static string ChatGPTKey => Const.ConfigModel.QQ.gptKey;
-        public static Dictionary<string, List<object>> LastMsg = new();
+        private static readonly Dictionary<string, List<object>> LastMsg = new();
         #region chatgpt3.5
         /// <summary>
         /// chatgpt
@@ -64,7 +62,7 @@ namespace ParkerBot.Helper
                         var list = JArray.FromObject(data["choices"]!);
                         if (list.Count > 0)
                         {
-                            foreach (JObject item in list)
+                            foreach (JObject item in list.Cast<JObject>())
                             {
                                 str.Append(item["message"]!["content"]!.ToString());
                                 if (LastMsg.ContainsKey(qq))
@@ -127,14 +125,14 @@ namespace ParkerBot.Helper
 
         private static string GetUrl(string keyword)
         {
-            switch (keyword)
+            return keyword switch
             {
-                case "爬": return "/ce/paa.php";
-                case "比心": return "/ce/xin.php";
-                case "处对象": return "/ce/xie.php";
-                case "丢": return "/ce/diu.php";
-                default: return "";
-            }
+                "爬" => "/ce/paa.php",
+                "比心" => "/ce/xin.php",
+                "处对象" => "/ce/xie.php",
+                "丢" => "/ce/diu.php",
+                _ => "",
+            };
         }
         #endregion
 

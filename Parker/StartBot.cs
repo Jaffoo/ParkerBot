@@ -1,11 +1,8 @@
 ﻿using Fleck;
 using FluentScheduler;
 using Helper;
-using Mirai.Net.Data.Messages.Receivers;
-using Mirai.Net.Data.Messages;
 using Mirai.Net.Sessions;
 using Newtonsoft.Json.Linq;
-using System.Reactive.Linq;
 
 namespace ParkerBot
 {
@@ -45,11 +42,11 @@ namespace ParkerBot
     public class StartMirai
     {
         public static bool HasMirai { get; set; } = false;
-        public bool UseMirai
+        public static bool UseMirai
         {
             get { return Const.MiraiConfig.useMirai; }
         }
-        public StartMirai()
+        public static void Start()
         {
             try
             {
@@ -63,7 +60,7 @@ namespace ParkerBot
                 return;
             }
         }
-        public async void BotStart()
+        public static async void BotStart()
         {
             try
             {

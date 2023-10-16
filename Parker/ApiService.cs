@@ -13,6 +13,8 @@ namespace ParkerBot
     public class ApiService : DataService
     {
         [RouteGet]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:删除未使用的参数", Justification = "<挂起>")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:将成员标记为 static", Justification = "<挂起>")]
         public ResourceResponse GetMiraiFile(ResourceRequest request)
         {
             try
@@ -44,6 +46,8 @@ namespace ParkerBot
         }
 
         [RouteGet]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:删除未使用的参数", Justification = "<挂起>")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:将成员标记为 static", Justification = "<挂起>")]
         public ResourceResponse StartMiraiConsole(ResourceRequest request)
         {
             try
@@ -70,6 +74,8 @@ namespace ParkerBot
         }
 
         [RouteGet]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:删除未使用的参数", Justification = "<挂起>")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:将成员标记为 static", Justification = "<挂起>")]
         public ResourceResponse GetMiraiConfig(ResourceRequest request)
         {
             var dbContext = new LiteContext();
@@ -91,6 +97,7 @@ namespace ParkerBot
         }
 
         [RouteGet]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:删除未使用的参数", Justification = "<挂起>")]
         public ResourceResponse GetBaseConfig(ResourceRequest request)
         {
             var config = (JObject)Const.Config.DeepClone();
@@ -125,6 +132,8 @@ namespace ParkerBot
         }
 
         [RouteGet]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:删除未使用的参数", Justification = "<挂起>")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:将成员标记为 static", Justification = "<挂起>")]
         public ResourceResponse GetQQFun(ResourceRequest request)
         {
             var dbContext = new LiteContext();
@@ -134,6 +143,7 @@ namespace ParkerBot
         }
 
         [RoutePost]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:将成员标记为 static", Justification = "<挂起>")]
         public ResourceResponse SetMiraiConfig(ResourceRequest request)
         {
             var dbContext = new LiteContext();
@@ -163,6 +173,8 @@ namespace ParkerBot
         }
 
         [RouteGet]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:删除未使用的参数", Justification = "<挂起>")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:将成员标记为 static", Justification = "<挂起>")]
         public ResourceResponse StartAliYunApi(ResourceRequest request)
         {
             Task.Run(() =>
@@ -177,6 +189,7 @@ namespace ParkerBot
         }
 
         [RoutePost]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:将成员标记为 static", Justification = "<挂起>")]
         public ResourceResponse SetConfig(ResourceRequest request)
         {
             var dbContext = new LiteContext();
@@ -224,6 +237,7 @@ namespace ParkerBot
         }
 
         [RoutePost]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:将成员标记为 static", Justification = "<挂起>")]
         public ResourceResponse Upload(ResourceRequest request)
         {
             var path = request.UploadFiles[0];
@@ -250,10 +264,12 @@ namespace ParkerBot
         }
 
         [RouteGet]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:删除未使用的参数", Justification = "<挂起>")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:将成员标记为 static", Justification = "<挂起>")]
         public ResourceResponse Start(ResourceRequest request)
         {
             if (!StartBot.HasWebSocket) new StartBot().Start();
-            if (!StartMirai.HasMirai) new StartMirai();
+            if (!StartMirai.HasMirai)  StartMirai.Start();
             StartTimer.Start();
             Thread.Sleep(5000);
             var obj = new
@@ -265,6 +281,8 @@ namespace ParkerBot
         }
 
         [RouteGet]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:删除未使用的参数", Justification = "<挂起>")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:将成员标记为 static", Justification = "<挂起>")]
         public ResourceResponse Refresh(ResourceRequest request)
         {
             var dbContext = new LiteContext();
@@ -273,6 +291,7 @@ namespace ParkerBot
         }
 
         [RouteGet]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:将成员标记为 static", Justification = "<挂起>")]
         public ResourceResponse PicCheck(ResourceRequest request)
         {
             var b = false;
@@ -299,6 +318,7 @@ namespace ParkerBot
         }
 
         [RouteGet]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:将成员标记为 static", Justification = "<挂起>")]
         public ResourceResponse GetXox(ResourceRequest request)
         {
             var group = request.QueryString["group"]?.ToString()?.Split(",").ToList();

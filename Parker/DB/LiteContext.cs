@@ -4,7 +4,7 @@ namespace ParkerBot
 {
     public class LiteContext : DbContext
     {
-        private string _conStr ="DataSource="+ Environment.CurrentDirectory + @"/data/config.db";
+        private readonly string _conStr ="DataSource="+ Environment.CurrentDirectory + @"/data/config.db";
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);

@@ -1,6 +1,4 @@
-﻿using Helper;
-using Mirai.Net.Sessions.Http.Managers;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using ParkerBot;
 
 namespace Helper

@@ -1,11 +1,10 @@
 ﻿using ParkerBot;
-using System.Data.SQLite;
 
 namespace Helper
 {
     public class AliYun
     {
-        private string? _path;
+        private readonly string? _path;
         /// <summary>
         /// 上传阿里云盘
         /// </summary>
@@ -29,7 +28,7 @@ namespace Helper
             }
         }
 
-        public async Task<string> GetList()
+        public static async Task<string> GetList()
         {
             try
             {

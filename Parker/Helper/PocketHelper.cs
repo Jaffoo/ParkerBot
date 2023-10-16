@@ -6,14 +6,14 @@ namespace Helper
 {
     public class Pocket
     {
-        public static LiteContext? _liteContext { get; set; }
+        public static LiteContext? LiteContext { get; set; }
         private static List<string> MsgType => Const.ConfigModel.KD.msgType.ToListV2();
         public static async Task PocketMessageReceiver(string str)
         {
             try
             {
                 if (!Const.EnableModule.kd) return;
-                _liteContext = new();
+                LiteContext = new();
                 var result = JObject.Parse(str);
                 var time = result["time"]!.ToString();
                 var channelName = result["channelName"]!.ToString();
@@ -70,11 +70,11 @@ namespace Helper
                         mcb.Plain(msbBody);
                     }
                     //总选计分
-                    else if (false)
-                    {
-                        msbBody = "送出了【" + attach["giftInfo"]!["giftName"] + "（" + attach["giftInfo"]!["tpNum"] + "分）】。";
-                        mcb.Plain(msbBody);
-                    }
+                    //else if (false)
+                    //{
+                    //    msbBody = "送出了【" + attach["giftInfo"]!["giftName"] + "（" + attach["giftInfo"]!["tpNum"] + "分）】。";
+                    //    mcb.Plain(msbBody);
+                    //}
                     //直播
                     else if (MsgType.Contains(messageType) && messageType == "LIVEPUSH")
                     {
@@ -147,9 +147,11 @@ namespace Helper
                 }
                 if (Const.ConfigModel.KD.forwardQQ)
                 {
-                    MsgModel msgModel = new();
-                    msgModel.Type = 2;
-                    msgModel.MsgChain = mcb.Build();
+                    MsgModel msgModel = new()
+                    {
+                        Type = 2,
+                        MsgChain = mcb.Build()
+                    };
                     if (!string.IsNullOrWhiteSpace(Const.ConfigModel.KD.qq))
                     {
                         var qqs = Const.ConfigModel.KD.qq.ToListV2();
@@ -198,9 +200,11 @@ namespace Helper
                 }
                 if (Const.ConfigModel.KD.forwardQQ)
                 {
-                    MsgModel msgModel = new();
-                    msgModel.Type = 2;
-                    msgModel.MsgChain = mcb.Build();
+                    MsgModel msgModel = new()
+                    {
+                        Type = 2,
+                        MsgChain = mcb.Build()
+                    };
                     if (!string.IsNullOrWhiteSpace(Const.ConfigModel.KD.qq))
                     {
                         var qqs = Const.ConfigModel.KD.qq.ToListV2();

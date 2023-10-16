@@ -3,13 +3,12 @@ using ParkerBot;
 using System.Globalization;
 using Mirai.Net.Utils.Scaffolds;
 using Newtonsoft.Json;
-using System.Linq;
 
 namespace Helper
 {
     public class Weibo
     {
-        public static LiteContext? dbContext;
+        private static LiteContext? dbContext;
         public static List<string> Uids => Const.ConfigModel.WB.url.ToListV2();
         public static int Similarity => Const.ConfigModel.BD.similarity.ToInt();
         public static int Audit => Const.ConfigModel.BD.audit.ToInt();
@@ -185,7 +184,7 @@ namespace Helper
                     var content = await res.Content.ReadAsStringAsync();
                     var data = JObject.Parse(content);
                     var list = JArray.FromObject(data["data"]!["list"]!);
-                    foreach (JObject blog in list)
+                    foreach (JObject blog in list.Cast<JObject>())
                     {
                         DateTime createDate = new();
                         CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("en-US");

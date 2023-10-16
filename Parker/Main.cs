@@ -51,7 +51,7 @@ namespace ParkerBot
             //预留
             if (Debugger.IsAttached)
             {
-                var res = QQFunction.WenAn("昆明");
+                _ = QQFunction.WenAn("昆明").Result;
             }
         }
 
