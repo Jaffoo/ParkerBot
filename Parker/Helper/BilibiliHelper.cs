@@ -6,6 +6,7 @@ namespace Helper
 {
     public class Bilibili
     {
+        public static LiteContext? dbContext;
         public static List<string> Uids
         {
             get { return Const.ConfigModel.BZ.url.ToListV2(); }
@@ -32,10 +33,10 @@ namespace Helper
                     var code = data["code"]!.ToString();
                     if (code != "0") continue;
                     var list = JArray.FromObject(data["data"]!["cards"]!);
-                    foreach (JObject blog in list.Cast<JObject>())
+                    foreach (JObject blog in list)
                     {
                         var timestamp = blog["desc"]!["timestamp"]!.ToString().Tolong();
-                        DateTime createDate = new(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+                        DateTime createDate = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
                         createDate = createDate.AddSeconds(timestamp).ToLocalTime();
 
                         if (createDate >= DateTime.Now.AddMinutes(-TimeSpan))

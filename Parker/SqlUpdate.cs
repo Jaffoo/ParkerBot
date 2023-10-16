@@ -4,7 +4,7 @@
     {
         public static async void ExecuteSql()
         {
-            HttpClient client = new();
+            HttpClient client = new HttpClient();
             var res = await client.GetStringAsync("https://gitee.com/jaffoo/ParkerBotV2/raw/master/Parker/wwwroot/sql/update.txt");
             var path = Directory.GetCurrentDirectory() + "/wwwroot/sql/update.txt";
             if (!File.Exists(path))

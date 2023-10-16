@@ -27,10 +27,9 @@ namespace ParkerBot
         //生成连接字符串
         private static string CreateConnectionString()
         {
-            SQLiteConnectionStringBuilder connectionString = new()
-            {
-                DataSource = @"data/config.db"
-            };
+            SQLiteConnectionStringBuilder connectionString = new();
+            connectionString.DataSource = @"data/config.db";
+
             string conStr = connectionString.ToString();
             return conStr;
         }
@@ -61,15 +60,19 @@ namespace ParkerBot
         public static int ExecuteNonQuery(string sqlString, params SQLiteParameter[] parameters)
         {
             string connectionString = CreateConnectionString();
-            using SQLiteConnection conn = new(connectionString);
-            conn.Open();
-            using SQLiteCommand cmd = conn.CreateCommand();
-            cmd.CommandText = sqlString;
-            foreach (SQLiteParameter parameter in parameters)
+            using (SQLiteConnection conn = new SQLiteConnection(connectionString))
             {
-                cmd.Parameters.Add(parameter);
+                conn.Open();
+                using (SQLiteCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = sqlString;
+                    foreach (SQLiteParameter parameter in parameters)
+                    {
+                        cmd.Parameters.Add(parameter);
+                    }
+                    return cmd.ExecuteNonQuery();
+                }
             }
-            return cmd.ExecuteNonQuery();
         }
 
         /// <summary>
@@ -81,15 +84,19 @@ namespace ParkerBot
         public static object ExecuteScalar(string sqlString, params SQLiteParameter[] parameters)
         {
             string connectionString = CreateConnectionString();
-            using SQLiteConnection conn = new(connectionString);
-            conn.Open();
-            using SQLiteCommand cmd = conn.CreateCommand();
-            cmd.CommandText = sqlString;
-            foreach (SQLiteParameter parameter in parameters)
+            using (SQLiteConnection conn = new SQLiteConnection(connectionString))
             {
-                cmd.Parameters.Add(parameter);
+                conn.Open();
+                using (SQLiteCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = sqlString;
+                    foreach (SQLiteParameter parameter in parameters)
+                    {
+                        cmd.Parameters.Add(parameter);
+                    }
+                    return cmd.ExecuteScalar();
+                }
             }
-            return cmd.ExecuteScalar();
         }
 
         /// <summary>
@@ -123,17 +130,23 @@ namespace ParkerBot
         public static DataTable GetDataTable(string sqlString, params SQLiteParameter[] parameters)
         {
             string connectionString = CreateConnectionString();
-            using SQLiteConnection conn = new(connectionString);
-            conn.Open();
-            using SQLiteCommand cmd = conn.CreateCommand();
-            cmd.CommandText = sqlString;
-            foreach (SQLiteParameter parameter in parameters)
-                cmd.Parameters.Add(parameter);
-            DataSet ds = new();
-            SQLiteDataAdapter adapter = new(cmd);
-            adapter.Fill(ds);
-            conn.Close();
-            return ds.Tables[0];
+            using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+            {
+                conn.Open();
+                using (SQLiteCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = sqlString;
+                    foreach (SQLiteParameter parameter in parameters)
+                    {
+                        cmd.Parameters.Add(parameter);
+                    }
+                    DataSet ds = new DataSet();
+                    SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd);
+                    adapter.Fill(ds);
+                    conn.Close();
+                    return ds.Tables[0];
+                }
+            }
         }
 
         /// <summary>
@@ -145,36 +158,42 @@ namespace ParkerBot
         public static List<object> GetList(string sqlString, params SQLiteParameter[] parameters)
         {
             string connectionString = CreateConnectionString();
-            using SQLiteConnection conn = new(connectionString);
-            conn.Open();
-            using SQLiteCommand cmd = conn.CreateCommand();
-            cmd.CommandText = sqlString;
-            foreach (SQLiteParameter parameter in parameters)
-                cmd.Parameters.Add(parameter);
-            DataSet ds = new();
-            SQLiteDataAdapter adapter = new(cmd);
-            adapter.Fill(ds);
-            conn.Close();
-            var dt = ds.Tables[0];
-            List<object> dic = new();
-            foreach (DataRow row in dt.Rows)
+            using (SQLiteConnection conn = new SQLiteConnection(connectionString))
             {
-                Dictionary<string, object> drow = new();
-                foreach (DataColumn col in dt.Columns)
+                conn.Open();
+                using (SQLiteCommand cmd = conn.CreateCommand())
                 {
-                    var value = row[col.ColumnName];
-                    var b = col.DefaultValue == value;
-                    if (b)
+                    cmd.CommandText = sqlString;
+                    foreach (SQLiteParameter parameter in parameters)
                     {
-                        if (col.DataType.Name.ToLower().Contains("int") || col.DataType.Name.ToLower().Contains("real")) value = 0;
-                        if (col.DataType.Name.ToLower().Contains("string")) value = "";
-                        if (col.DataType.Name.ToLower().Contains("date")) value = DateTime.Now;
+                        cmd.Parameters.Add(parameter);
                     }
-                    drow.Add(col.ColumnName, value);
+                    DataSet ds = new DataSet();
+                    SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd);
+                    adapter.Fill(ds);
+                    conn.Close();
+                    var dt = ds.Tables[0];
+                    List<object> dic = new();
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        Dictionary<string, object> drow = new Dictionary<string, object>();
+                        foreach (DataColumn col in dt.Columns)
+                        {
+                            var value = row[col.ColumnName];
+                            var b = col.DefaultValue == value;
+                            if (b)
+                            {
+                                if (col.DataType.Name.ToLower().Contains("int") || col.DataType.Name.ToLower().Contains("real")) value = 0;
+                                if (col.DataType.Name.ToLower().Contains("string")) value = "";
+                                if (col.DataType.Name.ToLower().Contains("date")) value = DateTime.Now;
+                            }
+                            drow.Add(col.ColumnName, value);
+                        }
+                        dic.Add(drow);
+                    }
+                    return dic;
                 }
-                dic.Add(drow);
             }
-            return dic;
         }
 
         /// <summary>
@@ -186,45 +205,51 @@ namespace ParkerBot
         public static List<T> GetList<T>(string sqlString, params SQLiteParameter[] parameters) where T : new()
         {
             string connectionString = CreateConnectionString();
-            using SQLiteConnection conn = new(connectionString);
-            conn.Open();
-            using SQLiteCommand cmd = conn.CreateCommand();
-            cmd.CommandText = sqlString;
-            foreach (SQLiteParameter parameter in parameters)
-                cmd.Parameters.Add(parameter);
-            DataSet ds = new();
-            SQLiteDataAdapter adapter = new(cmd);
-            adapter.Fill(ds);
-            conn.Close();
-            var dt = ds.Tables[0];
-            // 定义集合    
-            List<T> ts = new();
-
-            // 获得此模型的类型   
-            Type type = typeof(T);
-            string tempName = "";
-            foreach (DataRow dr in dt.Rows)
+            using (SQLiteConnection conn = new SQLiteConnection(connectionString))
             {
-                T t = new();
-                // 获得此模型的公共属性      
-                PropertyInfo[] propertys = t.GetType().GetProperties();
-                foreach (PropertyInfo pi in propertys)
+                conn.Open();
+                using (SQLiteCommand cmd = conn.CreateCommand())
                 {
-                    tempName = pi.Name;  // 检查DataTable是否包含此列    
-
-                    if (dt.Columns.Contains(tempName))
+                    cmd.CommandText = sqlString;
+                    foreach (SQLiteParameter parameter in parameters)
                     {
-                        // 判断此属性是否有Setter      
-                        if (!pi.CanWrite) continue;
-
-                        object value = dr[tempName];
-                        if (value != DBNull.Value)
-                            pi.SetValue(t, value, null);
+                        cmd.Parameters.Add(parameter);
                     }
+                    DataSet ds = new DataSet();
+                    SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd);
+                    adapter.Fill(ds);
+                    conn.Close();
+                    var dt = ds.Tables[0];
+                    // 定义集合    
+                    List<T> ts = new List<T>();
+
+                    // 获得此模型的类型   
+                    Type type = typeof(T);
+                    string tempName = "";
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        T t = new();
+                        // 获得此模型的公共属性      
+                        PropertyInfo[] propertys = t.GetType().GetProperties();
+                        foreach (PropertyInfo pi in propertys)
+                        {
+                            tempName = pi.Name;  // 检查DataTable是否包含此列    
+
+                            if (dt.Columns.Contains(tempName))
+                            {
+                                // 判断此属性是否有Setter      
+                                if (!pi.CanWrite) continue;
+
+                                object value = dr[tempName];
+                                if (value != DBNull.Value)
+                                    pi.SetValue(t, value, null);
+                            }
+                        }
+                        ts.Add(t);
+                    }
+                    return ts;
                 }
-                ts.Add(t);
             }
-            return ts;
         }
     }
 }

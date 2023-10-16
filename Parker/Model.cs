@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ParkerBot
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:命名样式", Justification = "<挂起>")]
     public class Mirai
     {
         public bool useMirai { get; set; }
@@ -22,7 +21,6 @@ namespace ParkerBot
         public WB DY { get; set; } = new();
         public BD BD { get; set; } = new();
     }
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:命名样式", Justification = "<挂起>")]
     public class QQ
     {
         public string funcEnable { get; set; } = string.Empty;
@@ -37,7 +35,6 @@ namespace ParkerBot
         public bool debug { get; set; } = false;
         public string gptKey { get; set; } = string.Empty;
     }
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:命名样式", Justification = "<挂起>")]
     public class WB
     {
         public string url { get; set; } = string.Empty;
@@ -49,7 +46,7 @@ namespace ParkerBot
         public string cg { get; set; } = string.Empty;
         public string keyword { get; set; } = string.Empty;
     }
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:命名样式", Justification = "<挂起>")]
+
     public class KD
     {
         public string name { get; set; } = string.Empty;
@@ -67,7 +64,6 @@ namespace ParkerBot
         public string msgType { get; set; } = string.Empty;
         public string msgTypeList { get; set; } = string.Empty;
     }
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:命名样式", Justification = "<挂起>")]
     public class BD
     {
         public string appKey { get; set; } = string.Empty;
@@ -81,8 +77,6 @@ namespace ParkerBot
         [NotMapped]
         public List<object> imageList1 { get; set; } = new();
     }
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:命名样式", Justification = "<挂起>")]
-
     public class EnableModule
     {
         public bool qq { get; set; }

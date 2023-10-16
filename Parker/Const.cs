@@ -6,40 +6,34 @@ namespace ParkerBot
 {
     public static class Const
     {
-        private static readonly MemoryCache cache = new(new MemoryCacheOptions() { });
+        public static MemoryCache cache = new(new MemoryCacheOptions() { });
         public static JObject Mirai { get { return GetConfig("Mirai"); } }
         public static JObject Config { get { return GetConfig("BaseConfig"); } }
-        private static Mirai? _MiraiConfig = null;
-        public static void ResetConfig()
-        {
-            _MiraiConfig = null;
-            _ConfigModel = null;
-            _EnableModule = null;
-        }
+        public static Mirai? _MiraiConfig = null;
         public static Mirai MiraiConfig
         {
             get
             {
-                _MiraiConfig ??= Mirai.ToObject<Mirai>() ?? new();
+                if (_MiraiConfig == null) _MiraiConfig = Mirai.ToObject<Mirai>() ?? new();
                 return _MiraiConfig;
             }
         }
-        private static BaseConfig? _ConfigModel = null;
+        public static BaseConfig? _ConfigModel = null;
         public static BaseConfig ConfigModel
         {
             get
             {
-                _ConfigModel ??= Config.ToObject<BaseConfig>() ?? new();
+                if (_ConfigModel == null) _ConfigModel = Config.ToObject<BaseConfig>() ?? new();
                 return _ConfigModel;
             }
         }
         public static JObject Enable { get { return GetConfig("EnableModule"); } }
-        private static EnableModule? _EnableModule = null;
+        public static EnableModule? _EnableModule = null;
         public static EnableModule EnableModule
         {
             get
             {
-                _EnableModule ??= Enable.ToObject<EnableModule>() ?? new();
+                if (_EnableModule == null) _EnableModule = Enable.ToObject<EnableModule>() ?? new();
                 return _EnableModule;
             }
         }

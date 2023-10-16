@@ -34,11 +34,11 @@ namespace Helper
 
     public static class Msg
     {
-        private static readonly Queue<MsgModel> MsgQueue = new();
+        public static Queue<MsgModel> MsgQueue = new();
         private static DateTime _lastSendTime = DateTime.Now;
-        private static readonly double _interval = 3;//单位秒
+        private static double _interval = 3;//单位秒
         private static MiraiBot _bot = new();
-        public static LiteContext? LiteContext { get; set; }
+        public static LiteContext? _liteContext { get; set; }
         #region 全局变量
         public static string Admin => Const.ConfigModel.QQ.admin ?? "";
         public static bool Notice => Const.ConfigModel.QQ.notice;
@@ -46,8 +46,8 @@ namespace Helper
         {
             get
             {
-                LiteContext = new();
-                return LiteContext.Caches.Where(t => t.type == 1).Select(t => t.content).ToList();
+                _liteContext = new();
+                return _liteContext.Caches.Where(t => t.type == 1).Select(t => t.content).ToList();
             }
         }
         public static List<string> Permission => Const.ConfigModel.QQ.permission.ToListV2();
@@ -63,7 +63,7 @@ namespace Helper
         public static void BotStart(MiraiBot bot)
         {
             _bot = bot;
-            LiteContext = new();
+            _liteContext = new();
             GroupMessageReceiver();
             FriendMessageReceiver();
             EventMessageReceiver();
@@ -80,7 +80,7 @@ namespace Helper
                     //消息链
                     var msgChain = gmr.MessageChain;
                     var msgText = gmr.MessageChain.GetPlainMessage().Trim();
-                    LiteContext = new();
+                    _liteContext = new();
                     var msgModel = new ParkerBot.Message()
                     {
                         fromId = gmr.Sender.Id,
@@ -104,8 +104,8 @@ namespace Helper
                         if (item.Type == Messages.FlashImage)
                             msgModel.other = ((FlashImageMessage)item).Url;
                     }
-                    await LiteContext.Messages.AddAsync(msgModel);
-                    await LiteContext.SaveChangesAsync();
+                    await _liteContext.Messages.AddAsync(msgModel);
+                    await _liteContext.SaveChangesAsync();
                     if (Sensitive.Any(msgText.Contains))
                     {
                         //群内提示
@@ -269,10 +269,10 @@ namespace Helper
                             }
                             if (FileHelper.Save(Check[index]))
                             {
-                                LiteContext = new();
-                                var model = await LiteContext.Caches.FirstOrDefaultAsync(t => t.content == Check[index] && t.type == 1)!;
-                                if (model != null) LiteContext.Caches.Remove(model);
-                                await LiteContext.SaveChangesAsync();
+                                _liteContext = new();
+                                var model = await _liteContext.Caches.FirstOrDefaultAsync(t => t.content == Check[index] && t.type == 1)!;
+                                if (model != null) _liteContext.Caches.Remove(model);
+                                await _liteContext.SaveChangesAsync();
                             }
                             await fmr.SendMessageAsync("本地保存成功！");
                             return;
@@ -281,13 +281,13 @@ namespace Helper
                         {
                             foreach (var item in Check)
                             {
-                                LiteContext = new();
+                                _liteContext = new();
                                 if (FileHelper.Save(item))
                                 {
-                                    var model = LiteContext.Caches.Where(t => t.type == 1)!;
-                                    LiteContext.Caches.RemoveRange(model);
+                                    var model = _liteContext.Caches.Where(t => t.type == 1)!;
+                                    _liteContext.Caches.RemoveRange(model);
                                 }
-                                await LiteContext.SaveChangesAsync();
+                                await _liteContext.SaveChangesAsync();
                             }
                             await fmr.SendMessageAsync("全部本地保存成功！");
                             return;
@@ -305,20 +305,20 @@ namespace Helper
                                 await fmr.SendMessageAsync($"未找到张图片");
                                 return;
                             }
-                            LiteContext = new();
-                            var model = await LiteContext.Caches.FirstOrDefaultAsync(t => t.content == Check[index] && t.type == 1)!;
-                            if (model != null) LiteContext.Caches.Remove(model);
-                            await LiteContext.SaveChangesAsync();
+                            _liteContext = new();
+                            var model = await _liteContext.Caches.FirstOrDefaultAsync(t => t.content == Check[index] && t.type == 1)!;
+                            if (model != null) _liteContext.Caches.Remove(model);
+                            await _liteContext.SaveChangesAsync();
                             await fmr.SendMessageAsync("删除成功！");
                             await Task.Run(Const.SetCache);
                             return;
                         }
                         if (msgText == "#删除全部")
                         {
-                            LiteContext = new();
-                            var list = LiteContext.Caches.Where(t => t.type == 1).ToList();
-                            LiteContext.Caches.RemoveRange(list);
-                            await LiteContext.SaveChangesAsync();
+                            _liteContext = new();
+                            var list = _liteContext.Caches.Where(t => t.type == 1).ToList();
+                            _liteContext.Caches.RemoveRange(list);
+                            await _liteContext.SaveChangesAsync();
                             await fmr.SendMessageAsync("全部删除成功！");
                             await Task.Run(Const.SetCache);
                             return;
@@ -364,10 +364,10 @@ namespace Helper
                         }
                         if (msgText == "#最新日志")
                         {
-                            LiteContext = new();
-                            var log = await LiteContext.Logs.OrderByDescending(t => t.createDate).FirstOrDefaultAsync();
+                            _liteContext = new();
+                            var log = await _liteContext.Logs.OrderByDescending(t => t.createDate).FirstOrDefaultAsync();
                             if (log == null) return;
-                            if (log.message.Length > 500) log.message = log.message[..100];
+                            if (log.message.Length > 500) log.message = log.message.Substring(0, 100);
                             MessageChain mc = new()
                             {
                                 new PlainMessage("时间：" + log?.createDate.ToString("yyyy-MM-dd HH:mm:ss") ?? ""),
@@ -386,27 +386,29 @@ namespace Helper
                             }
                             if (Permission.Contains(qqNum))
                                 await fmr.SendMessageAsync("此账号已是管理员！");
-                            LiteContext = new();
-                            var model = await LiteContext.Config.FirstOrDefaultAsync(t => t.key == "Permission") ?? throw new Exception("key为【Permission】的值不存在！");
+                            _liteContext = new();
+                            var model = await _liteContext.Config.FirstOrDefaultAsync(t => t.key == "Permission");
+                            if (model == null) throw new Exception("key为【Permission】的值不存在！");
                             Const.Config["QQ"]!["Permission"] = Const.Config["QQ"]!["Permission"]!.ToString() + "," + qqNum;
-                            Const.ResetConfig();
+                            Const._ConfigModel = null;
                             model.value = Const.Config["QQ"]!["Permission"]!.ToString();
-                            LiteContext.Update(model);
-                            await LiteContext.SaveChangesAsync();
-                            await LiteContext.DisposeAsync();
+                            _liteContext.Update(model);
+                            await _liteContext.SaveChangesAsync();
+                            await _liteContext.DisposeAsync();
                             await fmr.SendMessageAsync("添加成功！");
                             return;
                         }
                         if (msgText == "#删除全部管理员")
                         {
-                            LiteContext = new();
-                            var model = await LiteContext.Config.FirstOrDefaultAsync(t => t.key == "Permission") ?? throw new Exception("key为【Permission】的值不存在！");
+                            _liteContext = new();
+                            var model = await _liteContext.Config.FirstOrDefaultAsync(t => t.key == "Permission");
+                            if (model == null) throw new Exception("key为【Permission】的值不存在！");
                             model.value = "";
-                            LiteContext.Update(model);
-                            await LiteContext.SaveChangesAsync();
-                            await LiteContext.DisposeAsync();
+                            _liteContext.Update(model);
+                            await _liteContext.SaveChangesAsync();
+                            await _liteContext.DisposeAsync();
                             Const.Config["QQ"]!["Permission"] = model.value;
-                            Const.ResetConfig();
+                            Const._ConfigModel = null;
                             await fmr.SendMessageAsync("删除成功！");
                             return;
                         }
@@ -424,14 +426,15 @@ namespace Helper
                                 return;
                             }
                             Permission.Remove(qqNum);
-                            LiteContext = new();
-                            var model = await LiteContext.Config.FirstOrDefaultAsync(t => t.key == "Permission") ?? throw new Exception("key为【Permission】的值不存在！");
+                            _liteContext = new();
+                            var model = await _liteContext.Config.FirstOrDefaultAsync(t => t.key == "Permission");
+                            if (model == null) throw new Exception("key为【Permission】的值不存在！");
                             model.value = string.Join(",", Permission);
-                            LiteContext.Update(model);
-                            await LiteContext.SaveChangesAsync();
-                            await LiteContext.DisposeAsync();
+                            _liteContext.Update(model);
+                            await _liteContext.SaveChangesAsync();
+                            await _liteContext.DisposeAsync();
                             Const.Config["QQ"]!["Permission"] = model.value;
-                            Const.ResetConfig();
+                            Const._ConfigModel = null;
                             await fmr.SendMessageAsync("删除成功！");
                             return;
                         }
@@ -443,8 +446,8 @@ namespace Helper
                                 await fmr.SendMessageAsync("sql语句为空");
                                 return;
                             }
-                            LiteContext = new();
-                            var res = await LiteContext.Database.ExecuteSqlRawAsync(sql);
+                            _liteContext = new();
+                            var res = await _liteContext.Database.ExecuteSqlRawAsync(sql);
                             await fmr.SendMessageAsync("执行成功，受影响行数：" + res + "行；");
                             return;
                         }
@@ -456,11 +459,11 @@ namespace Helper
                                 await fmr.SendMessageAsync("sql语句为空");
                                 return;
                             }
-                            LiteContext = new();
-                            var cmd = LiteContext.Database.GetDbConnection().CreateCommand();
+                            _liteContext = new();
+                            var cmd = _liteContext.Database.GetDbConnection().CreateCommand();
                             cmd.CommandText = sql;
                             cmd.CommandType = CommandType.Text;
-                            await LiteContext.Database.OpenConnectionAsync();
+                            await _liteContext.Database.OpenConnectionAsync();
                             var da = await cmd.ExecuteReaderAsync();
                             var dt = new DataTable();
                             dt.Load(da);
@@ -481,9 +484,9 @@ namespace Helper
                         }
                         if (msgText.Contains("#清空聊天记录"))
                         {
-                            LiteContext = new();
+                            _liteContext = new();
                             var sql = "delete from message;";
-                            var res = await LiteContext.Database.ExecuteSqlRawAsync(sql);
+                            var res = await _liteContext.Database.ExecuteSqlRawAsync(sql);
                             await fmr.SendMessageAsync("清空成功");
                             return;
                         }
@@ -503,8 +506,8 @@ namespace Helper
                             }
                             var key = list[0];
                             var value = list[1];
-                            LiteContext = new();
-                            var model = LiteContext.Config.FirstOrDefault(t => t.key == key);
+                            _liteContext = new();
+                            var model = _liteContext.Config.FirstOrDefault(t => t.key == key);
                             if (model == null)
                             {
                                 await fmr.SendMessageAsync("key不存在！");
@@ -512,8 +515,8 @@ namespace Helper
                             }
                             var old = model.value;
                             model.value = value;
-                            LiteContext.Update(model);
-                            LiteContext.SaveChanges();
+                            _liteContext.Update(model);
+                            _liteContext.SaveChanges();
                             await fmr.SendMessageAsync($"【{key}】值已修改。{old} -> {value}");
                             return;
                         }
@@ -533,8 +536,8 @@ namespace Helper
                             }
                             var id = list[0];
                             var value = list[1];
-                            LiteContext = new();
-                            var model = LiteContext.Config.FirstOrDefault(t => t.id == id.ToInt());
+                            _liteContext = new();
+                            var model = _liteContext.Config.FirstOrDefault(t => t.id == id.ToInt());
                             if (model == null)
                             {
                                 await fmr.SendMessageAsync("数据不存在！");
@@ -542,8 +545,8 @@ namespace Helper
                             }
                             var old = model.value;
                             model.value = value;
-                            LiteContext.Update(model);
-                            LiteContext.SaveChanges();
+                            _liteContext.Update(model);
+                            _liteContext.SaveChanges();
                             await fmr.SendMessageAsync($"id:{id}【{model.key}】值已修改。{old} -> {value}");
                             return;
                         }
@@ -589,19 +592,19 @@ namespace Helper
                             var old = moudel;
                             moudel = GetMoudel(moudel);
                             Const.Enable[moudel] = "true";
-                            Const.ResetConfig();
+                            Const._EnableModule = null;
                             await fmr.SendMessageAsync($"模块【{old}】已开启！");
                             JobManager.RemoveAllJobs();
                             JobManager.Initialize(new FluentSchedulerFactory());
-                            LiteContext = new();
-                            var model = await LiteContext.Config.FirstOrDefaultAsync(t => t.parentId == 13 && t.key == moudel);
+                            _liteContext = new();
+                            var model = await _liteContext.Config.FirstOrDefaultAsync(t => t.parentId == 13 && t.key == moudel);
                             if (model != null)
                             {
                                 model.value = "true";
-                                LiteContext.Update(model);
-                                await LiteContext.SaveChangesAsync();
+                                _liteContext.Update(model);
+                                await _liteContext.SaveChangesAsync();
                             }
-                            await LiteContext.DisposeAsync();
+                            await _liteContext.DisposeAsync();
                             return;
                         }
                         if (msgText.Contains("#关闭模块#"))
@@ -610,18 +613,18 @@ namespace Helper
                             var old = moudel;
                             moudel = GetMoudel(moudel);
                             Const.Enable[moudel] = "false";
-                            Const.ResetConfig();
+                            Const._EnableModule = null;
                             await fmr.SendMessageAsync($"模块【{old}】已关闭！");
                             JobManager.RemoveJob(moudel);
-                            LiteContext = new();
-                            var model = await LiteContext.Config.FirstOrDefaultAsync(t => t.parentId == 13 && t.key == moudel);
+                            _liteContext = new();
+                            var model = await _liteContext.Config.FirstOrDefaultAsync(t => t.parentId == 13 && t.key == moudel);
                             if (model != null)
                             {
                                 model.value = "false";
-                                LiteContext.Update(model);
-                                await LiteContext.SaveChangesAsync();
+                                _liteContext.Update(model);
+                                await _liteContext.SaveChangesAsync();
                             }
-                            await LiteContext.DisposeAsync();
+                            await _liteContext.DisposeAsync();
                             return;
                         }
                         if (msgText.Contains("#开启转发#"))
@@ -646,19 +649,19 @@ namespace Helper
                                 Const.Config[moudel]!["ForwardQQ"] = "True";
                             if (type == "群")
                                 Const.Config[moudel]!["ForwardGroup"] = "True";
-                            Const.ResetConfig();
+                            Const._ConfigModel = null;
                             await fmr.SendMessageAsync($"模块【{list[0]}】转发至{type}功能已开启！");
-                            LiteContext = new();
-                            var pList = LiteContext.Config.Where(t => t.parentId == 13).Select(t => t.id).ToList();
-                            var cList = LiteContext.Config.Where(t => pList.Contains(t.id)).ToList();
+                            _liteContext = new();
+                            var pList = _liteContext.Config.Where(t => t.parentId == 13).Select(t => t.id).ToList();
+                            var cList = _liteContext.Config.Where(t => pList.Contains(t.id)).ToList();
                             var model = cList.FirstOrDefault(t => t.key == (type == "qq" ? "ForwardQQ" : "ForwardGroup"));
                             if (model != null)
                             {
                                 model.value = "True";
-                                LiteContext.Update(model);
-                                await LiteContext.SaveChangesAsync();
+                                _liteContext.Update(model);
+                                await _liteContext.SaveChangesAsync();
                             }
-                            await LiteContext.DisposeAsync();
+                            await _liteContext.DisposeAsync();
                             return;
                         }
                         if (msgText.Contains("#关闭转发#"))
@@ -683,20 +686,20 @@ namespace Helper
                                 Const.Config[moudel]!["ForwardQQ"] = "False";
                             if (type == "群")
                                 Const.Config[moudel]!["ForwardGroup"] = "False";
-                            Const.ResetConfig();
+                            Const._ConfigModel = null;
                             await fmr.SendMessageAsync($"模块【{list[0]}】转发至{type}功能已关闭！");
-                            LiteContext = new();
-                            var pModel = await LiteContext.Config.FirstOrDefaultAsync(t => t.parentId == 13 && t.key == moudel);
+                            _liteContext = new();
+                            var pModel = await _liteContext.Config.FirstOrDefaultAsync(t => t.parentId == 13 && t.key == moudel);
                             if (pModel != null)
                             {
-                                var model = await LiteContext.Config.FirstOrDefaultAsync(t => t.parentId == pModel.id && t.key == (type == "qq" ? "ForwardQQ" : "ForwardGroup"));
+                                var model = await _liteContext.Config.FirstOrDefaultAsync(t => t.parentId == pModel.id && t.key == (type == "qq" ? "ForwardQQ" : "ForwardGroup"));
                                 if (model != null)
                                 {
                                     model.value = "False";
-                                    LiteContext.Update(model);
-                                    await LiteContext.SaveChangesAsync();
+                                    _liteContext.Update(model);
+                                    await _liteContext.SaveChangesAsync();
                                 }
-                                await LiteContext.DisposeAsync();
+                                await _liteContext.DisposeAsync();
                             }
                             return;
                         }
@@ -723,19 +726,19 @@ namespace Helper
                                 Const.Config[moudel]!["QQ"] = value;
                             if (type == "群")
                                 Const.Config[moudel]!["Group"] = value;
-                            Const.ResetConfig();
+                            Const._ConfigModel = null;
                             await fmr.SendMessageAsync($"模块【{list[0]}】转发至{type}功能的值已修改为：{value}");
-                            LiteContext = new();
-                            var pList = LiteContext.Config.Where(t => t.parentId == 13).Select(t => t.id).ToList();
-                            var cList = LiteContext.Config.Where(t => pList.Contains(t.id)).ToList();
+                            _liteContext = new();
+                            var pList = _liteContext.Config.Where(t => t.parentId == 13).Select(t => t.id).ToList();
+                            var cList = _liteContext.Config.Where(t => pList.Contains(t.id)).ToList();
                             var model = cList.FirstOrDefault(t => t.key == (type == "qq" ? "QQ" : "Group"));
                             if (model != null)
                             {
                                 model.value = value;
-                                LiteContext.Update(model);
-                                await LiteContext.SaveChangesAsync();
+                                _liteContext.Update(model);
+                                await _liteContext.SaveChangesAsync();
                             }
-                            await LiteContext.DisposeAsync();
+                            await _liteContext.DisposeAsync();
                             return;
                         }
                         if (msgText.Contains("#微博用户搜索#"))
@@ -774,12 +777,12 @@ namespace Helper
                             if (!Weibo.Keywords.Contains(keywords))
                                 await fmr.SendMessageAsync("不存在该关键词！");
                             Weibo.Keywords.Remove(keywords);
-                            LiteContext = new();
-                            var model = LiteContext.Config.FirstOrDefault(t => t.id == 87);
+                            _liteContext = new();
+                            var model = _liteContext.Config.FirstOrDefault(t => t.id == 87);
                             model!.value = string.Join(",", Weibo.Keywords);
-                            LiteContext.Update(model);
-                            LiteContext.SaveChanges();
-                            Const.ResetConfig();
+                            _liteContext.Update(model);
+                            _liteContext.SaveChanges();
+                            Const._ConfigModel = null;
                             await fmr.SendMessageAsync($"已删除关键词【{keywords}】");
                             return;
                         }
@@ -791,23 +794,23 @@ namespace Helper
                             if (Weibo.Keywords.Contains(keywords))
                                 await fmr.SendMessageAsync("已存在该关键词！");
                             Weibo.Keywords.Add(keywords);
-                            LiteContext = new();
-                            var model = LiteContext.Config.FirstOrDefault(t => t.id == 87);
+                            _liteContext = new();
+                            var model = _liteContext.Config.FirstOrDefault(t => t.id == 87);
                             model!.value = string.Join(",", Weibo.Keywords);
-                            LiteContext.Update(model);
-                            LiteContext.SaveChanges();
-                            Const.ResetConfig();
+                            _liteContext.Update(model);
+                            _liteContext.SaveChanges();
+                            Const._ConfigModel = null;
                             await fmr.SendMessageAsync($"已添加关键词【{keywords}】");
                             return;
                         }
                         if (msgText.Contains("#重置微博关键词"))
                         {
-                            LiteContext = new();
-                            var model = LiteContext.Config.FirstOrDefault(t => t.id == 87);
+                            _liteContext = new();
+                            var model = _liteContext.Config.FirstOrDefault(t => t.id == 87);
                             model!.value = "";
-                            LiteContext.Update(model);
-                            LiteContext.SaveChanges();
-                            Const.ResetConfig();
+                            _liteContext.Update(model);
+                            _liteContext.SaveChanges();
+                            Const._ConfigModel = null;
                             await fmr.SendMessageAsync($"已重置关键词");
                             return;
                         }

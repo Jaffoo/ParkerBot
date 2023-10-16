@@ -21,7 +21,7 @@ namespace Helper
 
         public static string PathToBase64(string path)
         {
-            using FileStream fs = new(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            using FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
             byte[] bt = new byte[fs.Length];
             fs.Read(bt, 0, bt.Length);
             var str = Convert.ToBase64String(bt);

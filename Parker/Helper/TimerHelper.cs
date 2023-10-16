@@ -29,7 +29,7 @@ namespace Helper
             Schedule(async () => await AsyncXox()).ToRunNow().AndEvery(1).Days().At(0, 0);
         }
 
-        public static async Task AsyncXox()
+        public async Task AsyncXox()
         {
             LiteContext liteContext = new();
             string url = @"https://fastly.jsdelivr.net/gh/duan602728596/qqtools@main/packages/NIMTest/node/roomId.json";
