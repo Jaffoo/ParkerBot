@@ -176,7 +176,7 @@ namespace Helper
                         }
                     }
 
-                    if (msgText[0] == '?' && IsAuth("查缩写", msgModel.fromId))
+                    if (msgText.Length > 0 && msgText[0] == '?' && IsAuth("查缩写", msgModel.fromId))
                     {
                         var abbreviations = msgText[1..];
                         if (!string.IsNullOrWhiteSpace(abbreviations))

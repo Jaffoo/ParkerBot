@@ -1,6 +1,8 @@
 using Mirai.Net.Utils.Scaffolds;
 using Newtonsoft.Json.Linq;
 using ParkerBot;
+using static Vanara.PInvoke.User32;
+using System.Text.RegularExpressions;
 
 namespace Helper
 {
@@ -218,6 +220,16 @@ namespace Helper
             {
                 e.AddLog();
                 return;
+            }
+        }
+
+        private static void HandleEmoji(string str, ref MessageChainBuilder mcb)
+        {
+            string pattern = @"\[[^\]]+\]";
+            MatchCollection matches = Regex.Matches(str, pattern);
+            foreach (Match match in matches)
+            {
+                Console.WriteLine(match.Value);
             }
         }
     }
