@@ -37,7 +37,7 @@ namespace Helper
         public static Queue<MsgModel> MsgQueue = new();
         private static DateTime _lastSendTime = DateTime.Now;
         private static double _interval = 3;//单位秒
-        private static MiraiBot _bot = new();
+        private static MiraiBot? _bot = null;
         public static LiteContext? _liteContext { get; set; }
         #region 全局变量
         public static string Admin => Const.ConfigModel.QQ.admin ?? "";
@@ -62,16 +62,16 @@ namespace Helper
 
         public static void BotStart(MiraiBot bot)
         {
-            _bot = bot;
             _liteContext = new();
-            GroupMessageReceiver();
-            FriendMessageReceiver();
-            EventMessageReceiver();
+            GroupMessageReceiver(bot);
+            FriendMessageReceiver(bot);
+            EventMessageReceiver(bot);
             Task.Run(HandlMsg);
         }
 
-        public static void GroupMessageReceiver()
+        public static void GroupMessageReceiver(MiraiBot bot)
         {
+            _bot = bot;
             _bot.MessageReceived.OfType<GroupMessageReceiver>().Subscribe(async gmr =>
             {
                 try
@@ -200,8 +200,9 @@ namespace Helper
             });
         }
 
-        public static void FriendMessageReceiver()
+        public static void FriendMessageReceiver(MiraiBot bot)
         {
+            _bot = bot;
             _bot.MessageReceived.OfType<FriendMessageReceiver>().Subscribe(async fmr =>
             {
                 //消息链
@@ -834,8 +835,9 @@ namespace Helper
             });
         }
 
-        public static void EventMessageReceiver()
+        public static void EventMessageReceiver(MiraiBot bot)
         {
+            _bot = bot;
             _bot.EventReceived.OfType<EventBase>().Subscribe(async e =>
             {
                 try
@@ -930,6 +932,7 @@ namespace Helper
         {
             try
             {
+                if (!Const.MiraiConfig.useMirai) return;
                 if (_bot == null) return;
                 var group = _bot.Groups.Value.FirstOrDefault(t => t.Id == groupId);
                 if (group == null) return;
@@ -946,6 +949,7 @@ namespace Helper
         {
             try
             {
+                if (!Const.MiraiConfig.useMirai) return;
                 if (_bot == null) return;
                 foreach (var groupId in groupIds)
                 {
@@ -966,6 +970,7 @@ namespace Helper
         {
             try
             {
+                if (!Const.MiraiConfig.useMirai) return;
                 if (_bot == null) return;
                 var group = _bot.Groups.Value.FirstOrDefault(t => t.Id == groupId);
                 if (group == null) return;
@@ -983,6 +988,7 @@ namespace Helper
         {
             try
             {
+                if (!Const.MiraiConfig.useMirai) return;
                 if (_bot == null) return;
                 foreach (var groupId in groupIds)
                 {
@@ -1003,6 +1009,7 @@ namespace Helper
         {
             try
             {
+                if (!Const.MiraiConfig.useMirai) return;
                 if (_bot == null) return;
                 var friend = _bot.Friends.Value.FirstOrDefault(t => t.Id == friendId);
                 if (friend == null) return;
@@ -1020,6 +1027,7 @@ namespace Helper
         {
             try
             {
+                if (!Const.MiraiConfig.useMirai) return;
                 if (_bot == null) return;
                 foreach (var friendId in friendIds)
                 {
@@ -1040,6 +1048,7 @@ namespace Helper
         {
             try
             {
+                if (!Const.MiraiConfig.useMirai) return;
                 if (_bot == null) return;
                 var friend = _bot.Friends.Value.FirstOrDefault(t => t.Id == friendId);
                 if (friend == null) return;
@@ -1057,6 +1066,7 @@ namespace Helper
         {
             try
             {
+                if (!Const.MiraiConfig.useMirai) return;
                 if (_bot == null) return;
                 foreach (var friendId in friendIds)
                 {
@@ -1077,6 +1087,7 @@ namespace Helper
         {
             try
             {
+                if (!Const.MiraiConfig.useMirai) return;
                 if (_bot == null || !Notice) return;
                 var friend = _bot.Friends.Value.FirstOrDefault(t => t.Id == Admin);
                 if (friend == null) return;
@@ -1093,6 +1104,7 @@ namespace Helper
         {
             try
             {
+                if (!Const.MiraiConfig.useMirai) return;
                 if (_bot == null || !Notice) return;
                 var friend = _bot.Friends.Value.FirstOrDefault(t => t.Id == Admin);
                 if (friend == null) return;
