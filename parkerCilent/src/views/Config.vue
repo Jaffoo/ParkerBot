@@ -79,14 +79,16 @@
                             <el-input v-model="config.WB.url" placeholder="多个用英文,分隔"></el-input>
                             <span style="color:red">*用户微博人脸识别</span>
                         </el-form-item>
-                        <el-form-item label="关注用户">
-                            <el-input v-model="config.WB.cg" placeholder="多个用英文,分隔"></el-input>
-                            <span style="color:red">*多个用英文逗号,分隔</span>
-                        </el-form-item>
-                        <el-form-item label="微博关键词">
-                            <el-input v-model="config.WB.keyword" placeholder="多个用英文逗号,分隔"></el-input>
-                            <span style="color:red">*当【关注用户】发的微博文案中含有这些词汇时监听生效</span>
-                        </el-form-item>
+                        <template v-if="eable.qq">
+                            <el-form-item label="关注用户">
+                                <el-input v-model="config.WB.cg" placeholder="多个用英文,分隔"></el-input>
+                                <span style="color:red">*多个用英文逗号,分隔</span>
+                            </el-form-item>
+                            <el-form-item label="微博关键词">
+                                <el-input v-model="config.WB.keyword" placeholder="多个用英文逗号,分隔"></el-input>
+                                <span style="color:red">*当【关注用户】发的微博文案中含有这些词汇时监听生效</span>
+                            </el-form-item>
+                        </template>
                         <el-form-item label="监听间隔" prop="WB.timeSpan" :rules="rules.input">
                             <el-input type="number" v-model="config.WB.timeSpan" placeholder="单位分钟"></el-input>
                         </el-form-item>
