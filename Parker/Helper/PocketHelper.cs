@@ -227,7 +227,7 @@ namespace Helper
         {
             string pattern = @"\[[^\]]+\]";
             MatchCollection matches = Regex.Matches(str, pattern);
-            foreach (Match match in matches)
+            foreach (Match match in matches.Cast<Match>())
             {
                 Console.WriteLine(match.Value);
             }
