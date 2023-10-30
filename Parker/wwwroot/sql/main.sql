@@ -1,7 +1,7 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : config_2
+ Source Server         : config
  Source Server Type    : SQLite
  Source Server Version : 3035005
  Source Schema         : main
@@ -10,7 +10,7 @@
  Target Server Version : 3035005
  File Encoding         : 65001
 
- Date: 28/08/2023 16:19:59
+ Date: 30/10/2023 10:50:11
 */
 
 PRAGMA foreign_keys = false;
@@ -48,13 +48,13 @@ CREATE TABLE "config" (
 INSERT INTO "config" VALUES (1, 'Mirai配置', 'Mirai', 'Mirai', 0);
 INSERT INTO "config" VALUES (2, 'Mirai安装目录', 'Path', '', 1);
 INSERT INTO "config" VALUES (3, 'QQ号', 'QQNum', '', 1);
-INSERT INTO "config" VALUES (4, 'Mirai地址', 'Address', '', 1);
-INSERT INTO "config" VALUES (5, '验证Key', 'VerifyKey', '', 1);
-INSERT INTO "config" VALUES (6, 'QQ启用功能', 'FuncEnable', '', 14);
+INSERT INTO "config" VALUES (4, 'Mirai地址', 'Address', 'localhost:8080', 1);
+INSERT INTO "config" VALUES (5, '验证Key', 'VerifyKey', '1234567890', 1);
+INSERT INTO "config" VALUES (6, 'QQ启用功能', 'FuncEnable', '[{"id":91,"name":"问答","key":"问答","value":"问答","parentId":9},{"id":92,"name":"文案","key":"文案","value":"文案","parentId":9},{"id":93,"name":"天气","key":"天气","value":"天气","parentId":9},{"id":94,"name":"添狗","key":"添狗","value":"添狗","parentId":9},{"id":95,"name":"艾特作图","key":"艾特作图","value":"艾特作图","parentId":9},{"id":94,"name":"舔狗","key":"舔狗","value":"舔狗","parentId":9},{"id":99,"name":"查缩写","key":"查缩写","value":"查缩写","parentId":9},{"id":100,"name":"舔狗文案","key":"舔狗文案","value":"舔狗文案","parentId":9}]', 14);
 INSERT INTO "config" VALUES (7, '权限功能', 'FuncAdmin', '', 14);
 INSERT INTO "config" VALUES (8, '用户功能', 'FuncUser', '', 14);
 INSERT INTO "config" VALUES (9, 'QQ功能列表', 'QQFuncList', '', 0);
-INSERT INTO "config" VALUES (13, '基础', 'BaseConfig', '', 0);
+INSERT INTO "config" VALUES (13, '基础', 'BaseConfig', '0', 0);
 INSERT INTO "config" VALUES (14, 'QQ', 'QQ', 'false', 13);
 INSERT INTO "config" VALUES (15, '微博', 'WB', 'false', 13);
 INSERT INTO "config" VALUES (16, 'B站', 'BZ', 'false', 13);
@@ -71,7 +71,7 @@ INSERT INTO "config" VALUES (26, 'Url', 'Url', '', 15);
 INSERT INTO "config" VALUES (27, '监听间隔', 'TimeSpan', '3', 15);
 INSERT INTO "config" VALUES (28, '转发群', 'Group', '', 15);
 INSERT INTO "config" VALUES (29, '是否转发', 'ForwardGroup', 'false', 15);
-INSERT INTO "config" VALUES (30, 'Url', 'Url', ' ', 16);
+INSERT INTO "config" VALUES (30, 'Url', 'Url', '', 16);
 INSERT INTO "config" VALUES (31, '监听间隔', 'TimeSpan', '3', 16);
 INSERT INTO "config" VALUES (32, '转发群', 'Group', '', 16);
 INSERT INTO "config" VALUES (33, '是否转发', 'ForwardGroup', 'false', 16);
@@ -91,9 +91,9 @@ INSERT INTO "config" VALUES (46, '是否转发', 'ForwardGroup', 'false', 19);
 INSERT INTO "config" VALUES (47, 'AppKey', 'AppKey', '', 20);
 INSERT INTO "config" VALUES (48, 'AppSeret', 'AppSeret', '', 20);
 INSERT INTO "config" VALUES (49, '标准图片', 'ImageList', '', 20);
-INSERT INTO "config" VALUES (50, '相似度', 'Similarity', '0', 20);
-INSERT INTO "config" VALUES (51, '保存云盘', 'SaveAliyunDisk', 'true', 20);
-INSERT INTO "config" VALUES (52, '审核相似度', 'Audit', '0', 20);
+INSERT INTO "config" VALUES (50, '相似度', 'Similarity', '', 20);
+INSERT INTO "config" VALUES (51, '保存云盘', 'SaveAliyunDisk', 'false', 20);
+INSERT INTO "config" VALUES (52, '审核相似度', 'Audit', '', 20);
 INSERT INTO "config" VALUES (53, '相册名称', 'AlbumName', '', 20);
 INSERT INTO "config" VALUES (54, '转发好友', 'ForwardQQ', 'false', 15);
 INSERT INTO "config" VALUES (55, '好友', 'QQ', '', 15);
@@ -106,8 +106,8 @@ INSERT INTO "config" VALUES (61, 'QQ', 'QQ', '', 18);
 INSERT INTO "config" VALUES (62, '转发好友', 'ForwardQQ', 'false', 19);
 INSERT INTO "config" VALUES (63, 'QQ', 'QQ', '', 19);
 INSERT INTO "config" VALUES (64, '人脸识别', 'FaceVerify', 'false', 20);
-INSERT INTO "config" VALUES (65, 'AppKey', 'AppKey', 'NjMyZmVmZjFmNGM4Mzg1NDFhYjc1MTk1ZDFjZWIzZmE=', 17);
-INSERT INTO "config" VALUES (66, '启用机器人', 'UseMirai', 'false', 1);
+INSERT INTO "config" VALUES (65, 'AppKey', 'AppKey', '', 17);
+INSERT INTO "config" VALUES (66, '启用机器人', 'UseMirai', 'False', 1);
 INSERT INTO "config" VALUES (67, '图片域名', 'ImgDomain', 'https://source3.48.cn', 17);
 INSERT INTO "config" VALUES (68, '视频域名', 'MP4Domain', 'https://mp4.48.cn', 17);
 INSERT INTO "config" VALUES (69, '房间ID', 'LiveRoomId', '', 17);
@@ -126,11 +126,11 @@ INSERT INTO "config" VALUES (85, '消息类型', 'MsgTypeList', '[{
 },
 {
     "name":"视频消息",
-    "value":"video,VIDEO"
+    "value":"video"
 },
 {
     "name":"音频消息",
-    "value":"audio,AUDIO"
+    "value":"audio"
 },
 {
     "name":"回复消息",
@@ -145,7 +145,7 @@ INSERT INTO "config" VALUES (85, '消息类型', 'MsgTypeList', '[{
     "value":"fen"
 },
 {
-    "name":"开播",
+    "name":"直播",
     "value":"LIVEPUSH"
 },
 {
@@ -153,7 +153,7 @@ INSERT INTO "config" VALUES (85, '消息类型', 'MsgTypeList', '[{
     "value":"TEAM_VOICE"
 },
 {
-    "name":"开播/房间电台艾特全体成员",
+    "name":"直播/房间电台艾特全体成员",
     "value":"AtAll"
 },
 {
@@ -173,16 +173,17 @@ INSERT INTO "config" VALUES (85, '消息类型', 'MsgTypeList', '[{
     "value":"PRESENT_NORMAL"
 }]', 17);
 INSERT INTO "config" VALUES (86, '吃瓜微博', 'Cg', '', 15);
-INSERT INTO "config" VALUES (87, '吃瓜关键字', 'keyword', '', 15);
+INSERT INTO "config" VALUES (87, '吃瓜关键字', 'Keyword', '', 15);
 INSERT INTO "config" VALUES (88, '姓名', 'Name', '', 17);
-INSERT INTO "config" VALUES (89, '问答', '问答', '问答', 9);
-INSERT INTO "config" VALUES (90, '文案', '文案', '文案', 9);
-INSERT INTO "config" VALUES (91, '天气', '天气', '天气', 9);
-INSERT INTO "config" VALUES (92, '舔狗文案', '舔狗文案', '舔狗文案', 9);
-INSERT INTO "config" VALUES (93, '程序错误通知', 'Debug', 'false', 14);
-INSERT INTO "config" VALUES (94, '艾特作图', '艾特作图', '艾特作图', 9);
-INSERT INTO "config" VALUES (95, '查缩写', '查缩写', '查缩写', 9);
-INSERT INTO "config" VALUES (96, '消息通知', 'Notice', 'true', 14);
+INSERT INTO "config" VALUES (90, '程序错误通知', 'Debug', 'true', 14);
+INSERT INTO "config" VALUES (91, '问答', '问答', '问答', 9);
+INSERT INTO "config" VALUES (92, '文案', '文案', '文案', 9);
+INSERT INTO "config" VALUES (93, '天气', '天气', '天气', 9);
+INSERT INTO "config" VALUES (95, '艾特作图', '艾特作图', '艾特作图', 9);
+INSERT INTO "config" VALUES (98, '消息通知', 'Notice', 'true', 14);
+INSERT INTO "config" VALUES (99, '查缩写', '查缩写', '查缩写', 9);
+INSERT INTO "config" VALUES (100, '舔狗文案', '舔狗文案', '舔狗文案', 9);
+INSERT INTO "config" VALUES (101, 'GptKey', 'GptKey', '', 14);
 
 -- ----------------------------
 -- Table structure for idol
@@ -259,29 +260,29 @@ CREATE TABLE "sqlite_sequence" (
 -- ----------------------------
 -- Records of sqlite_sequence
 -- ----------------------------
-INSERT INTO "sqlite_sequence" VALUES ('config', 96);
-INSERT INTO "sqlite_sequence" VALUES ('cache', 38);
-INSERT INTO "sqlite_sequence" VALUES ('message', 11365);
-INSERT INTO "sqlite_sequence" VALUES ('log', 151);
+INSERT INTO "sqlite_sequence" VALUES ('config', 101);
+INSERT INTO "sqlite_sequence" VALUES ('log', 99901);
+INSERT INTO "sqlite_sequence" VALUES ('message', 23070);
+INSERT INTO "sqlite_sequence" VALUES ('cache', 49);
 
 -- ----------------------------
 -- Auto increment value for cache
 -- ----------------------------
-UPDATE "sqlite_sequence" SET seq = 38 WHERE name = 'cache';
+UPDATE "sqlite_sequence" SET seq = 49 WHERE name = 'cache';
 
 -- ----------------------------
 -- Auto increment value for config
 -- ----------------------------
-UPDATE "sqlite_sequence" SET seq = 96 WHERE name = 'config';
+UPDATE "sqlite_sequence" SET seq = 101 WHERE name = 'config';
 
 -- ----------------------------
 -- Auto increment value for log
 -- ----------------------------
-UPDATE "sqlite_sequence" SET seq = 151 WHERE name = 'log';
+UPDATE "sqlite_sequence" SET seq = 99901 WHERE name = 'log';
 
 -- ----------------------------
 -- Auto increment value for message
 -- ----------------------------
-UPDATE "sqlite_sequence" SET seq = 11365 WHERE name = 'message';
+UPDATE "sqlite_sequence" SET seq = 23070 WHERE name = 'message';
 
 PRAGMA foreign_keys = true;
