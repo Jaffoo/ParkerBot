@@ -42,8 +42,8 @@ namespace ParkerBot
 
             Const.SetCache();
             RegistJs();
-
             LoadEnd += PageLoadEnd;
+            BeforeClose += BeforeClosing;
         }
 
         private void PageLoadEnd(object? sender, NetDimension.NanUI.Browser.LoadEndEventArgs e)
@@ -60,6 +60,19 @@ namespace ParkerBot
             var obj = new JavaScriptObject();
 
             RegisterJavaScriptObject("main", obj);
+        }
+
+        private void BeforeClosing(object? sender, NetDimension.NanUI.Browser.FormiumCloseEventArgs e)
+        {
+            DialogResult res = MessageBox.Show("确认关闭！", "确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (res == DialogResult.Yes)
+            {
+                e.Canceled = false;
+            }
+            else
+            {
+                e.Canceled = true;
+            }
         }
     }
 }
