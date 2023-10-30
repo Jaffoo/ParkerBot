@@ -1,7 +1,6 @@
 using Mirai.Net.Utils.Scaffolds;
 using Newtonsoft.Json.Linq;
 using ParkerBot;
-using static Vanara.PInvoke.User32;
 using System.Text.RegularExpressions;
 
 namespace Helper
@@ -72,11 +71,11 @@ namespace Helper
                         mcb.Plain(msbBody);
                     }
                     //总选计分
-                    else if (false)
-                    {
-                        msbBody = "送出了【" + attach["giftInfo"]!["giftName"] + "（" + attach["giftInfo"]!["tpNum"] + "分）】。";
-                        mcb.Plain(msbBody);
-                    }
+                    //else if (false)
+                    //{
+                    //    msbBody = "送出了【" + attach["giftInfo"]!["giftName"] + "（" + attach["giftInfo"]!["tpNum"] + "分）】。";
+                    //    mcb.Plain(msbBody);
+                    //}
                     //直播
                     else if (MsgType.Contains(messageType) && messageType == "LIVEPUSH")
                     {
