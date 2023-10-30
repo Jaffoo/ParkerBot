@@ -22,6 +22,7 @@ export default defineConfig({
     }
   },
   build:{
+    outDir:'../Parker/wwwroot/pages',
     chunkSizeWarningLimit: 2048*2,
     rollupOptions:{
       output:{

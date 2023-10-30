@@ -14,21 +14,13 @@
     <EmbeddedResource Remove="bin\**" />
     <None Remove="bin\**" />
   </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="wwwroot\pages\index.css" />
-    <None Remove="wwwroot\pages\index.html" />
-    <None Remove="wwwroot\pages\index.js" />
-  </ItemGroup>
-
+	
   <ItemGroup>
     <Content Include="wwwroot\image\spiderman.ico" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="wwwroot\pages\index.css" />
-    <EmbeddedResource Include="wwwroot\pages\index.html" />
-    <EmbeddedResource Include="wwwroot\pages\index.js" />
+    <EmbeddedResource Include="wwwroot\pages\**" />
   </ItemGroup>
 
   <ItemGroup>
