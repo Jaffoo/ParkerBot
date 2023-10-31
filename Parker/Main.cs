@@ -49,10 +49,6 @@ namespace ParkerBot
         private void PageLoadEnd(object? sender, NetDimension.NanUI.Browser.LoadEndEventArgs e)
         {
             //预留
-            if (Debugger.IsAttached)
-            {
-                var res = QQFunction.WenAn("昆明");
-            }
         }
 
         private void RegistJs()

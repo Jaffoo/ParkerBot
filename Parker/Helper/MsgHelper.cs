@@ -148,22 +148,6 @@ namespace Helper
                     }
 
                     #region 互动
-                    //at消息
-                    if (msgChain.Any(t => t.Type == Messages.At) && QQFunction.Keywrods.Contains(msgText.Trim()) && IsAuth("艾特作图", gmr.Sender.Id))
-                    {
-                        var model = msgChain.FirstOrDefault(t => t.Type == Messages.At);
-                        if (model != null)
-                        {
-                            var atQQ = (model as AtMessage)!.Target;
-                            var res = await QQFunction.AtPic(atQQ, msgText.Trim());
-                            if (!string.IsNullOrWhiteSpace(res))
-                            {
-                                MessageChain builder = new MessageChainBuilder().ImageFromBase64(res).Build();
-                                await gmr.SendMessageAsync(builder);
-                                return;
-                            }
-                        }
-                    }
 
                     if ((msgText.Contains("问：") || msgText.Contains("问:")) && IsAuth("问答", msgModel.fromId))
                     {
@@ -858,33 +842,6 @@ namespace Helper
                                 if (qq == null) return;
                                 var text = qq.Receiver.MessageChain.GetPlainMessage().Trim();
                                 var sender = qq.Receiver.Sender.Id;
-                                if (text.Substring(text.Length - 2, 2) == "文案" && IsAuth("文案", sender))
-                                {
-                                    var keyword = text.Replace("文案", "");
-                                    var res = await QQFunction.WenAn(keyword);
-                                    await qq.Receiver.SendMessageAsync(res);
-                                    return;
-                                }
-                                if (text.Substring(text.Length - 2, 2) == "天气" && IsAuth("天气", sender))
-                                {
-                                    var keyword = text.Replace("天气", "");
-                                    var res = await QQFunction.Weather(keyword);
-                                    await qq.Receiver.SendMessageAsync(res);
-                                    return;
-                                }
-                                if (text == "舔狗文学" && IsAuth("舔狗", sender))
-                                {
-                                    var res = await QQFunction.Dog();
-                                    await qq.Receiver.SendMessageAsync(res);
-                                    return;
-                                }
-                                if (IsAuth("问答", sender))
-                                {
-                                    var result = await QQFunction.XiaoAi(text);
-                                    if (string.IsNullOrWhiteSpace(result)) return;
-                                    result = result.Replace(@"\n", Environment.NewLine).Replace("\\\"", "\"");
-                                    await qq.Receiver.SendMessageAsync(result);
-                                }
                             };
                             return;
                         case Events.MemberJoined:
