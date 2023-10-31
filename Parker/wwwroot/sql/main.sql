@@ -10,7 +10,7 @@
  Target Server Version : 3035005
  File Encoding         : 65001
 
- Date: 30/10/2023 10:50:11
+ Date: 31/10/2023 09:46:38
 */
 
 PRAGMA foreign_keys = false;
@@ -50,7 +50,7 @@ INSERT INTO "config" VALUES (2, 'Mirai安装目录', 'Path', '', 1);
 INSERT INTO "config" VALUES (3, 'QQ号', 'QQNum', '', 1);
 INSERT INTO "config" VALUES (4, 'Mirai地址', 'Address', 'localhost:8080', 1);
 INSERT INTO "config" VALUES (5, '验证Key', 'VerifyKey', '1234567890', 1);
-INSERT INTO "config" VALUES (6, 'QQ启用功能', 'FuncEnable', '[{"id":91,"name":"问答","key":"问答","value":"问答","parentId":9},{"id":92,"name":"文案","key":"文案","value":"文案","parentId":9},{"id":93,"name":"天气","key":"天气","value":"天气","parentId":9},{"id":94,"name":"添狗","key":"添狗","value":"添狗","parentId":9},{"id":95,"name":"艾特作图","key":"艾特作图","value":"艾特作图","parentId":9},{"id":94,"name":"舔狗","key":"舔狗","value":"舔狗","parentId":9},{"id":99,"name":"查缩写","key":"查缩写","value":"查缩写","parentId":9},{"id":100,"name":"舔狗文案","key":"舔狗文案","value":"舔狗文案","parentId":9}]', 14);
+INSERT INTO "config" VALUES (6, 'QQ启用功能', 'FuncEnable', '', 14);
 INSERT INTO "config" VALUES (7, '权限功能', 'FuncAdmin', '', 14);
 INSERT INTO "config" VALUES (8, '用户功能', 'FuncUser', '', 14);
 INSERT INTO "config" VALUES (9, 'QQ功能列表', 'QQFuncList', '', 0);
@@ -177,13 +177,9 @@ INSERT INTO "config" VALUES (87, '吃瓜关键字', 'Keyword', '', 15);
 INSERT INTO "config" VALUES (88, '姓名', 'Name', '', 17);
 INSERT INTO "config" VALUES (90, '程序错误通知', 'Debug', 'true', 14);
 INSERT INTO "config" VALUES (91, '问答', '问答', '问答', 9);
-INSERT INTO "config" VALUES (92, '文案', '文案', '文案', 9);
-INSERT INTO "config" VALUES (93, '天气', '天气', '天气', 9);
-INSERT INTO "config" VALUES (95, '艾特作图', '艾特作图', '艾特作图', 9);
-INSERT INTO "config" VALUES (98, '消息通知', 'Notice', 'true', 14);
-INSERT INTO "config" VALUES (99, '查缩写', '查缩写', '查缩写', 9);
-INSERT INTO "config" VALUES (100, '舔狗文案', '舔狗文案', '舔狗文案', 9);
 INSERT INTO "config" VALUES (101, 'GptKey', 'GptKey', '', 14);
+INSERT INTO "config" VALUES (102, '消息通知', 'Notice', 'true', 14);
+INSERT INTO "config" VALUES (103, '查缩写', '查缩写', '查缩写', 9);
 
 -- ----------------------------
 -- Table structure for idol
@@ -260,7 +256,7 @@ CREATE TABLE "sqlite_sequence" (
 -- ----------------------------
 -- Records of sqlite_sequence
 -- ----------------------------
-INSERT INTO "sqlite_sequence" VALUES ('config', 101);
+INSERT INTO "sqlite_sequence" VALUES ('config', 106);
 INSERT INTO "sqlite_sequence" VALUES ('log', 99901);
 INSERT INTO "sqlite_sequence" VALUES ('message', 23070);
 INSERT INTO "sqlite_sequence" VALUES ('cache', 49);
@@ -273,7 +269,7 @@ UPDATE "sqlite_sequence" SET seq = 49 WHERE name = 'cache';
 -- ----------------------------
 -- Auto increment value for config
 -- ----------------------------
-UPDATE "sqlite_sequence" SET seq = 101 WHERE name = 'config';
+UPDATE "sqlite_sequence" SET seq = 106 WHERE name = 'config';
 
 -- ----------------------------
 -- Auto increment value for log

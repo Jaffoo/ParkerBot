@@ -60,7 +60,7 @@ namespace ParkerBot
 
         private void BeforeClosing(object? sender, NetDimension.NanUI.Browser.FormiumCloseEventArgs e)
         {
-            DialogResult res = MessageBox.Show("确认关闭！", "确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            DialogResult res = MessageBox.Show("确认关闭！", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (res == DialogResult.Yes)
             {
                 e.Canceled = false;
