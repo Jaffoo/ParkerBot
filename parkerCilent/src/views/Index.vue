@@ -400,7 +400,7 @@ const saveBlogByid = () => {
             if (res.data.success) {
                 ElMessage({
                     showClose: true,
-                    message: '抓取成功！',
+                    message: res.data.msg || '抓取成功！',
                     type: 'success'
                 })
             } else {

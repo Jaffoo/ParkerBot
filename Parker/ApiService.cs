@@ -332,7 +332,8 @@ namespace ParkerBot
             var id = resquest.QueryString["blogId"]?.ToString();
             if (!string.IsNullOrWhiteSpace(id))
             {
-                Weibo.SaveByUrl(id).GetAwaiter();
+                Task.Run(async () => { await Weibo.SaveByUrl(id); }) ;
+                return Json(new { success = true, msg = "检索到微博！图片识别保存进行中！" });
             }
             return Json(new { success = false, msg = "未检索到微博！" });
         }
