@@ -1,8 +1,11 @@
 <template>
     <el-container>
         <el-header>
-            <el-button type="primary" native-type="button" :icon="ArrowLeft" @click="back">返回</el-button>
-            <el-button type="primary" native-type="button" :icon="Edit" @click="save(form)">保存</el-button>
+            <el-affix :offset="30">
+                <el-button type="primary" native-type="button" :icon="ArrowLeft" @click="back">返回</el-button>
+                <el-button type="primary" native-type="button" :icon="Edit" @click="save(form)">保存</el-button>
+                <el-button type="primary" native-type="button" :icon="Setting" @click="reset()">重置</el-button>
+            </el-affix>
         </el-header>
         <el-main>
             <div style="margin-bottom:1%">
@@ -277,6 +280,7 @@
                     </el-collapse-item>
                 </el-form>
             </el-collapse>
+            <el-backtop :right="100" :bottom="100" />
         </el-main>
     </el-container>
     <el-dialog title="登录口袋48" v-model="loginKD" :before-close="close" :close-on-click-modal="false">
@@ -321,7 +325,7 @@ import 'element-plus/es/components/message/style/css'
 import { ref, watch, onMounted } from 'vue'
 import axios from 'axios'
 import { type FormInstance, ElMessage } from 'element-plus'
-import { ArrowLeft, Edit, Plus } from '@element-plus/icons-vue'
+import { ArrowLeft, Edit, Plus, Setting } from '@element-plus/icons-vue'
 import type { UploadProps, UploadUserFile } from 'element-plus'
 
 const funcs = ref([] as any[]);
@@ -762,5 +766,9 @@ const searchXox = async () => {
         searchModel.value.url = res.data.data;
     }
     searchModel.value.loading = false;
+}
+
+const reset = () => {
+
 }
 </script>

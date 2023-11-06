@@ -20,18 +20,21 @@
         <el-main>
             <el-row :gutter="20">
                 <el-col :span="12">
-                    <h3 style="margin-left: 40%;">即时消息及日志</h3>
+                    <h3 style="margin-left: 40%;">消息及日志</h3>
                     <div style="height: 530px;overflow:auto;" id="textArae">
                         <div v-for="(item, index) in log" style="margin:5px">
                             {{ (index + 1) + ':' }}
                             <span v-if="item.type != 2">{{ item.content }}</span>
-                            <el-image v-if="item.type == 2" style="height: 80px;width: 80px;" :src="item.url"
-                                :preview-src-list="[item.url]"></el-image>
+                            <span v-if="item.type == 2">
+                                {{ item.content }}
+                                <el-image style="height: 80px;width: 80px;" :src="item.url"
+                                    :preview-src-list="[item.url]"></el-image>
+                            </span>
                         </div>
                     </div>
                 </el-col>
                 <el-col :span="12">
-                    <h3 title="点此刷新" @click="refresh" style="cursor: pointer;margin-left: 40%;">图片待审核列表</h3>
+                    <h3 title="点此刷新" @click="refresh" style="cursor: pointer;margin-left: 40%;">图片列表</h3>
                     <div style="height: 530px;overflow:auto;">
                         <table>
                             <tr>
@@ -227,13 +230,13 @@ const handleMessage = async function (msg: any) {
         log.value.push(new PocketMessage().add(mess));
     }
     else if (msg.type == "image") {
-        log.value.push(new PocketMessage().addImg(`【${msg.channelName}|${msg.time}】${msg.ext.user.nickName}:`,msg?.attach?.url));
+        log.value.push(new PocketMessage().addImg(`【${msg.channelName}|${msg.time}】${msg.ext.user.nickName}:`, msg?.attach?.url));
     }
     else if (msg.type == "video") {
-        log.value.push(new PocketMessage().addVideo(`【${msg.channelName}|${msg.time}】${msg.ext.user.nickName}:`,msg?.attach?.url));
+        log.value.push(new PocketMessage().addVideo(`【${msg.channelName}|${msg.time}】${msg.ext.user.nickName}:`, msg?.attach?.url));
     }
     else if (msg.type == "audio") {
-        log.value.push(new PocketMessage().addVoice(`【${msg.channelName}|${msg.time}】${msg.ext.user.nickName}:`,msg?.attach?.url));
+        log.value.push(new PocketMessage().addVoice(`【${msg.channelName}|${msg.time}】${msg.ext.user.nickName}:`, msg?.attach?.url));
     }
     else if (msg.type == "custom") {
         log.value.push(new PocketMessage().add(`【${msg.channelName}|${msg.time}】${msg.ext.user.nickName}:发送了一条特殊消息！`));
@@ -340,7 +343,7 @@ const checkFalse = async (id: number, index: number) => {
     if (res.data) {
         ElMessage({
             showClose: true,
-            message: '保存成功！',
+            message: '删除成功！',
             type: 'success'
         });
         pic.value.splice(index, 1);
@@ -348,7 +351,7 @@ const checkFalse = async (id: number, index: number) => {
     if (!res.data) {
         ElMessage({
             showClose: true,
-            message: '保存失败！',
+            message: '删除失败！',
             type: 'error'
         });
     }
