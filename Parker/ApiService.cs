@@ -4,6 +4,7 @@ using NetDimension.NanUI.Browser.ResourceHandler;
 using NetDimension.NanUI.Resource.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SkiaSharp;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using static ParkerBot.Const;
@@ -324,6 +325,16 @@ namespace ParkerBot
             {
                 return Json(new { success = false, msg = e.Message, data = url });
             }
+        }
+
+        public ResourceResponse SaveByBlogId(ResourceRequest resquest)
+        {
+            var id = resquest.QueryString["blogId"]?.ToString();
+            if (!string.IsNullOrWhiteSpace(id))
+            {
+                Weibo.SaveByUrl(id).GetAwaiter();
+            }
+            return Json(new { success = false, msg = "未检索到微博！" });
         }
     }
 }
