@@ -278,7 +278,7 @@ namespace Helper
             try
             {
                 await Msg.SendAdminMsg("开始识别微博连接");
-                var url = "https://weibo.com/ajax/statuses/mymblog?uid=" + id;
+                var url = "https://weibo.com/ajax/statuses/show?id=" + id;
                 var handler = new HttpClientHandler() { UseCookies = true };
                 HttpClient httpClient = new(handler);
                 var headers = GetHeader(id);
@@ -291,14 +291,12 @@ namespace Helper
                 var content = await res.Content.ReadAsStringAsync();
                 if (string.IsNullOrWhiteSpace(content)) return;
                 var obj = JObject.Parse(content);
-                var picsStr = obj["data"]!["pics"]!;
-                var picList = JsonConvert.DeserializeObject<List<JObject>>(picsStr.ToString())!;
+                var picsStr = obj["pic_ids"]!;
+                var picList = JsonConvert.DeserializeObject<List<string>>(picsStr.ToString())!;
                 await Msg.SendAdminMsg($"检测到有{picList.Count}张图！开始进行识别保存！");
                 foreach (var item in picList)
                 {
-                    var img = item["large"]!["url"]!.ToString();
-                    var fileName = Path.GetFileName(img);
-                    img = "https://cdn.ipfsscan.io/weibo/large/" + fileName;
+                    var img = "https://cdn.ipfsscan.io/weibo/large/" + item + ".jpg";
                     await FatchFace(img, true);
                     Thread.Sleep(1000);
                 }

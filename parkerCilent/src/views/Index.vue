@@ -14,6 +14,14 @@
                         @click="startMirai">启动Mirai机器人</el-button>
                     <el-button type="primary" native-type="button" @click="start">启动机器人</el-button>
                     <el-button v-if="useAli" type="primary" native-type="button" @click="startAli">启动阿里云盘</el-button>
+                    <el-dropdown style="left: 25vw;">
+                        <el-button type="primary" circle :icon="ArrowDown"></el-button>
+                        <template #dropdown>
+                            <el-dropdown-menu>
+                                <el-dropdown-item @click="saveBlogByid">抓取微博</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </template>
+                    </el-dropdown>
                 </el-form-item>
             </el-form>
         </el-header>
@@ -63,8 +71,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
-import { Setting, Check } from '@element-plus/icons-vue';
-import { ElMessage } from 'element-plus';
+import { ArrowDown, Setting } from '@element-plus/icons-vue';
 import axios from "axios";
 import QChatSDK from "nim-web-sdk-ng/dist/QCHAT_BROWSER_SDK";
 import NIMSDK from "nim-web-sdk-ng/dist/NIM_BROWSER_SDK";
@@ -362,5 +369,47 @@ const refresh = async () => {
         url: "http://parkerbot.api/api/refresh"
     });
     pic.value = res.data;
+}
+
+const saveBlogByid = () => {
+    ElMessageBox.prompt('', '请输入微博id', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        beforeClose: (action, instance, done) => {
+            if (action == "confirm") {
+                const value = instance.inputValue;
+                if (!value || value.trim() === '') {
+                    ElMessage({
+                        showClose: true,
+                        message: "请输入微博id",
+                        type: 'warning'
+                    });
+                } else {
+                    done();
+                }
+            } else {
+                done();
+            }
+        }
+    })
+        .then(async ({ value }) => {
+            if (!value || value.trim() === '') return;
+            var res = await axios({
+                url: "http://parkerbot.api/api/SaveByBlogId?blogId=" + value
+            });
+            if (res.data.success) {
+                ElMessage({
+                    showClose: true,
+                    message: res.data.msg || '抓取成功！',
+                    type: 'success'
+                })
+            } else {
+                ElMessage({
+                    showClose: true,
+                    message: res.data.msg || "抓取失败！",
+                    type: 'error'
+                });
+            }
+        })
 }
 </script>
