@@ -11,7 +11,7 @@
             <el-button v-if="useMirai" type="primary" native-type="button" @click="startMirai">启动Mirai机器人</el-button>
             <el-button type="primary" native-type="button" @click="start">启动机器人</el-button>
             <el-button v-if="useAli" type="primary" native-type="button" @click="startAli">启动阿里云盘</el-button>
-            <el-dropdown style="left: 25vw;">
+            <el-dropdown style="left: 35vw;">
                 <el-button type="primary" circle :icon="ArrowDown"></el-button>
                 <template #dropdown>
                     <el-dropdown-menu>
