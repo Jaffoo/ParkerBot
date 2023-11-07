@@ -669,7 +669,7 @@ const rStr = function (len: number): string {
     return result;
 }
 const createHeader = function (token: string): object {
-    var headers = {
+    let headers = {
         pa: uuid(),
         'Content-Type': 'application/json;charset=utf-8',
         appInfo: JSON.stringify({
@@ -682,10 +682,11 @@ const createHeader = function (token: string): object {
             deviceName: 'iPhone XR',
             os: 'ios'
         }),
-        'User-Agent':'PocketFans201807/6.0.16 (iPhone; iOS 13.5.1; Scale/2.00)',
+        'Access-Control-Allow-Origin': '*',
         'Accept-Language': 'zh-Hans-AW;q=1',
-        token: ''
-    };
+        Host: 'pocketapi.48.cn',
+        'User-Agent': 'PocketFans201807/6.0.16 (iPhone; iOS 13.5.1; Scale/2.00)'
+    } as any;
     if (token) {
         headers.token = token;
     };
