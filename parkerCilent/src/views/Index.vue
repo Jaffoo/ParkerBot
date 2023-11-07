@@ -1,29 +1,24 @@
 <template>
     <el-container>
-        <el-header>
-            <el-form>
-                <el-form-item>
-                    <el-button type="primary" native-type="button" :icon="Setting" @click="config">
-                        修改配置
-                    </el-button>
-                    <el-button type="primary" native-type="button" :icon="Setting" @click="miraiSetting">
-                        Mirai配置
-                    </el-button>
-                    <span style="color:red">(不启用QQ机器人无需配置)</span>
-                    <el-button v-if="useMirai" type="primary" native-type="button"
-                        @click="startMirai">启动Mirai机器人</el-button>
-                    <el-button type="primary" native-type="button" @click="start">启动机器人</el-button>
-                    <el-button v-if="useAli" type="primary" native-type="button" @click="startAli">启动阿里云盘</el-button>
-                    <el-dropdown style="left: 25vw;">
-                        <el-button type="primary" circle :icon="ArrowDown"></el-button>
-                        <template #dropdown>
-                            <el-dropdown-menu>
-                                <el-dropdown-item @click="saveBlogByid">抓取微博</el-dropdown-item>
-                            </el-dropdown-menu>
-                        </template>
-                    </el-dropdown>
-                </el-form-item>
-            </el-form>
+        <el-header height="50px">
+            <el-button type="primary" native-type="button" :icon="Setting" @click="config">
+                修改配置
+            </el-button>
+            <el-button type="primary" native-type="button" :icon="Setting" @click="miraiSetting">
+                Mirai配置
+            </el-button>
+            <span style="color:red">(不启用QQ机器人无需配置)</span>
+            <el-button v-if="useMirai" type="primary" native-type="button" @click="startMirai">启动Mirai机器人</el-button>
+            <el-button type="primary" native-type="button" @click="start">启动机器人</el-button>
+            <el-button v-if="useAli" type="primary" native-type="button" @click="startAli">启动阿里云盘</el-button>
+            <el-dropdown style="left: 25vw;">
+                <el-button type="primary" circle :icon="ArrowDown"></el-button>
+                <template #dropdown>
+                    <el-dropdown-menu>
+                        <el-dropdown-item @click="saveBlogByid">抓取微博</el-dropdown-item>
+                    </el-dropdown-menu>
+                </template>
+            </el-dropdown>
         </el-header>
         <el-main>
             <el-row :gutter="20">
