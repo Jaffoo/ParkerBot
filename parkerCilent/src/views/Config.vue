@@ -590,13 +590,11 @@ const send = () => {
     config.value.KD.hasSend = true;
     subtraction();
     axios({
-        url: 'https://pocketapi.48.cn/user/api/v1/sms/send2',
-        method: 'post',
-        headers: createHeader(""),
-        responseType: 'json',
-        timeout: 180_000,
-        data: { mobile: config.value.KD.phone, area: config.value.KD.area }
+        url: 'http://parkerbot.api/api/SendSmsCode',
+        method: 'get',
+        params: { mobile: config.value.KD.phone, area: config.value.KD.area }
     }).then(res => {
+        console.log("sms", res.data)
         if (res.data.success) {
             ElMessage({ message: "发送成功，请注意查收！", type: 'success' });
         }
@@ -617,26 +615,27 @@ const submitForm = () => {
         return;
     }
     axios({
-        url: 'https://pocketapi.48.cn/user/api/v1/login/app/mobile/code',
-        method: 'post',
-        headers: createHeader(""),
-        responseType: 'json',
-        timeout: 180_000,
-        data: { mobile: config.value.KD.phone, code: config.value.KD.code }
+        url: 'http://parkerbot.api/api/PocketLogin',
+        method: 'get',
+        params: { mobile: config.value.KD.phone, code: config.value.KD.code }
     }).then(res => {
-        axios({
-            url: 'https://pocketapi.48.cn/im/api/v1/im/userinfo',
-            method: 'post',
-            headers: createHeader(res.data.content.token),
-            responseType: 'json',
-            timeout: 180_000
-        }).then(res1 => {
-            config.value.KD.token = res1.data.content.pwd;
-            config.value.KD.account = res1.data.content.accid;
-            setTimeout(() => {
-                close();
-            }, 1000);
-        });
+        let result = JSON.parse(res.data)
+        if (result.success) {
+            axios({
+                url: 'http://parkerbot.api/api/GetPokectUserInfo',
+                method: 'get',
+                params: { token: result.content.token }
+            }).then(res1 => {
+                console.log("token", res1.data)
+                config.value.KD.token = res1.data.content.pwd;
+                config.value.KD.account = res1.data.content.accid;
+                setTimeout(() => {
+                    close();
+                }, 1000);
+            });
+        } else {
+            ElMessage({ message: result.message, type: 'error' });
+        }
     });
 }
 const subtraction = () => {
@@ -667,30 +666,6 @@ const rStr = function (len: number): string {
         result += str[rIndex];
     }
     return result;
-}
-const createHeader = function (token: string): object {
-    let headers = {
-        pa: uuid(),
-        'Content-Type': 'application/json;charset=utf-8',
-        appInfo: JSON.stringify({
-            vendor: 'apple',
-            deviceId: `${rStr(8)}-${rStr(4)}-${rStr(4)}-${rStr(4)}-${rStr(12)}`,
-            appVersion: '6.2.2',
-            appBuild: '21080401',
-            osVersion: '11.4.1',
-            osType: 'ios',
-            deviceName: 'iPhone XR',
-            os: 'ios'
-        }),
-        'Access-Control-Allow-Origin': '*',
-        'Accept-Language': 'zh-Hans-AW;q=1',
-        Host: 'pocketapi.48.cn',
-        'User-Agent': 'PocketFans201807/6.0.16 (iPhone; iOS 13.5.1; Scale/2.00)'
-    } as any;
-    if (token) {
-        headers.token = token;
-    };
-    return headers;
 }
 
 const onSuccess: UploadProps['onSuccess'] = (response) => {

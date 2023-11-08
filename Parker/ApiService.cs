@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SkiaSharp;
 using System.Diagnostics;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using static ParkerBot.Const;
 
@@ -327,15 +328,57 @@ namespace ParkerBot
             }
         }
 
+        [RouteGet]
         public ResourceResponse SaveByBlogId(ResourceRequest resquest)
         {
             var id = resquest.QueryString["blogId"]?.ToString();
             if (!string.IsNullOrWhiteSpace(id))
             {
-                Task.Run(async () => { await Weibo.SaveByUrl(id); }) ;
+                Task.Run(async () => { await Weibo.SaveByUrl(id); });
                 return Json(new { success = true, msg = "检索到微博！图片识别保存进行中！" });
             }
             return Json(new { success = false, msg = "未检索到微博！" });
+        }
+
+        [RouteGet]
+        public ResourceResponse SendSmsCode(ResourceRequest resquest)
+        {
+            var mobile = resquest.QueryString["mobile"]?.ToString();
+            var area = resquest.QueryString["area"]?.ToString() ?? "86";
+            if (string.IsNullOrWhiteSpace(mobile))
+            {
+                return Json(new { success = false, msg = "手机号码为空" });
+            }
+            var res = Pocket.SmsCode(mobile, area).Result;
+            return Json(JObject.Parse(res));
+        }
+        [RouteGet]
+        public ResourceResponse PocketLogin(ResourceRequest resquest)
+        {
+            var mobile = resquest.QueryString["mobile"]?.ToString();
+            var code = resquest.QueryString["code"]?.ToString();
+            if (string.IsNullOrWhiteSpace(mobile))
+            {
+                return Json(new { success = false, msg = "手机号码为空" });
+            }
+            if (string.IsNullOrWhiteSpace(code))
+            {
+                return Json(new { success = false, msg = "验证码为空" });
+            }
+            var res = Pocket.Login(mobile, code).Result;
+            var data = JsonConvert.DeserializeObject(res);
+            return Json(res);
+        }
+        [RouteGet]
+        public ResourceResponse GetPokectUserInfo(ResourceRequest resquest)
+        {
+            var token = resquest.QueryString["token"]?.ToString();
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return Json(new { success = false, msg = "Token为空" });
+            }
+            var res = Pocket.UserInfo(token).Result;
+            return Json(JObject.Parse(res));
         }
     }
 }

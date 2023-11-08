@@ -1,8 +1,6 @@
 ﻿using NetDimension.NanUI;
 using NetDimension.NanUI.HostWindow;
 using NetDimension.NanUI.JavaScript;
-using ParkerBot.Helper;
-using System.Diagnostics;
 
 namespace ParkerBot
 {

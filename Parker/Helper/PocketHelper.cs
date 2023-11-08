@@ -1,6 +1,8 @@
 using Mirai.Net.Utils.Scaffolds;
 using Newtonsoft.Json.Linq;
 using ParkerBot;
+using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace Helper
@@ -230,6 +232,64 @@ namespace Helper
             {
                 Console.WriteLine(match.Value);
             }
+        }
+
+        private static async Task<string> GetResponse(string url, string? data = null, string? token = null)
+        {
+            var baseUrl = "https://pocketapi.48.cn";
+            var client = new HttpClient();
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri(baseUrl + url),
+                Headers =
+                    {
+                        { "User-Agent", "PocketFans201807/6.0.16 (iPhone; iOS 13.5.1; Scale/2.00)" },
+                        { "pa", "d6c1ae7a-5f06-4ef3-bb49-cb3e3c67e8fb" },
+                        { "appInfo", "{\"vendor\":\"apple\",\"deviceId\":\"79DWUFH7-GWVM-HQH3-8DNG-ZPNPOTPEFGXW\",\"appVersion\":\"6.2.2\",\"appBuild\":\"21080401\",\"osVersion\":\"11.4.1\",\"osType\":\"ios\",\"deviceName\":\"iPhone XR\",\"os\":\"ios\"}" },
+                        { "Accept-Language", "zh-Hans-AW;q=1" },
+                        { "Host", "pocketapi.48.cn" },
+                    },
+            };
+            if (token != null)
+                request.Headers.Add("Token", token);
+            if (data != null)
+                request.Content = new StringContent(data)
+                {
+                    Headers =
+                    {
+                        ContentType = new MediaTypeHeaderValue("application/json")
+                    }
+                };
+            using var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var body = await response.Content.ReadAsStringAsync();
+            return body;
+        }
+        public static async Task<string> SmsCode(string mobile, string area = "86")
+        {
+            var data = new JObject()
+            {
+                {"mobile",mobile},
+                {"area",area }
+            };
+            var res = await GetResponse("/user/api/v1/sms/send2", data.ToString());
+            return res;
+        }
+        public static async Task<string> Login(string mobile, string smsCode)
+        {
+            var data = new JObject()
+            {
+                {"mobile",mobile},
+                {"code",smsCode }
+            };
+            var res = await GetResponse("/user/api/v1/login/app/mobile/code", data.ToString());
+            return res;
+        }
+        public static async Task<string> UserInfo(string token)
+        {
+            var res = await GetResponse("im/api/v1/im/userinfo", token: token);
+            return res;
         }
     }
 }
