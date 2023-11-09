@@ -168,14 +168,14 @@ namespace ParkerBot
         [RouteGet]
         public ResourceResponse StartAliYunApi(ResourceRequest request)
         {
-            Task.Run(() =>
+            if (Const.EnableModule.bd && ConfigModel.BD.saveAliyunDisk)
             {
-                if (Const.EnableModule.bd && ConfigModel.BD.saveAliyunDisk)
+                Task.Run(() =>
                 {
                     var path = Directory.GetCurrentDirectory() + "/wwwroot/script/AliDiskApi.exe";
                     using Process p = Process.Start(path)!;
-                }
-            });
+                });
+            }
             return Json(null);
         }
 
@@ -399,6 +399,26 @@ namespace ParkerBot
                 cache.Remove("WindStatus");
             }
             return Json(new { success = false, msg = "操作成功！" });
+        }
+        [RouteGet]
+        public ResourceResponse CloseRemote(ResourceRequest resquest)
+        {
+            if (WindStatus)
+            {
+                Task.Run(() =>
+                {
+                    var path = Directory.GetCurrentDirectory() + "/wwwroot/script/Close_RDP.bat";
+                    using Process p = Process.Start(path)!;
+                });
+            }
+            return Json(true);
+        }
+        [RouteGet]
+        public ResourceResponse ClearCache(ResourceRequest resquest)
+        {
+            cache.Clear();
+            Const.SetCache();
+            return Json(true);
         }
     }
 }

@@ -95,7 +95,7 @@
                         <el-form-item label="监听间隔" prop="WB.timeSpan" :rules="rules.input">
                             <el-input type="number" v-model="config.WB.timeSpan" placeholder="单位分钟"></el-input>
                         </el-form-item>
-                        <el-form-item :label="windStatus?'转发至qq':'转发至qq群'">
+                        <el-form-item :label="windStatus ? '转发至qq' : '转发至qq群'">
                             <el-switch v-model="config.WB.forwardGroup" :active-value="true"
                                 :inactive-value="false"></el-switch>
                         </el-form-item>
@@ -119,7 +119,7 @@
                         <el-form-item label="监听间隔" prop="BZ.timeSpan" :rules="rules.input">
                             <el-input type="number" v-model="config.BZ.timeSpan" placeholder="单位分钟"></el-input>
                         </el-form-item>
-                        <el-form-item :label="windStatus?'转发至qq':'转发至qq群'">
+                        <el-form-item :label="windStatus ? '转发至qq' : '转发至qq群'">
                             <el-switch v-model="config.BZ.forwardGroup" :active-value="true"
                                 :inactive-value="false"></el-switch>
                         </el-form-item>
@@ -159,7 +159,7 @@
                             <el-button @click="loginKD = true">登录口袋48</el-button>
                             <span style="color:red">*IM账号和token可点此登录口袋后自动获取</span>
                         </el-form-item>
-                        <el-form-item :label="windStatus?'转发至qq':'转发至qq群'">
+                        <el-form-item :label="windStatus ? '转发至qq' : '转发至qq群'">
                             <el-switch v-model="config.KD.forwardGroup" :active-value="true"
                                 :inactive-value="false"></el-switch>
                         </el-form-item>
@@ -191,7 +191,7 @@
                         <el-form-item label="监听时长" prop="XHS.timeSpan" :rules="rules.input">
                             <el-input type="number" v-model="config.XHS.timeSpan" placeholder="单位分钟"></el-input>
                         </el-form-item>
-                        <el-form-item :label="windStatus?'转发至qq':'转发至qq群'">
+                        <el-form-item :label="windStatus ? '转发至qq' : '转发至qq群'">
                             <el-switch v-model="config.XHS.forwardGroup" :active-value="true"
                                 :inactive-value="false"></el-switch>
                         </el-form-item>
@@ -215,11 +215,11 @@
                         <el-form-item label="监听时长" prop="DY.timeSpan" :rules="rules.input">
                             <el-input type="number" v-model="config.DY.timeSpan" placeholder="单位分钟"></el-input>
                         </el-form-item>
-                        <el-form-item :label="windStatus?'转发至qq':'转发至qq群'">
+                        <el-form-item :label="windStatus ? '转发至qq' : '转发至qq群'">
                             <el-switch v-model="config.DY.forwardGroup" :active-value="true"
                                 :inactive-value="false"></el-switch>
                         </el-form-item>
-                        <el-form-item label="qq群" v-show="config.DY.forwardGroup === true  && !windStatus">
+                        <el-form-item label="qq群" v-show="config.DY.forwardGroup === true && !windStatus">
                             <el-input v-model="config.DY.group" placeholder="发新抖音转发消息"></el-input>
                             <span style="color:red">*多个用英文逗号,分隔；不填写则使用qq配置的群</span>
                         </el-form-item>
@@ -659,23 +659,6 @@ const subtraction = () => {
         }
     }, 1000);
 }
-const uuid = function (): string {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = Math.random() * 16 | 0,
-            v = c == 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    });
-}
-const rStr = function (len: number): string {
-    const str = 'QWERTYUIOPASDFGHJKLZXCVBNM1234567890';
-    let result = '';
-    for (let i = 0; i < len; i++) {
-        const rIndex = Math.floor(Math.random() * str.length);
-        result += str[rIndex];
-    }
-    return result;
-}
-
 const onSuccess: UploadProps['onSuccess'] = (response) => {
     config.value.BD.imageList1.push(response)
 }

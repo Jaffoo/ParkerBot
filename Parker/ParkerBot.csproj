@@ -47,6 +47,9 @@
     <None Update="wwwroot\script\AliDiskApi.py">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
+    <None Update="wwwroot\script\Close_RDP.bat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="wwwroot\sql\main.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

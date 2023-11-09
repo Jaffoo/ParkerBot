@@ -1,11 +1,7 @@
-﻿using Manganese.Array;
-using Mirai.Net.Data.Messages;
-using NetDimension.NanUI.Browser.ResourceHandler;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Web;
 
 namespace ParkerBot.Helper
 {

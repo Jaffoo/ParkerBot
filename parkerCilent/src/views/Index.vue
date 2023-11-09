@@ -4,10 +4,10 @@
             <el-button type="primary" native-type="button" :icon="Setting" @click="config">
                 修改配置
             </el-button>
-            <el-button type="primary" native-type="button" :icon="Setting" @click="miraiSetting" v-if="!windStatus">
+            <el-button title="不启用QQ机器人无需配置" type="primary" native-type="button" :icon="Setting" @click="miraiSetting"
+                v-if="!windStatus">
                 Mirai配置
             </el-button>
-            <span style="color:red">(不启用QQ机器人无需配置)</span>
             <el-button v-if="useMirai" type="primary" native-type="button" @click="startMirai">启动Mirai机器人</el-button>
             <el-button type="primary" native-type="button" @click="start">启动机器人</el-button>
             <el-button v-if="useAli" type="primary" native-type="button" @click="startAli">启动阿里云盘</el-button>
@@ -22,9 +22,11 @@
                 <el-dropdown-menu>
                     <el-dropdown-item @click="saveBlogByid">抓取微博</el-dropdown-item>
                     <el-dropdown-item @click="windControl">
-                        <span v-if="windStatus === false" style="color: green;">开启风控</span>
+                        <span v-if="!windStatus" style="color: green;">开启风控</span>
                         <span v-else style="color: orange;">关闭风控</span>
                     </el-dropdown-item>
+                    <el-dropdown-item @click="closeRemote" v-if="windStatus">关闭远程</el-dropdown-item>
+                    <el-dropdown-item @click="clearCache">清空缓存</el-dropdown-item>
                 </el-dropdown-menu>
             </template>
         </el-dropdown>
@@ -35,7 +37,7 @@
                     <div style="height: 530px;overflow:auto;" id="textArae">
                         <div v-for="(item, index) in log" style="margin:5px">
                             {{ (index + 1) + ':' }}
-                            <span v-if="item.type != 2">{{ item.content }}</span>
+                            <span v-if="item.type != 2" :style="{ color: item.color || '' }">{{ item.content }}</span>
                             <span v-if="item.type == 2">
                                 {{ item.content }}
                                 <el-image style="height: 80px;width: 80px;" :src="item.url"
@@ -74,7 +76,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
-import { ArrowDownBold, Setting } from '@element-plus/icons-vue';
+import { ArrowDownBold, Setting, RefreshRight } from '@element-plus/icons-vue';
 import axios from "axios";
 import QChatSDK from "nim-web-sdk-ng/dist/QCHAT_BROWSER_SDK";
 import NIMSDK from "nim-web-sdk-ng/dist/NIM_BROWSER_SDK";
@@ -151,6 +153,7 @@ const start = async () => {
         }
     });
     if (useKd) {
+        console.log(myConfig)
         nim.value = new NIMSDK({
             appkey: atob(myConfig.appKey),
             account: myConfig.account,
@@ -322,8 +325,15 @@ onMounted(async () => {
             }
         }
     })
-    windStatus.value=res.data.windStatus;
+    windStatus.value = res.data.windStatus;
     await refresh();
+    let msg = `请仔细阅读：QQ被风控时使用，发送消息原理是模拟鼠标键盘发送。如果你使用的是云服务器或挂机宝一类的，请不要手动关闭远程连接，请到【更多】里点击【关闭远程】。`;
+    if (windStatus.value) {
+        var mess = msg;
+        if (!log.value.find(e => e.content === msg)) log.value.push(new PocketMessage().add(mess, 'red'));
+    } else {
+        log.value = log.value.filter(e => e.content !== msg)
+    }
 });
 
 const checkTrue = async (id: number, index: number) => {
@@ -422,5 +432,35 @@ const windControl = () => {
     windStatus.value = !windStatus.value
     ElMessage.success(windStatus.value ? "已开启风控模式" : "已关闭风控模式")
     axios.get('http://parkerbot.api/api/SetWindStatus', { params: { windStatus: windStatus.value } })
+    let msg = `请仔细阅读：QQ被风控时使用，发送消息原理是模拟鼠标键盘发送。如果你使用的是云服务器或挂机宝一类的，请不要手动关闭远程连接，请到【更多】里点击【关闭远程】。`;
+    if (windStatus.value) {
+        var mess = msg;
+        if (!log.value.find(e => e.content === msg)) log.value.push(new PocketMessage().add(mess, 'red'));
+    } else {
+        log.value = log.value.filter(e => e.content !== msg)
+    }
+}
+const closeRemote = () => {
+    ElMessageBox.alert('确认后会打开一个窗口，作用是5秒后会自动关闭远程连接，你需要在5秒内，点击qq窗口输入框，并显示出光标！', '请仔细阅读', {
+        confirmButtonText: '我知道了',
+        beforeClose: (action: string, instance: any, done: Function) => {
+            if (action === "confirm") {
+                axios.get('http://parkerbot.api/api/closeRemote')
+            }
+            done();
+        }
+    })
+}
+const clearCache = () => {
+    ElMessageBox.alert('若发现配置项没有生效，可尝试清空缓存！', '提示', {
+        confirmButtonText: '确定',
+        callback: () => {
+            axios.get('http://parkerbot.api/api/clearCache').then(res => {
+                if (res.data) {
+                    ElMessage.success("缓存已经清空！")
+                } else ElMessage.error("操作失败")
+            })
+        }
+    })
 }
 </script>

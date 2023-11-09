@@ -3,7 +3,6 @@ using ParkerBot;
 using System.Globalization;
 using Mirai.Net.Utils.Scaffolds;
 using Newtonsoft.Json;
-using System.Linq;
 
 namespace Helper
 {
@@ -81,61 +80,109 @@ namespace Helper
                             //需要发送通知则发送通知
                             if (index == 0)
                             {
+                                var msgModel = new MsgModel();
                                 var mcb = new MessageChainBuilder();
-                                //预留是否要at所有人
-                                //if (false)
-                                //{
-                                //    mcb.AtAll();
-                                //}
-
                                 if (mblogtype == 2)
                                 {
-                                    mcb.Plain($"{blog["user"]!["screen_name"]}发微博啦！\n");
                                     //获取第一张图片发送
                                     var first = blog["pic_infos"]![JArray.FromObject(blog["pic_ids"]!)[0]!.ToString()]!["large"]!["url"]!.ToString();
-                                    mcb.Plain(blog["text_raw"]!.ToString()).ImageFromUrl(first);
+                                    if (Const.WindStatus)
+                                    {
+                                        msgModel.Type = 3;
+                                        msgModel.MsgStr = $"{blog["user"]!["screen_name"]}发微博啦！\n{blog["text_raw"]!}";
+                                        msgModel.Url = FileHelper.SaveLocal(first);
+                                    }
+                                    else
+                                    {
+                                        mcb.Plain($"{blog["user"]!["screen_name"]}发微博啦！\n");
+                                        mcb.Plain(blog["text_raw"]!.ToString()).ImageFromUrl(first);
+                                    }
                                 }
                                 else if (mblogtype == 0)
                                 {
-                                    mcb.Plain($"{blog["user"]!["screen_name"]}发微博啦！\n");
-                                    var pageInfo = (JObject?)blog["page_info"];
-                                    if (pageInfo != null)
+                                    if (Const.WindStatus)
                                     {
-                                        var objType = pageInfo["object_type"]!.ToString();
-                                        if (objType == "video")
+                                        msgModel.Type = 0;
+                                        msgModel.MsgStr = $"{blog["user"]!["screen_name"]}发微博啦！\n";
+                                        var pageInfo = (JObject?)blog["page_info"];
+                                        if (pageInfo != null)
                                         {
-                                            mcb.Plain(blog["text_raw"]!.ToString());
-                                            mcb.Plain("视频链接：" + pageInfo["media_info"]!["h5_url"]!);
+                                            var objType = pageInfo["object_type"]!.ToString();
+                                            if (objType == "video")
+                                            {
+                                                msgModel.MsgStr += blog["text_raw"]!.ToString() + "视频链接：" + pageInfo["media_info"]!["h5_url"]!;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        mcb.Plain($"{blog["user"]!["screen_name"]}发微博啦！\n");
+                                        var pageInfo = (JObject?)blog["page_info"];
+                                        if (pageInfo != null)
+                                        {
+                                            var objType = pageInfo["object_type"]!.ToString();
+                                            if (objType == "video")
+                                            {
+                                                mcb.Plain(blog["text_raw"]!.ToString());
+                                                mcb.Plain("视频链接：" + pageInfo["media_info"]!["h5_url"]!);
+                                            }
                                         }
                                     }
                                 }
                                 else if (mblogtype == 1)
                                 {
-                                    mcb.Plain($"{blog["user"]!["screen_name"]}转发了微博\n");
-                                    mcb.Plain(blog["text_raw"]!.ToString());
+                                    if (Const.WindStatus)
+                                    {
+                                        msgModel.Type = 0;
+                                        msgModel.MsgStr = $"{blog["user"]!["screen_name"]}转发了微博\n" + blog["text_raw"]!.ToString();
+                                    }
+                                    else
+                                    {
+                                        mcb.Plain($"{blog["user"]!["screen_name"]}转发了微博\n");
+                                        mcb.Plain(blog["text_raw"]!.ToString());
+                                    }
                                 }
                                 else
                                 {
-                                    mcb.Plain($"{blog["user"]!["screen_name"]}发微博啦！\n");
-                                    mcb.Plain(blog["text_raw"]?.ToString() ?? "");
-                                }
-                                mcb.Plain($"\n链接：https://m.weibo.cn/status/{blog["mid"]}");
-                                if (Const.ConfigModel.WB.forwardGroup)
-                                {
-                                    var groups = string.IsNullOrWhiteSpace(Const.ConfigModel.WB.group) ? Const.ConfigModel.QQ.group : Const.ConfigModel.WB.group;
-                                    var glist = groups.ToListV2();
-                                    foreach (var group in glist)
+                                    if (Const.WindStatus)
                                     {
-                                        await Msg.SendGroupMsg(group, mcb.Build());
+                                        msgModel.Type = 0;
+                                        msgModel.MsgStr = $"{blog["user"]!["screen_name"]}发微博啦！\n" + blog["text_raw"]!.ToString() + blog["text_raw"]?.ToString() ?? "";
+                                    }
+                                    else
+                                    {
+                                        mcb.Plain($"{blog["user"]!["screen_name"]}发微博啦！\n");
+                                        mcb.Plain(blog["text_raw"]?.ToString() ?? "");
                                     }
                                 }
-                                if (Const.ConfigModel.WB.forwardQQ)
+                                if (Const.WindStatus)
                                 {
-                                    var qqs = string.IsNullOrWhiteSpace(Const.ConfigModel.WB.qq) ? Msg.Admin : Const.ConfigModel.WB.qq;
-                                    var qlist = qqs.ToListV2();
-                                    foreach (var qq in qlist)
+                                    msgModel.MsgStr += $"\n链接：https://m.weibo.cn/status/{blog["mid"]}";
+                                    if (Const.ConfigModel.WB.forwardGroup)
                                     {
-                                        await Msg.SendFriendMsg(qq, mcb.Build());
+                                        msgModel.AddMsg();
+                                    }
+                                }
+                                else
+                                {
+                                    mcb.Plain($"\n链接：https://m.weibo.cn/status/{blog["mid"]}");
+                                    if (Const.ConfigModel.WB.forwardGroup)
+                                    {
+                                        var groups = string.IsNullOrWhiteSpace(Const.ConfigModel.WB.group) ? Const.ConfigModel.QQ.group : Const.ConfigModel.WB.group;
+                                        var glist = groups.ToListV2();
+                                        foreach (var group in glist)
+                                        {
+                                            await Msg.SendGroupMsg(group, mcb.Build());
+                                        }
+                                    }
+                                    if (Const.ConfigModel.WB.forwardQQ)
+                                    {
+                                        var qqs = string.IsNullOrWhiteSpace(Const.ConfigModel.WB.qq) ? Msg.Admin : Const.ConfigModel.WB.qq;
+                                        var qlist = qqs.ToListV2();
+                                        foreach (var qq in qlist)
+                                        {
+                                            await Msg.SendFriendMsg(qq, mcb.Build());
+                                        }
                                     }
                                 }
                             }
@@ -204,62 +251,70 @@ namespace Helper
                             if (!Keywords.Select(keyword => blogContent.Contains(keyword)).Any(x => x) && Keywords.Count > 0)
                                 return;
                             var mcb = new MessageChainBuilder();
-                            mcb.Plain($"{blog["user"]!["screen_name"]}发了一条相关微博！");
-                            mcb.Plain($"\n链接：https://weibo.com/{blog["user"]!["id"]}/{blog["mid"]}");
+                            var msgModel = new MsgModel { MsgStr = $"{blog["user"]!["screen_name"]}发了一条相关微博！" + $"\n链接：https://weibo.com/{blog["user"]!["id"]}/{blog["mid"]}\n" };
+                            mcb.Plain(msgModel.MsgStr);
                             if (mblogtype == 2)
                             {
-                                mcb.Plain($"{blog["user"]!["screen_name"]}发微博啦！\n");
                                 //获取第一张图片发送
                                 var first = blog["pic_infos"]![JArray.FromObject(blog["pic_ids"]!)[0]!.ToString()]!["large"]!["url"]!.ToString();
-                                mcb.Plain(blog["text_raw"]!.ToString()).ImageFromUrl(first);
+                                if (Const.WindStatus)
+                                {
+                                    msgModel.Type = 3;
+                                    msgModel.MsgStr += $"{blog["text_raw"]}";
+                                    msgModel.Url = FileHelper.SaveLocal(first);
+                                }
+                                else
+                                    mcb.Plain(blog["text_raw"]!.ToString()).ImageFromUrl(first);
                             }
                             else if (mblogtype == 0)
                             {
-                                mcb.Plain($"{blog["user"]!["screen_name"]}发微博啦！\n");
                                 var pageInfo = (JObject?)blog["page_info"];
                                 if (pageInfo != null)
                                 {
                                     var objType = pageInfo["object_type"]!.ToString();
                                     if (objType == "video")
                                     {
-                                        mcb.Plain(blog["text_raw"]!.ToString());
-                                        mcb.Plain("视频链接：" + pageInfo["media_info"]!["h5_url"]!);
+                                        msgModel.Type = 0;
+                                        if (Const.WindStatus)
+                                            msgModel.MsgStr += blog["text_raw"]!.ToString() + "视频链接：" + pageInfo["media_info"]!["h5_url"]!;
+                                        else
+                                            mcb.Plain(blog["text_raw"]!.ToString()).Plain("视频链接：" + pageInfo["media_info"]!["h5_url"]!);
                                     }
                                 }
                             }
-                            else if (mblogtype == 1)
-                            {
-                                mcb.Plain($"{blog["user"]!["screen_name"]}转发了微博\n");
-                                mcb.Plain(blog["text_raw"]!.ToString());
-                            }
                             else
                             {
-                                mcb.Plain($"{blog["user"]!["screen_name"]}发微博啦！\n");
-                                mcb.Plain(blog["text_raw"]?.ToString() ?? "");
+                                if (Const.WindStatus)
+                                {
+                                    msgModel.Type = 0;
+                                    msgModel.MsgStr += blog["text_raw"]?.ToString() ?? "";
+                                }
+                                else
+                                    mcb.Plain(blog["text_raw"]?.ToString() ?? "");
                             }
                             mcb.Plain($"\n链接：https://m.weibo.cn/status/{blog["mid"]}");
                             //需要发送通知则发送通知
-                            if (Const.ConfigModel.WB.forwardGroup)
+                            if (Const.WindStatus)
+                                msgModel.AddMsg();
+                            else
                             {
-                                var groups = string.IsNullOrWhiteSpace(Const.ConfigModel.WB.group) ? Const.ConfigModel.QQ.group : Const.ConfigModel.WB.group;
-                                var glist = groups.ToListV2();
-                                //预留是否要at所有人
-                                //if (false)
-                                //{
-                                //    mcb.AtAll();
-                                //}
-                                foreach (var group in glist)
+                                if (Const.ConfigModel.WB.forwardGroup)
                                 {
-                                    await Msg.SendGroupMsg(group, mcb.Build());
+                                    var groups = string.IsNullOrWhiteSpace(Const.ConfigModel.WB.group) ? Const.ConfigModel.QQ.group : Const.ConfigModel.WB.group;
+                                    var glist = groups.ToListV2();
+                                    foreach (var group in glist)
+                                    {
+                                        await Msg.SendGroupMsg(group, mcb.Build());
+                                    }
                                 }
-                            }
-                            if (Const.ConfigModel.WB.forwardQQ)
-                            {
-                                var qqs = string.IsNullOrWhiteSpace(Const.ConfigModel.WB.qq) ? Msg.Admin : Const.ConfigModel.WB.qq;
-                                var qlist = qqs.ToListV2();
-                                foreach (var qq in qlist)
+                                if (Const.ConfigModel.WB.forwardQQ)
                                 {
-                                    await Msg.SendFriendMsg(qq, mcb.Build());
+                                    var qqs = string.IsNullOrWhiteSpace(Const.ConfigModel.WB.qq) ? Msg.Admin : Const.ConfigModel.WB.qq;
+                                    var qlist = qqs.ToListV2();
+                                    foreach (var qq in qlist)
+                                    {
+                                        await Msg.SendFriendMsg(qq, mcb.Build());
+                                    }
                                 }
                             }
                         }

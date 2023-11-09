@@ -53,9 +53,17 @@ namespace ParkerBot
         {
             try
             {
-                if (!Const.EnableModule.qq) return;
-                if (!UseMirai) return;
-                Task.Run(BotStart);
+                if (!Const.EnableModule.qq && !Const.WindStatus) return;
+                if (!UseMirai && !Const.WindStatus) return;
+                Task.Factory.StartNew(() =>
+                {// 设置当前线程为STA模式
+                    if (Thread.CurrentThread.GetApartmentState() != ApartmentState.STA)
+                    {
+                        // 设置当前线程为STA模式
+                        Thread.CurrentThread.SetApartmentState(ApartmentState.STA);
+                    }
+                    BotStart();
+                });
             }
             catch (Exception)
             {
@@ -67,18 +75,26 @@ namespace ParkerBot
         {
             try
             {
-                var bot = new MiraiBot
+                if (Const.WindStatus)
                 {
-                    Address = Const.MiraiConfig.address,
-                    QQ = Const.MiraiConfig.QQNum,
-                    VerifyKey = Const.MiraiConfig.verifykey
-                };
-                await bot.LaunchAsync();
-                Msg.BotStart(bot);
-                HasMirai = true;
+                    Msg.BotStart(null);
+                    HasMirai = true;
+                }
+                else if (UseMirai)
+                {
+                    var bot = new MiraiBot
+                    {
+                        Address = Const.MiraiConfig.address,
+                        QQ = Const.MiraiConfig.QQNum,
+                        VerifyKey = Const.MiraiConfig.verifykey
+                    };
+                    await bot.LaunchAsync();
+                    Msg.BotStart(bot);
+                    HasMirai = true;
+                }
                 while (true)
                 {
-                    Thread.Sleep(1);
+                    Thread.Sleep(10);
                 }
             }
             catch (Exception)

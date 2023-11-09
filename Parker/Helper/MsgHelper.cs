@@ -61,12 +61,15 @@ namespace Helper
         public static List<RequestedEventBase> Event { get; set; } = new();
         #endregion
 
-        public static void BotStart(MiraiBot bot)
+        public static void BotStart(MiraiBot? bot)
         {
-            _liteContext = new();
-            GroupMessageReceiver(bot);
-            FriendMessageReceiver(bot);
-            EventMessageReceiver(bot);
+            if (!Const.WindStatus)
+            {
+                _liteContext = new();
+                GroupMessageReceiver(bot!);
+                FriendMessageReceiver(bot!);
+                EventMessageReceiver(bot!);
+            }
             Task.Run(HandlMsg);
         }
 
