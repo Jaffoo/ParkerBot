@@ -10,7 +10,7 @@
  Target Server Version : 3035005
  File Encoding         : 65001
 
- Date: 31/10/2023 09:46:38
+ Date: 09/11/2023 18:10:37
 */
 
 PRAGMA foreign_keys = false;
@@ -106,12 +106,12 @@ INSERT INTO "config" VALUES (61, 'QQ', 'QQ', '', 18);
 INSERT INTO "config" VALUES (62, '转发好友', 'ForwardQQ', 'false', 19);
 INSERT INTO "config" VALUES (63, 'QQ', 'QQ', '', 19);
 INSERT INTO "config" VALUES (64, '人脸识别', 'FaceVerify', 'false', 20);
-INSERT INTO "config" VALUES (65, 'AppKey', 'AppKey', '', 17);
-INSERT INTO "config" VALUES (66, '启用机器人', 'UseMirai', 'False', 1);
+INSERT INTO "config" VALUES (65, 'AppKey', 'AppKey', 'NjMyZmVmZjFmNGM4Mzg1NDFhYjc1MTk1ZDFjZWIzZmE=', 17);
+INSERT INTO "config" VALUES (66, '启用机器人', 'UseMirai', 'false', 1);
 INSERT INTO "config" VALUES (67, '图片域名', 'ImgDomain', 'https://source3.48.cn', 17);
 INSERT INTO "config" VALUES (68, '视频域名', 'MP4Domain', 'https://mp4.48.cn', 17);
 INSERT INTO "config" VALUES (69, '房间ID', 'LiveRoomId', '', 17);
-INSERT INTO "config" VALUES (84, '监听消息类型', 'MsgType', '', 17);
+INSERT INTO "config" VALUES (84, '监听消息类型', 'MsgType', 'text,image,LIVEPUSH,EXPRESSIMAGE,TEAM_VOICE,video,audio,REPLY,GIFTREPLY,FLIPCARD_AUDIO,FLIPCARD,AtAll,fen,FLIPCARD_VIDEO,PRESENT_NORMAL', 17);
 INSERT INTO "config" VALUES (85, '消息类型', 'MsgTypeList', '[{
     "name":"文本消息",
     "value":"text"
@@ -175,11 +175,12 @@ INSERT INTO "config" VALUES (85, '消息类型', 'MsgTypeList', '[{
 INSERT INTO "config" VALUES (86, '吃瓜微博', 'Cg', '', 15);
 INSERT INTO "config" VALUES (87, '吃瓜关键字', 'Keyword', '', 15);
 INSERT INTO "config" VALUES (88, '姓名', 'Name', '', 17);
-INSERT INTO "config" VALUES (90, '程序错误通知', 'Debug', 'true', 14);
+INSERT INTO "config" VALUES (90, '程序错误通知', 'Debug', 'false', 14);
 INSERT INTO "config" VALUES (91, '问答', '问答', '问答', 9);
 INSERT INTO "config" VALUES (101, 'GptKey', 'GptKey', '', 14);
-INSERT INTO "config" VALUES (102, '消息通知', 'Notice', 'true', 14);
+INSERT INTO "config" VALUES (102, '消息通知', 'Notice', 'false', 14);
 INSERT INTO "config" VALUES (103, '查缩写', '查缩写', '查缩写', 9);
+INSERT INTO "config" VALUES (104, '风控', 'WindStatus', 'false', 0);
 
 -- ----------------------------
 -- Table structure for idol
@@ -256,29 +257,17 @@ CREATE TABLE "sqlite_sequence" (
 -- ----------------------------
 -- Records of sqlite_sequence
 -- ----------------------------
-INSERT INTO "sqlite_sequence" VALUES ('config', 106);
-INSERT INTO "sqlite_sequence" VALUES ('log', 99901);
-INSERT INTO "sqlite_sequence" VALUES ('message', 23070);
-INSERT INTO "sqlite_sequence" VALUES ('cache', 49);
-
--- ----------------------------
--- Auto increment value for cache
--- ----------------------------
-UPDATE "sqlite_sequence" SET seq = 49 WHERE name = 'cache';
+INSERT INTO "sqlite_sequence" VALUES ('config', 104);
+INSERT INTO "sqlite_sequence" VALUES ('log', 5797);
 
 -- ----------------------------
 -- Auto increment value for config
 -- ----------------------------
-UPDATE "sqlite_sequence" SET seq = 106 WHERE name = 'config';
+UPDATE "sqlite_sequence" SET seq = 104 WHERE name = 'config';
 
 -- ----------------------------
 -- Auto increment value for log
 -- ----------------------------
-UPDATE "sqlite_sequence" SET seq = 99901 WHERE name = 'log';
-
--- ----------------------------
--- Auto increment value for message
--- ----------------------------
-UPDATE "sqlite_sequence" SET seq = 23070 WHERE name = 'message';
+UPDATE "sqlite_sequence" SET seq = 5797 WHERE name = 'log';
 
 PRAGMA foreign_keys = true;
