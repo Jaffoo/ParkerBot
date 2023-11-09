@@ -123,6 +123,7 @@ namespace ParkerBot
             }
             data.config = model;
             data.mirai = Const.Mirai.ToObject<Mirai>();
+            data.windStatus = WindStatus;
             return Json(data);
         }
 
@@ -350,7 +351,7 @@ namespace ParkerBot
                 return Json(new { success = false, msg = "手机号码为空" });
             }
             var res = Pocket.SmsCode(mobile, area).Result;
-            return Json(JObject.Parse(res));
+            return Json(res);
         }
         [RouteGet]
         public ResourceResponse PocketLogin(ResourceRequest resquest)
@@ -366,7 +367,6 @@ namespace ParkerBot
                 return Json(new { success = false, msg = "验证码为空" });
             }
             var res = Pocket.Login(mobile, code).Result;
-            var data = JsonConvert.DeserializeObject(res);
             return Json(res);
         }
         [RouteGet]
@@ -378,7 +378,27 @@ namespace ParkerBot
                 return Json(new { success = false, msg = "Token为空" });
             }
             var res = Pocket.UserInfo(token).Result;
-            return Json(JObject.Parse(res));
+            return Json(res);
+        }
+
+        [RouteGet]
+        public ResourceResponse SetWindStatus(ResourceRequest resquest)
+        {
+            var windStatus = resquest.QueryString["windStatus"]?.ToString();
+            if (string.IsNullOrWhiteSpace(windStatus))
+            {
+                return Json(new { success = false, msg = "操作失败" });
+            }
+            var context = new LiteContext();
+            var model = context.Config.FirstOrDefault(t => t.key == "WindStatus");
+            if (model != null)
+            {
+                model.value = windStatus;
+                context.Config.Update(model);
+                context.SaveChanges();
+                cache.Remove("WindStatus");
+            }
+            return Json(new { success = false, msg = "操作成功！" });
         }
     }
 }

@@ -23,13 +23,14 @@ namespace Helper
     public class MsgModel
     {
         /// <summary>
-        /// 1-群，2-好友
+        /// 1-群，2-好友(风控 0-文字，1-图片，3-图文)
         /// </summary>
         public int Type { get; set; } = 1;
         public string Id { get; set; } = "";
         public List<string>? Ids { get; set; }
         public string? MsgStr { get; set; }
         public MessageChain? MsgChain { get; set; }
+        public string? Url { get; set; }
     }
 
     public static class Msg
@@ -889,6 +890,7 @@ namespace Helper
         {
             try
             {
+                if (Const.WindStatus) return;
                 if (!Const.MiraiConfig.useMirai) return;
                 if (_bot == null) return;
                 var group = _bot.Groups.Value.FirstOrDefault(t => t.Id == groupId);
@@ -906,6 +908,7 @@ namespace Helper
         {
             try
             {
+                if (Const.WindStatus) return;
                 if (!Const.MiraiConfig.useMirai) return;
                 if (_bot == null) return;
                 foreach (var groupId in groupIds)
@@ -927,6 +930,7 @@ namespace Helper
         {
             try
             {
+                if (Const.WindStatus) return;
                 if (!Const.MiraiConfig.useMirai) return;
                 if (_bot == null) return;
                 var group = _bot.Groups.Value.FirstOrDefault(t => t.Id == groupId);
@@ -945,6 +949,7 @@ namespace Helper
         {
             try
             {
+                if (Const.WindStatus) return;
                 if (!Const.MiraiConfig.useMirai) return;
                 if (_bot == null) return;
                 foreach (var groupId in groupIds)
@@ -966,6 +971,7 @@ namespace Helper
         {
             try
             {
+                if (Const.WindStatus) return;
                 if (!Const.MiraiConfig.useMirai) return;
                 if (_bot == null) return;
                 var friend = _bot.Friends.Value.FirstOrDefault(t => t.Id == friendId);
@@ -984,6 +990,7 @@ namespace Helper
         {
             try
             {
+                if (Const.WindStatus) return;
                 if (!Const.MiraiConfig.useMirai) return;
                 if (_bot == null) return;
                 foreach (var friendId in friendIds)
@@ -1005,6 +1012,7 @@ namespace Helper
         {
             try
             {
+                if (Const.WindStatus) return;
                 if (!Const.MiraiConfig.useMirai) return;
                 if (_bot == null) return;
                 var friend = _bot.Friends.Value.FirstOrDefault(t => t.Id == friendId);
@@ -1023,6 +1031,7 @@ namespace Helper
         {
             try
             {
+                if (Const.WindStatus) return;
                 if (!Const.MiraiConfig.useMirai) return;
                 if (_bot == null) return;
                 foreach (var friendId in friendIds)
@@ -1044,6 +1053,7 @@ namespace Helper
         {
             try
             {
+                if (Const.WindStatus) return;
                 if (!Const.MiraiConfig.useMirai) return;
                 if (_bot == null || !Notice) return;
                 var friend = _bot.Friends.Value.FirstOrDefault(t => t.Id == Admin);
@@ -1061,6 +1071,7 @@ namespace Helper
         {
             try
             {
+                if (Const.WindStatus) return;
                 if (!Const.MiraiConfig.useMirai) return;
                 if (_bot == null || !Notice) return;
                 var friend = _bot.Friends.Value.FirstOrDefault(t => t.Id == Admin);
@@ -1081,42 +1092,94 @@ namespace Helper
             {
                 try
                 {
-                    double interval = (DateTime.Now - _lastSendTime).TotalSeconds;
-                    if (MsgQueue.Count > 0 && interval >= _interval)
+                    if (Const.WindStatus)
                     {
-                        var msgModel = MsgQueue.Dequeue();
-                        if (msgModel.Type == 1)
+                        double interval = (DateTime.Now - _lastSendTime).TotalSeconds;
+                        if (MsgQueue.Count > 0 && interval >= _interval)
                         {
-                            if (msgModel.Ids != null)
+                            Clipboard.Clear();
+                            var msgModel = MsgQueue.Dequeue();
+                            if (msgModel.Type == 3)
                             {
-                                if (msgModel.MsgChain?.Count > 0)
-                                {
-                                    await SendGroupMsg(msgModel.Ids, msgModel.MsgChain);
-                                }
-                                else if (!string.IsNullOrWhiteSpace(msgModel.MsgStr)) await SendGroupMsg(msgModel.Ids, msgModel.MsgStr);
+                                Clipboard.SetText(msgModel.MsgStr);
+                                KeyBoard.keyPressDown(KeyBoard.vKeyControl);
+                                Thread.Sleep(100);
+                                KeyBoard.keyPressDown(KeyBoard.vKeyV);
+                                Thread.Sleep(100);
+                                KeyBoard.keyPressUp(KeyBoard.vKeyV);
+                                Thread.Sleep(100);
+                                KeyBoard.keyPressUp(KeyBoard.vKeyControl);
+                                Thread.Sleep(100);
+
+                                Image image = Image.FromFile(msgModel.Url!);
+                                Clipboard.SetImage(image);
+                                KeyBoard.keyPressDown(KeyBoard.vKeyControl);
+                                Thread.Sleep(500);
+                                KeyBoard.keyPressDown(KeyBoard.vKeyV);
+                                Thread.Sleep(500);
+                                KeyBoard.keyPressUp(KeyBoard.vKeyV);
+                                Thread.Sleep(500);
+                                KeyBoard.keyPressUp(KeyBoard.vKeyControl);
+                                Thread.Sleep(500);
                             }
-                            else if (!string.IsNullOrWhiteSpace(msgModel.Id))
+                            else
                             {
-                                if (msgModel.MsgChain?.Count > 0) await SendGroupMsg(msgModel.Id, msgModel.MsgChain);
-                                else if (!string.IsNullOrWhiteSpace(msgModel.MsgStr)) await SendGroupMsg(msgModel.Id, msgModel.MsgStr);
+                                Clipboard.SetText(msgModel.MsgStr);//复制内容到粘贴板
+                                Thread.Sleep(100);
+                                KeyBoard.keyPressDown(KeyBoard.vKeyControl);
+                                Thread.Sleep(100);
+                                KeyBoard.keyPressDown(KeyBoard.vKeyV);
+                                Thread.Sleep(100);
+                                KeyBoard.keyPressUp(KeyBoard.vKeyV);
+                                Thread.Sleep(100);
+                                KeyBoard.keyPressUp(KeyBoard.vKeyControl);
+                                Thread.Sleep(100);
                             }
+                            Thread.Sleep(100);
+                            KeyBoard.keyPress(KeyBoard.vKeyReturn);
+                            _lastSendTime = DateTime.Now;
                         }
-                        if (msgModel.Type == 2)
-                        {
-                            if (msgModel.Ids != null)
-                            {
-                                if (msgModel.MsgChain?.Count > 0) await SendFriendMsg(msgModel.Ids, msgModel.MsgChain);
-                                else if (!string.IsNullOrWhiteSpace(msgModel.MsgStr)) await SendFriendMsg(msgModel.Ids, msgModel.MsgStr);
-                            }
-                            else if (!string.IsNullOrWhiteSpace(msgModel.Id))
-                            {
-                                if (msgModel.MsgChain?.Count > 0) await SendFriendMsg(msgModel.Id, msgModel.MsgChain);
-                                else if (!string.IsNullOrWhiteSpace(msgModel.MsgStr)) await SendFriendMsg(msgModel.Id, msgModel.MsgStr);
-                            }
-                        }
-                        _lastSendTime = DateTime.Now;
+                        Thread.Sleep(1);
                     }
-                    Thread.Sleep(100);
+                    else
+                    {
+                        double interval = (DateTime.Now - _lastSendTime).TotalSeconds;
+                        if (MsgQueue.Count > 0 && interval >= _interval)
+                        {
+                            var msgModel = MsgQueue.Dequeue();
+                            if (msgModel.Type == 1)
+                            {
+                                if (msgModel.Ids != null)
+                                {
+                                    if (msgModel.MsgChain?.Count > 0)
+                                    {
+                                        await SendGroupMsg(msgModel.Ids, msgModel.MsgChain);
+                                    }
+                                    else if (!string.IsNullOrWhiteSpace(msgModel.MsgStr)) await SendGroupMsg(msgModel.Ids, msgModel.MsgStr);
+                                }
+                                else if (!string.IsNullOrWhiteSpace(msgModel.Id))
+                                {
+                                    if (msgModel.MsgChain?.Count > 0) await SendGroupMsg(msgModel.Id, msgModel.MsgChain);
+                                    else if (!string.IsNullOrWhiteSpace(msgModel.MsgStr)) await SendGroupMsg(msgModel.Id, msgModel.MsgStr);
+                                }
+                            }
+                            if (msgModel.Type == 2)
+                            {
+                                if (msgModel.Ids != null)
+                                {
+                                    if (msgModel.MsgChain?.Count > 0) await SendFriendMsg(msgModel.Ids, msgModel.MsgChain);
+                                    else if (!string.IsNullOrWhiteSpace(msgModel.MsgStr)) await SendFriendMsg(msgModel.Ids, msgModel.MsgStr);
+                                }
+                                else if (!string.IsNullOrWhiteSpace(msgModel.Id))
+                                {
+                                    if (msgModel.MsgChain?.Count > 0) await SendFriendMsg(msgModel.Id, msgModel.MsgChain);
+                                    else if (!string.IsNullOrWhiteSpace(msgModel.MsgStr)) await SendFriendMsg(msgModel.Id, msgModel.MsgStr);
+                                }
+                            }
+                            _lastSendTime = DateTime.Now;
+                        }
+                        Thread.Sleep(100);
+                    }
                 }
                 catch (Exception e)
                 {

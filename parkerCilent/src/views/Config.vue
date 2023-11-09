@@ -10,7 +10,7 @@
         <el-main>
             <div style="margin-bottom:1%">
                 <label style="font-size:18px;margin-right:3%">启用模块</label>
-                <el-checkbox v-model="eable.qq" label="QQ"></el-checkbox>
+                <el-checkbox v-if="!windStatus" v-model="eable.qq" label="QQ"></el-checkbox>
                 <el-checkbox v-model="eable.wb" label="微博"></el-checkbox>
                 <el-checkbox v-model="eable.bz" label="B站"></el-checkbox>
                 <el-checkbox v-model="eable.kd" label="口袋48"></el-checkbox>
@@ -20,7 +20,7 @@
             </div>
             <el-collapse>
                 <el-form ref="form" :model="config" label-width="100px">
-                    <el-collapse-item title="QQ" v-if="eable.qq" name="qq">
+                    <el-collapse-item title="QQ" v-if="eable.qq && !windStatus" name="qq">
                         <el-form-item label="QQ群" prop="QQ.group" :rules="rules.input">
                             <el-input v-model="config.QQ.group"
                                 placeholder="多个用英文逗号,分隔；不填写则qq机器人所在的全部群开启，填写则针对填写的群开启"></el-input>
@@ -82,7 +82,7 @@
                             <el-input v-model="config.WB.url" placeholder="多个用英文,分隔"></el-input>
                             <span style="color:red">*用户微博人脸识别</span>
                         </el-form-item>
-                        <template v-if="eable.qq">
+                        <template v-if="eable.qq && !windStatus">
                             <el-form-item label="关注用户">
                                 <el-input v-model="config.WB.cg" placeholder="多个用英文,分隔"></el-input>
                                 <span style="color:red">*多个用英文逗号,分隔</span>
@@ -95,19 +95,19 @@
                         <el-form-item label="监听间隔" prop="WB.timeSpan" :rules="rules.input">
                             <el-input type="number" v-model="config.WB.timeSpan" placeholder="单位分钟"></el-input>
                         </el-form-item>
-                        <el-form-item label="转发至qq群">
+                        <el-form-item :label="windStatus?'转发至qq':'转发至qq群'">
                             <el-switch v-model="config.WB.forwardGroup" :active-value="true"
                                 :inactive-value="false"></el-switch>
                         </el-form-item>
-                        <el-form-item label="qq群" v-show="config.WB.forwardGroup === true">
+                        <el-form-item label="qq群" v-if="config.WB.forwardGroup === true && !windStatus">
                             <el-input v-model="config.WB.group" placeholder="发新微博转发消息"></el-input>
                             <span style="color:red">*多个用英文逗号,分隔；不填写则使用qq配置的群</span>
                         </el-form-item>
-                        <el-form-item label="转发至qq好友">
+                        <el-form-item label="转发至qq好友" v-if="!windStatus">
                             <el-switch v-model="config.WB.forwardQQ" :active-value="true"
                                 :inactive-value="false"></el-switch>
                         </el-form-item>
-                        <el-form-item label="qq好友" v-show="config.WB.forwardQQ === true">
+                        <el-form-item label="qq好友" v-if="config.WB.forwardQQ === true && !windStatus">
                             <el-input v-model="config.WB.qq" placeholder="发新微博转发消息"></el-input>
                             <span style="color:red">*多个用英文逗号,分隔；不填写则默认超管</span>
                         </el-form-item>
@@ -119,19 +119,19 @@
                         <el-form-item label="监听间隔" prop="BZ.timeSpan" :rules="rules.input">
                             <el-input type="number" v-model="config.BZ.timeSpan" placeholder="单位分钟"></el-input>
                         </el-form-item>
-                        <el-form-item label="转发至qq群">
+                        <el-form-item :label="windStatus?'转发至qq':'转发至qq群'">
                             <el-switch v-model="config.BZ.forwardGroup" :active-value="true"
                                 :inactive-value="false"></el-switch>
                         </el-form-item>
-                        <el-form-item label="qq群" v-show="config.BZ.forwardGroup === true">
+                        <el-form-item label="qq群" v-if="config.BZ.forwardGroup === true && !windStatus">
                             <el-input v-model="config.BZ.group" placeholder="发新动态转发消息"></el-input>
                             <span style="color:red">*多个用英文逗号,分隔；不填写则使用qq配置的群</span>
                         </el-form-item>
-                        <el-form-item label="转发至qq好友">
+                        <el-form-item label="转发至qq好友" v-if="!windStatus">
                             <el-switch v-model="config.BZ.forwardQQ" :active-value="true"
                                 :inactive-value="false"></el-switch>
                         </el-form-item>
-                        <el-form-item label="qq好友" v-show="config.BZ.forwardQQ === true">
+                        <el-form-item label="qq好友" v-if="config.BZ.forwardQQ === true && !windStatus">
                             <el-input v-model="config.BZ.qq" placeholder="发新微博转发消息"></el-input>
                             <span style="color:red">*多个用英文逗号,分隔；不填写则默认超管</span>
                         </el-form-item>
@@ -159,19 +159,19 @@
                             <el-button @click="loginKD = true">登录口袋48</el-button>
                             <span style="color:red">*IM账号和token可点此登录口袋后自动获取</span>
                         </el-form-item>
-                        <el-form-item label="转发至qq群">
+                        <el-form-item :label="windStatus?'转发至qq':'转发至qq群'">
                             <el-switch v-model="config.KD.forwardGroup" :active-value="true"
                                 :inactive-value="false"></el-switch>
                         </el-form-item>
-                        <el-form-item label="qq群" v-show="config.KD.forwardGroup === true">
+                        <el-form-item label="qq群" v-if="config.KD.forwardGroup === true && !windStatus">
                             <el-input v-model="config.KD.group" placeholder="发新消息转发消息"></el-input>
                             <span style="color:red">*多个用英文逗号,分隔；不填写则使用qq配置的群</span>
                         </el-form-item>
-                        <el-form-item label="转发至qq好友">
+                        <el-form-item label="转发至qq好友" v-if="!windStatus">
                             <el-switch v-model="config.KD.forwardQQ" :active-value="true"
                                 :inactive-value="false"></el-switch>
                         </el-form-item>
-                        <el-form-item label="qq好友" v-show="config.KD.forwardQQ === true">
+                        <el-form-item label="qq好友" v-if="config.KD.forwardQQ === true && !windStatus">
                             <el-input v-model="config.KD.qq" placeholder="发新微博转发消息"></el-input>
                             <span style="color:red">*多个用英文逗号,分隔；不填写则默认超管</span>
                         </el-form-item>
@@ -191,19 +191,19 @@
                         <el-form-item label="监听时长" prop="XHS.timeSpan" :rules="rules.input">
                             <el-input type="number" v-model="config.XHS.timeSpan" placeholder="单位分钟"></el-input>
                         </el-form-item>
-                        <el-form-item label="转发至qq群">
+                        <el-form-item :label="windStatus?'转发至qq':'转发至qq群'">
                             <el-switch v-model="config.XHS.forwardGroup" :active-value="true"
                                 :inactive-value="false"></el-switch>
                         </el-form-item>
-                        <el-form-item label="qq群" v-show="config.XHS.forwardGroup === true">
+                        <el-form-item label="qq群" v-if="config.XHS.forwardGroup === true && !windStatus">
                             <el-input v-model="config.XHS.group" placeholder="发新动态转发消息"></el-input>
                             <span style="color:red">*多个用英文逗号,分隔；不填写则使用qq配置的群</span>
                         </el-form-item>
-                        <el-form-item label="转发至qq好友">
+                        <el-form-item label="转发至qq好友" v-if="!windStatus">
                             <el-switch v-model="config.XHS.forwardQQ" :active-value="true"
                                 :inactive-value="false"></el-switch>
                         </el-form-item>
-                        <el-form-item label="qq好友" v-show="config.XHS.forwardQQ === true">
+                        <el-form-item label="qq好友" v-if="config.XHS.forwardQQ === true && !windStatus">
                             <el-input v-model="config.XHS.qq" placeholder="发新微博转发消息"></el-input>
                             <span style="color:red">*多个用英文逗号,分隔；不填写则默认超管</span>
                         </el-form-item>
@@ -215,19 +215,19 @@
                         <el-form-item label="监听时长" prop="DY.timeSpan" :rules="rules.input">
                             <el-input type="number" v-model="config.DY.timeSpan" placeholder="单位分钟"></el-input>
                         </el-form-item>
-                        <el-form-item label="转发至qq群">
+                        <el-form-item :label="windStatus?'转发至qq':'转发至qq群'">
                             <el-switch v-model="config.DY.forwardGroup" :active-value="true"
                                 :inactive-value="false"></el-switch>
                         </el-form-item>
-                        <el-form-item label="qq群" v-show="config.DY.forwardGroup === true">
+                        <el-form-item label="qq群" v-show="config.DY.forwardGroup === true  && !windStatus">
                             <el-input v-model="config.DY.group" placeholder="发新抖音转发消息"></el-input>
                             <span style="color:red">*多个用英文逗号,分隔；不填写则使用qq配置的群</span>
                         </el-form-item>
-                        <el-form-item label="转发至qq好友">
+                        <el-form-item label="转发至qq好友" v-if="!windStatus">
                             <el-switch v-model="config.DY.forwardQQ" :active-value="true"
                                 :inactive-value="false"></el-switch>
                         </el-form-item>
-                        <el-form-item label="qq好友" v-show="config.DY.forwardQQ === true">
+                        <el-form-item label="qq好友" v-show="config.DY.forwardQQ === true && !windStatus">
                             <el-input v-model="config.DY.qq" placeholder="发新微博转发消息"></el-input>
                             <span style="color:red">*多个用英文逗号,分隔；不填写则默认超管</span>
                         </el-form-item>
@@ -328,6 +328,7 @@ import { type FormInstance, ElMessage } from 'element-plus'
 import { ArrowLeft, Edit, Plus, Setting } from '@element-plus/icons-vue'
 import type { UploadProps, UploadUserFile } from 'element-plus'
 
+const windStatus = ref<boolean>(false)
 const funcs = ref([] as any[]);
 const funcsChecked = ref([] as any[]);
 const selectType = ref([] as any[]);
@@ -518,6 +519,7 @@ onMounted(() => {
             return item.value;
         });
         selectType.value = config.value.KD.msgType ? config.value.KD.msgType.split(",") : [];
+        windStatus.value = res.data.windStatus || false;
     });
 
     axios({
@@ -548,7 +550,6 @@ const save = async (formEl: FormInstance | undefined) => {
             config.value.QQ.funcAdmin = d.toString();
             config.value.QQ.funcUser = config.value.QQ.funcUser1.toString();
             config.value.KD.msgType = selectType.value.toString();
-            console.log(config.value.QQ)
             axios({
                 url: "http://parkerbot.api/api/SetConfig",
                 method: "post",
@@ -594,9 +595,11 @@ const send = () => {
         method: 'get',
         params: { mobile: config.value.KD.phone, area: config.value.KD.area }
     }).then(res => {
-        console.log("sms", res.data)
-        if (res.data.success) {
+        let result = JSON.parse(res?.data)
+        if (result?.success) {
             ElMessage({ message: "发送成功，请注意查收！", type: 'success' });
+        } else {
+            ElMessage({ message: result?.message ?? "发送失败！", type: 'success' });
         }
     });
 }
@@ -619,22 +622,27 @@ const submitForm = () => {
         method: 'get',
         params: { mobile: config.value.KD.phone, code: config.value.KD.code }
     }).then(res => {
-        let result = JSON.parse(res.data)
-        if (result.success) {
+        let result = JSON.parse(res?.data);
+        if (result?.success) {
             axios({
                 url: 'http://parkerbot.api/api/GetPokectUserInfo',
                 method: 'get',
                 params: { token: result.content.token }
             }).then(res1 => {
-                console.log("token", res1.data)
-                config.value.KD.token = res1.data.content.pwd;
-                config.value.KD.account = res1.data.content.accid;
-                setTimeout(() => {
-                    close();
-                }, 1000);
+                let result1 = JSON.parse(res1?.data)
+                if (result1?.success) {
+                    config.value.KD.token = result1.content.pwd;
+                    config.value.KD.account = result1.content.accid;
+                    setTimeout(() => {
+                        close();
+                    }, 1000);
+                    ElMessage({ message: result1?.message ?? '登录成功', type: 'success' });
+                } else {
+                    ElMessage({ message: result1?.message ?? '登录失败！', type: 'error' });
+                }
             });
         } else {
-            ElMessage({ message: result.message, type: 'error' });
+            ElMessage({ message: result?.message ?? '登录失败！', type: 'error' });
         }
     });
 }

@@ -1,6 +1,7 @@
 using Mirai.Net.Utils.Scaffolds;
 using Newtonsoft.Json.Linq;
 using ParkerBot;
+using System.IO;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -26,144 +27,281 @@ namespace Helper
                 string msbBody = "";
 
                 if (roleId != 3) return;
-                MessageChainBuilder mcb = new();
-                mcb.Plain($"【{Const.ConfigModel.KD.name}|{channelName}】\n【{time}】\n{name}:");
-                //图片
-                if (msgType == "image")
-                {
-                    msbBody = result["attach"]!["url"]!.ToString();
-                    await Task.Run(async () =>
-                    {
-                        await Weibo.FatchFace(msbBody);
-                    });
-                    if (!MsgType.Contains(msgType)) return;
-                    mcb.ImageFromUrl(msbBody);
-                }
-                //文字
-                else if (MsgType.Contains(msgType) && msgType == "text")
-                {
-                    //"230226137"
-                    msbBody = result["body"]!.ToString();
-                    mcb.Plain(msbBody);
-                }
-                //视频
-                else if (MsgType.Contains(msgType) && msgType == "video")
-                {
-                    mcb.Plain(result["attach"]!["url"]!.ToString());
-                }
-                //语言
-                else if (MsgType.Contains(msgType) && msgType == "audio")
-                {
-                    mcb.VoiceFromUrl(result["attach"]!["url"]!.ToString());
-                }
-                else if (msgType == "custom")
-                {
-                    var attach = result["attach"]!;
-                    var messageType = attach["messageType"]!.ToString();
-                    //回复
-                    if (MsgType.Contains(messageType) && messageType == "REPLY")
-                    {
-                        msbBody = attach["replyInfo"]!["text"] + "\n" + attach["replyInfo"]!["replyName"]! + ":" + attach["replyInfo"]!["replyText"]!;
-                        mcb.Plain(msbBody);
-                    }
-                    //礼物回复
-                    else if (MsgType.Contains(messageType) && messageType == "GIFTREPLY")
-                    {
-                        msbBody = attach["giftReplyInfo"]!["text"] + "\n" + attach["giftReplyInfo"]!["replyName"]! + ":" + attach["giftReplyInfo"]!["replyText"]!;
-                        mcb.Plain(msbBody);
-                    }
-                    //总选计分
-                    //else if (false)
-                    //{
-                    //    msbBody = "送出了【" + attach["giftInfo"]!["giftName"] + "（" + attach["giftInfo"]!["tpNum"] + "分）】。";
-                    //    mcb.Plain(msbBody);
-                    //}
-                    //直播
-                    else if (MsgType.Contains(messageType) && messageType == "LIVEPUSH")
-                    {
-                        //判断是否at所有人
-                        msbBody = "直播啦！\n标题：" + attach["livePushInfo"]!["liveTitle"];
-                        mcb.Plain(msbBody).ImageFromUrl(Const.ConfigModel.KD.imgDomain + attach["livePushInfo"]!["liveCover"]!.ToString());
-                        if (MsgType.FirstOrDefault(t => t == "AtAll")?.ToBool() ?? false)
-                            mcb.AtAll();
-                    }
-                    //语音
-                    else if (MsgType.Contains(messageType.ToLower()) && messageType == "AUDIO")
-                    {
-                        mcb.VoiceFromUrl(attach["audioInfo"]!["url"]!.ToString());
-                    }
-                    //视频
-                    else if (MsgType.Contains(messageType.ToLower()) && messageType == "VIDEO")
-                    {
-                        mcb.VoiceFromUrl(attach["videoInfo"]!["url"]!.ToString());
-                    }
-                    // 房间电台
-                    else if (MsgType.Contains(messageType) && messageType == "TEAM_VOICE")
-                    {
-                        //判断是否at所有人
-                        msbBody = "开启了房间电台";
-                        mcb.Plain(msbBody);
-                        if (MsgType.FirstOrDefault(t => t == "AtAll")?.ToBool() ?? false)
-                            mcb.AtAll();
-                    }
-                    //文字翻牌
-                    else if (MsgType.Contains(messageType) && messageType == "FLIPCARD")
-                    {
-                        var answer = attach["filpCardInfo"]!["answer"]!.ToString();
-                        mcb.Plain(answer.ToString());
-                        mcb.Plain("\n粉丝提问：" + attach["filpCardInfo"]!["question"]);
-                    }
-                    //语音翻牌
-                    else if (MsgType.Contains(messageType) && messageType == "FLIPCARD_AUDIO")
-                    {
-                        var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
-                        mcb.VoiceFromUrl(Const.ConfigModel.KD.mP4Domain + answer["url"]);
-                        mcb.Plain("\n粉丝提问：" + attach["filpCardInfo"]!["question"]);
-                    }
-                    //视频翻牌
-                    else if (MsgType.Contains(messageType) && messageType == "FLIPCARD_VIDEO")
-                    {
-                        var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
-                        mcb.Plain(Const.ConfigModel.KD.mP4Domain + answer["url"]);
-                        mcb.Plain("\n粉丝提问：" + attach["filpCardInfo"]!["question"]);
-                    }
-                    //表情
-                    else if (MsgType.Contains(messageType) && messageType == "EXPRESSIMAGE")
-                    {
-                        string url = attach["expressImgInfo"]!["emotionRemote"]!.ToString();
-                        mcb.ImageFromUrl(url);
-                    }
-                    else return;
-                }
-                else return;
-                if (!Const.MiraiConfig.useMirai) return;
-                if (Const.ConfigModel.KD.forwardGroup)
-                {
-                    string group = !string.IsNullOrWhiteSpace(Const.ConfigModel.KD.group) ? Const.ConfigModel.KD.group : Const.ConfigModel.QQ.group;
-                    List<string> groups = group.ToListV2();
-                    MsgModel msgModel = new()
-                    {
-                        MsgChain = mcb.Build(),
-                        Ids = groups,
-                    };
-                    msgModel.AddMsg();
-                }
-                if (Const.ConfigModel.KD.forwardQQ)
+                #region 风控逻辑
+                if (Const.WindStatus)
                 {
                     MsgModel msgModel = new();
-                    msgModel.Type = 2;
-                    msgModel.MsgChain = mcb.Build();
-                    if (!string.IsNullOrWhiteSpace(Const.ConfigModel.KD.qq))
+                    //图片
+                    if (msgType == "image")
                     {
-                        var qqs = Const.ConfigModel.KD.qq.ToListV2();
-                        msgModel.Ids = qqs;
+                        msbBody = result["attach"]!["url"]!.ToString();
+                        var path = FileHelper.SaveLocal(msbBody);
+                        await Task.Run(async () =>
+                        {
+                            await Weibo.FatchFace(path);
+                        });
+                        if (!MsgType.Contains(msgType)) return;
+                        msgModel.Type = 1;
+                        msgModel.Url = path;
                     }
-                    else if (!string.IsNullOrWhiteSpace(Const.ConfigModel.QQ.admin))
+                    //文字
+                    else if (MsgType.Contains(msgType) && msgType == "text")
                     {
-                        msgModel.Id = Const.ConfigModel.QQ.admin;
+                        //"230226137"
+                        msbBody = result["body"]!.ToString();
+                        msgModel.Type = 0;
+                        msgModel.MsgStr += msbBody;
                     }
-                    msgModel.AddMsg();
+                    //视频
+                    else if (MsgType.Contains(msgType) && msgType == "video")
+                    {
+                        msbBody = result["attach"]!["url"]!.ToString();
+                        msgModel.Type = 0;
+                        msgModel.MsgStr += msbBody;
+                    }
+                    //语言
+                    else if (MsgType.Contains(msgType) && msgType == "audio")
+                    {
+                        msbBody = result["attach"]!["url"]!.ToString();
+                        msgModel.Type = 0;
+                        msgModel.MsgStr += msbBody;
+                    }
+                    else if (msgType == "custom")
+                    {
+                        var attach = result["attach"]!;
+                        var messageType = attach["messageType"]!.ToString();
+                        //回复
+                        if (MsgType.Contains(messageType) && messageType == "REPLY")
+                        {
+                            msbBody = attach["replyInfo"]!["text"] + "\n" + attach["replyInfo"]!["replyName"]! + ":" + attach["replyInfo"]!["replyText"]!;
+                            msgModel.Type = 0;
+                            msgModel.MsgStr += msbBody;
+                        }
+                        //礼物回复
+                        else if (MsgType.Contains(messageType) && messageType == "GIFTREPLY")
+                        {
+                            msbBody = attach["giftReplyInfo"]!["text"] + "\n" + attach["giftReplyInfo"]!["replyName"]! + ":" + attach["giftReplyInfo"]!["replyText"]!;
+                            msgModel.Type = 0;
+                            msgModel.MsgStr += msbBody;
+                        }
+                        //总选计分
+                        //else if (false)
+                        //{
+                        //    msbBody = "送出了【" + attach["giftInfo"]!["giftName"] + "（" + attach["giftInfo"]!["tpNum"] + "分）】。";
+                        //    mcb.Plain(msbBody);
+                        //}
+                        //直播
+                        else if (MsgType.Contains(messageType) && messageType == "LIVEPUSH")
+                        {
+                            //判断是否at所有人
+                            msbBody = "直播啦！\n标题：" + attach["livePushInfo"]!["liveTitle"];
+                            msgModel.Type = 0;
+                            msgModel.MsgStr += msbBody;
+                        }
+                        //语音
+                        else if (MsgType.Contains(messageType.ToLower()) && messageType == "AUDIO")
+                        {
+                            msbBody = attach["audioInfo"]!["url"]!.ToString();
+                            msgModel.Type = 0;
+                            msgModel.MsgStr += msbBody;
+                        }
+                        //视频
+                        else if (MsgType.Contains(messageType.ToLower()) && messageType == "VIDEO")
+                        {
+                            msbBody = attach["videoInfo"]!["url"]!.ToString();
+                            msgModel.Type = 0;
+                            msgModel.MsgStr += msbBody;
+                        }
+                        // 房间电台
+                        else if (MsgType.Contains(messageType) && messageType == "TEAM_VOICE")
+                        {
+                            //判断是否at所有人
+                            msbBody = "开启了房间电台";
+                            msgModel.Type = 0;
+                            msgModel.MsgStr += msbBody;
+                        }
+                        //文字翻牌
+                        else if (MsgType.Contains(messageType) && messageType == "FLIPCARD")
+                        {
+                            var answer = attach["filpCardInfo"]!["answer"]!.ToString();
+                            msbBody = answer + "\n粉丝提问：" + attach["filpCardInfo"]!["question"];
+                            msgModel.Type = 0;
+                            msgModel.MsgStr += msbBody;
+                        }
+                        //语音翻牌
+                        else if (MsgType.Contains(messageType) && messageType == "FLIPCARD_AUDIO")
+                        {
+                            var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
+                            msbBody = answer + "\n粉丝提问：" + attach["filpCardInfo"]!["question"];
+                            msgModel.Type = 0;
+                            msgModel.MsgStr += msbBody;
+                        }
+                        //视频翻牌
+                        else if (MsgType.Contains(messageType) && messageType == "FLIPCARD_VIDEO")
+                        {
+                            var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
+                            msbBody = answer + "\n粉丝提问：" + attach["filpCardInfo"]!["question"];
+                            msgModel.Type = 0;
+                            msgModel.MsgStr += msbBody;
+                        }
+                        //表情
+                        else if (MsgType.Contains(messageType) && messageType == "EXPRESSIMAGE")
+                        {
+                            string url = attach["expressImgInfo"]!["emotionRemote"]!.ToString();
+                            msgModel.Type = 1;
+                            msgModel.Url = msbBody;
+                        }
+                        else return;
+                    }
+                    else return;
+                    if (!Const.MiraiConfig.useMirai) return;
+                    if (Const.ConfigModel.KD.forwardGroup)
+                        msgModel.AddMsg();
                 }
+                #endregion
+                #region 正常逻辑
+                else
+                {
+                    MessageChainBuilder mcb = new();
+                    mcb.Plain($"【{Const.ConfigModel.KD.name}|{channelName}】\n【{time}】\n{name}:");
+                    //图片
+                    if (msgType == "image")
+                    {
+                        msbBody = result["attach"]!["url"]!.ToString();
+                        await Task.Run(async () =>
+                        {
+                            await Weibo.FatchFace(msbBody);
+                        });
+                        if (!MsgType.Contains(msgType)) return;
+                        mcb.ImageFromUrl(msbBody);
+                    }
+                    //文字
+                    else if (MsgType.Contains(msgType) && msgType == "text")
+                    {
+                        //"230226137"
+                        msbBody = result["body"]!.ToString();
+                        mcb.Plain(msbBody);
+                    }
+                    //视频
+                    else if (MsgType.Contains(msgType) && msgType == "video")
+                    {
+                        mcb.Plain(result["attach"]!["url"]!.ToString());
+                    }
+                    //语言
+                    else if (MsgType.Contains(msgType) && msgType == "audio")
+                    {
+                        mcb.VoiceFromUrl(result["attach"]!["url"]!.ToString());
+                    }
+                    else if (msgType == "custom")
+                    {
+                        var attach = result["attach"]!;
+                        var messageType = attach["messageType"]!.ToString();
+                        //回复
+                        if (MsgType.Contains(messageType) && messageType == "REPLY")
+                        {
+                            msbBody = attach["replyInfo"]!["text"] + "\n" + attach["replyInfo"]!["replyName"]! + ":" + attach["replyInfo"]!["replyText"]!;
+                            mcb.Plain(msbBody);
+                        }
+                        //礼物回复
+                        else if (MsgType.Contains(messageType) && messageType == "GIFTREPLY")
+                        {
+                            msbBody = attach["giftReplyInfo"]!["text"] + "\n" + attach["giftReplyInfo"]!["replyName"]! + ":" + attach["giftReplyInfo"]!["replyText"]!;
+                            mcb.Plain(msbBody);
+                        }
+                        //总选计分
+                        //else if (false)
+                        //{
+                        //    msbBody = "送出了【" + attach["giftInfo"]!["giftName"] + "（" + attach["giftInfo"]!["tpNum"] + "分）】。";
+                        //    mcb.Plain(msbBody);
+                        //}
+                        //直播
+                        else if (MsgType.Contains(messageType) && messageType == "LIVEPUSH")
+                        {
+                            //判断是否at所有人
+                            msbBody = "直播啦！\n标题：" + attach["livePushInfo"]!["liveTitle"];
+                            mcb.Plain(msbBody).ImageFromUrl(Const.ConfigModel.KD.imgDomain + attach["livePushInfo"]!["liveCover"]!.ToString());
+                            if (MsgType.FirstOrDefault(t => t == "AtAll")?.ToBool() ?? false)
+                                mcb.AtAll();
+                        }
+                        //语音
+                        else if (MsgType.Contains(messageType.ToLower()) && messageType == "AUDIO")
+                        {
+                            mcb.VoiceFromUrl(attach["audioInfo"]!["url"]!.ToString());
+                        }
+                        //视频
+                        else if (MsgType.Contains(messageType.ToLower()) && messageType == "VIDEO")
+                        {
+                            mcb.VoiceFromUrl(attach["videoInfo"]!["url"]!.ToString());
+                        }
+                        // 房间电台
+                        else if (MsgType.Contains(messageType) && messageType == "TEAM_VOICE")
+                        {
+                            //判断是否at所有人
+                            msbBody = "开启了房间电台";
+                            mcb.Plain(msbBody);
+                            if (MsgType.FirstOrDefault(t => t == "AtAll")?.ToBool() ?? false)
+                                mcb.AtAll();
+                        }
+                        //文字翻牌
+                        else if (MsgType.Contains(messageType) && messageType == "FLIPCARD")
+                        {
+                            var answer = attach["filpCardInfo"]!["answer"]!.ToString();
+                            mcb.Plain(answer.ToString());
+                            mcb.Plain("\n粉丝提问：" + attach["filpCardInfo"]!["question"]);
+                        }
+                        //语音翻牌
+                        else if (MsgType.Contains(messageType) && messageType == "FLIPCARD_AUDIO")
+                        {
+                            var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
+                            mcb.VoiceFromUrl(Const.ConfigModel.KD.mP4Domain + answer["url"]);
+                            mcb.Plain("\n粉丝提问：" + attach["filpCardInfo"]!["question"]);
+                        }
+                        //视频翻牌
+                        else if (MsgType.Contains(messageType) && messageType == "FLIPCARD_VIDEO")
+                        {
+                            var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
+                            mcb.Plain(Const.ConfigModel.KD.mP4Domain + answer["url"]);
+                            mcb.Plain("\n粉丝提问：" + attach["filpCardInfo"]!["question"]);
+                        }
+                        //表情
+                        else if (MsgType.Contains(messageType) && messageType == "EXPRESSIMAGE")
+                        {
+                            string url = attach["expressImgInfo"]!["emotionRemote"]!.ToString();
+                            mcb.ImageFromUrl(url);
+                        }
+                        else return;
+                    }
+                    else return;
+                    if (!Const.MiraiConfig.useMirai) return;
+                    if (Const.ConfigModel.KD.forwardGroup)
+                    {
+                        string group = !string.IsNullOrWhiteSpace(Const.ConfigModel.KD.group) ? Const.ConfigModel.KD.group : Const.ConfigModel.QQ.group;
+                        List<string> groups = group.ToListV2();
+                        MsgModel msgModel = new()
+                        {
+                            MsgChain = mcb.Build(),
+                            Ids = groups,
+                        };
+                        msgModel.AddMsg();
+                    }
+                    if (Const.ConfigModel.KD.forwardQQ)
+                    {
+                        MsgModel msgModel = new();
+                        msgModel.Type = 2;
+                        msgModel.MsgChain = mcb.Build();
+                        if (!string.IsNullOrWhiteSpace(Const.ConfigModel.KD.qq))
+                        {
+                            var qqs = Const.ConfigModel.KD.qq.ToListV2();
+                            msgModel.Ids = qqs;
+                        }
+                        else if (!string.IsNullOrWhiteSpace(Const.ConfigModel.QQ.admin))
+                        {
+                            msgModel.Id = Const.ConfigModel.QQ.admin;
+                        }
+                        msgModel.AddMsg();
+                    }
+                }
+                #endregion
                 return;
             }
             catch (Exception e)
@@ -288,7 +426,7 @@ namespace Helper
         }
         public static async Task<string> UserInfo(string token)
         {
-            var res = await GetResponse("im/api/v1/im/userinfo", token: token);
+            var res = await GetResponse("/im/api/v1/im/userinfo", token: token);
             return res;
         }
     }

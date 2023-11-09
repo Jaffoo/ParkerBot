@@ -4,22 +4,30 @@
             <el-button type="primary" native-type="button" :icon="Setting" @click="config">
                 修改配置
             </el-button>
-            <el-button type="primary" native-type="button" :icon="Setting" @click="miraiSetting">
+            <el-button type="primary" native-type="button" :icon="Setting" @click="miraiSetting" v-if="!windStatus">
                 Mirai配置
             </el-button>
             <span style="color:red">(不启用QQ机器人无需配置)</span>
             <el-button v-if="useMirai" type="primary" native-type="button" @click="startMirai">启动Mirai机器人</el-button>
             <el-button type="primary" native-type="button" @click="start">启动机器人</el-button>
             <el-button v-if="useAli" type="primary" native-type="button" @click="startAli">启动阿里云盘</el-button>
-            <el-dropdown style="left: 35vw;">
-                <el-button type="primary" circle :icon="ArrowDown"></el-button>
-                <template #dropdown>
-                    <el-dropdown-menu>
-                        <el-dropdown-item @click="saveBlogByid">抓取微博</el-dropdown-item>
-                    </el-dropdown-menu>
-                </template>
-            </el-dropdown>
         </el-header>
+        <el-dropdown style="right: 1vw;position: fixed;">
+            <el-button type="primary">更多
+                <el-icon>
+                    <ArrowDownBold />
+                </el-icon>
+            </el-button>
+            <template #dropdown>
+                <el-dropdown-menu>
+                    <el-dropdown-item @click="saveBlogByid">抓取微博</el-dropdown-item>
+                    <el-dropdown-item @click="windControl">
+                        <span v-if="windStatus === false" style="color: green;">开启风控</span>
+                        <span v-else style="color: orange;">关闭风控</span>
+                    </el-dropdown-item>
+                </el-dropdown-menu>
+            </template>
+        </el-dropdown>
         <el-main>
             <el-row :gutter="20">
                 <el-col :span="12">
@@ -66,7 +74,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
-import { ArrowDown, Setting } from '@element-plus/icons-vue';
+import { ArrowDownBold, Setting } from '@element-plus/icons-vue';
 import axios from "axios";
 import QChatSDK from "nim-web-sdk-ng/dist/QCHAT_BROWSER_SDK";
 import NIMSDK from "nim-web-sdk-ng/dist/NIM_BROWSER_SDK";
@@ -75,7 +83,9 @@ import dayjs from 'dayjs';
 import NimChatroomSocket from '../component/Live'
 import type { LiveRoomMessage } from "@/component/messageType";
 import PocketMessage from "@/component/Type";
+import { ElMessage } from 'element-plus'
 
+const windStatus = ref<boolean>(false)
 const baseConfig = ref({} as any);
 const mirai = ref({} as any);
 const useMirai = ref(false);
@@ -312,6 +322,7 @@ onMounted(async () => {
             }
         }
     })
+    windStatus.value=res.data.windStatus;
     await refresh();
 });
 
@@ -370,7 +381,7 @@ const saveBlogByid = () => {
     ElMessageBox.prompt('', '请输入微博id', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        beforeClose: (action, instance, done) => {
+        beforeClose: (action: string, instance: any, done: Function) => {
             if (action == "confirm") {
                 const value = instance.inputValue;
                 if (!value || value.trim() === '') {
@@ -387,7 +398,7 @@ const saveBlogByid = () => {
             }
         }
     })
-        .then(async ({ value }) => {
+        .then(async ({ value }: { value: string }) => {
             if (!value || value.trim() === '') return;
             var res = await axios({
                 url: "http://parkerbot.api/api/SaveByBlogId?blogId=" + value
@@ -406,5 +417,10 @@ const saveBlogByid = () => {
                 });
             }
         })
+}
+const windControl = () => {
+    windStatus.value = !windStatus.value
+    ElMessage.success(windStatus.value ? "已开启风控模式" : "已关闭风控模式")
+    axios.get('http://parkerbot.api/api/SetWindStatus', { params: { windStatus: windStatus.value } })
 }
 </script>

@@ -44,5 +44,23 @@ namespace Helper
                 return false;
             }
         }
+        public static string SaveLocal(string url)
+        {
+            try
+            {
+                HttpClient client = new();
+                byte[] bytes = client.GetByteArrayAsync(url).Result;
+                var root = Directory.GetCurrentDirectory() + @"/wwwroot/images/";
+                if (!Directory.Exists(root)) Directory.CreateDirectory(root);
+                var path = root + "66-" + DateTime.Now.ToString("yyMMddHHmmssfff") + ".jpeg";
+                File.WriteAllBytes(path, bytes);
+                return path;
+            }
+            catch (Exception e)
+            {
+                e.AddLog();
+                return "";
+            }
+        }
     }
 }

@@ -33,8 +33,27 @@ namespace ParkerBot
         {
             get
             {
-                if (_EnableModule == null) _EnableModule = Enable.ToObject<EnableModule>() ?? new();
+                _EnableModule ??= Enable.ToObject<EnableModule>() ?? new();
                 return _EnableModule;
+            }
+        }
+        public static bool WindStatus
+        {
+            get
+            {
+                cache.TryGetValue("WindStatus", out bool? res);
+                if (res == null)
+                {
+                    var context = new LiteContext();
+                    var model = context.Config.FirstOrDefault(t => t.key == "WindStatus");
+                    cache.Set("WindStatus", model?.value?.ToBool() ?? false);
+                    if (model != null)
+                        return model.value.ToBool();
+                    else
+                        return false;
+                }
+                else
+                    return res ?? false;
             }
         }
         public static JObject GetConfig(string key)
