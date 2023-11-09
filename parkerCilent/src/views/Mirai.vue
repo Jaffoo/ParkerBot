@@ -9,21 +9,22 @@
                 <el-form-item label="启用机器人" prop="useMirai">
                     <el-switch v-model="mirai.useMirai" :active-value="true" :inactive-value="false"></el-switch>
                 </el-form-item>
-                 <el-form-item label="qq" prop="qq" v-if="mirai.useMirai">
-                    <el-input v-model="mirai.qq"></el-input>
+                <el-form-item label="qq" prop="qq">
+                    <el-input :disabled="!mirai.useMirai" v-model="mirai.qq"></el-input>
                 </el-form-item>
-                <el-form-item label="mirai根目录" prop="path" v-if="mirai.useMirai">
-                    <el-input v-model="mirai.path" style="width:87%"></el-input>
-                    <el-button @click="getMiraiConfig" native-type="button" type="primary">获取配置</el-button>
+                <el-form-item label="mirai根目录" prop="path">
+                    <el-input :disabled="!mirai.useMirai" v-model="mirai.path" style="width:87%"></el-input>
+                    <el-button :disabled="!mirai.useMirai" @click="getMiraiConfig" native-type="button"
+                        type="primary">获取配置</el-button>
                 </el-form-item>
-                <el-form-item label="Tips：" v-if="mirai.useMirai">
+                <el-form-item label="Tips：">
                     <span>配置正确目录后下方内容可以通过上方【获取配置】按钮获取。</span>
                 </el-form-item>
-                <el-form-item label="地址" prop="address" v-if="mirai.useMirai">
-                    <el-input v-model="mirai.address"></el-input>
+                <el-form-item label="地址" prop="address">
+                    <el-input :disabled="!mirai.useMirai" v-model="mirai.address"></el-input>
                 </el-form-item>
-                <el-form-item label="verifyKey" prop="verifyKey" v-if="mirai.useMirai">
-                    <el-input v-model="mirai.verifyKey"></el-input>
+                <el-form-item label="verifyKey" prop="verifyKey">
+                    <el-input :disabled="!mirai.useMirai" v-model="mirai.verifyKey"></el-input>
                 </el-form-item>
             </el-form>
         </el-main>
@@ -68,16 +69,16 @@ const getMiraiConfig = function () {
     axios({
         url: "http://parkerbot.api/api/getMiraiFile",
     }).then(res => {
-        if (res.data==false) {
+        if (res.data == false) {
             ElMessage({
                 showClose: true,
                 message: '目录不存在或路径错误，请检查后重试！',
                 type: 'error'
             });
         }
-        else{
-            mirai.value.address=res.data.address;
-            mirai.value.verifyKey=res.data.verifyKey;
+        else {
+            mirai.value.address = res.data.address;
+            mirai.value.verifyKey = res.data.verifyKey;
             ElMessage({
                 showClose: true,
                 message: '获取成功！',
