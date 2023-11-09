@@ -55,15 +55,17 @@ namespace ParkerBot
             {
                 if (!Const.EnableModule.qq && !Const.WindStatus) return;
                 if (!UseMirai && !Const.WindStatus) return;
-                Task.Factory.StartNew(() =>
-                {// 设置当前线程为STA模式
-                    if (Thread.CurrentThread.GetApartmentState() != ApartmentState.STA)
-                    {
-                        // 设置当前线程为STA模式
-                        Thread.CurrentThread.SetApartmentState(ApartmentState.STA);
-                    }
-                    BotStart();
-                });
+                if (UseMirai)
+                {
+                    Task.Run(BotStart);
+                }
+                else
+                {
+                    HasMirai = true;
+                    Thread t = new(new ThreadStart(Msg.HandlMsg));
+                    t.SetApartmentState(ApartmentState.STA);
+                    t.Start();
+                }
             }
             catch (Exception)
             {
@@ -75,23 +77,15 @@ namespace ParkerBot
         {
             try
             {
-                if (Const.WindStatus)
+                var bot = new MiraiBot
                 {
-                    Msg.BotStart(null);
-                    HasMirai = true;
-                }
-                else if (UseMirai)
-                {
-                    var bot = new MiraiBot
-                    {
-                        Address = Const.MiraiConfig.address,
-                        QQ = Const.MiraiConfig.QQNum,
-                        VerifyKey = Const.MiraiConfig.verifykey
-                    };
-                    await bot.LaunchAsync();
-                    Msg.BotStart(bot);
-                    HasMirai = true;
-                }
+                    Address = Const.MiraiConfig.address,
+                    QQ = Const.MiraiConfig.QQNum,
+                    VerifyKey = Const.MiraiConfig.verifykey
+                };
+                await bot.LaunchAsync();
+                Msg.BotStart(bot);
+                HasMirai = true;
                 while (true)
                 {
                     Thread.Sleep(10);
