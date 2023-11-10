@@ -1,7 +1,7 @@
 # ParkerBot(爬客机器人)
 
 ## [更新日志或计划](https://gitee.com/jaffoo/ParkerBotV2/blob/master/UpdateDetail.md)
-## [风控使用看这](https://gitee.com/jaffoo/ParkerBotV2/blob/master/WindControl.md)
+## [QQ机器人被风控使用看这](https://gitee.com/jaffoo/ParkerBotV2/blob/master/WindControl.md)
 
 ## 介绍
 主要用于SNH48系监听微博、口袋48、b站等偶像社交软件，新动态可通过qq消息通知。如果喜欢保存偶像的图片，可配置后通过人脸识别及对比，自动保存偶像图片至本地，也可选择上传至阿里云盘，彻底解放双手。
@@ -18,10 +18,11 @@
 
 ## 安装教程
 
-1.  由于仓库限制上传文件大小，需要自行下载源码编译或打包（编译教程:下载代码wwwroot/other/编译流程.docs）。
-2.  编译完成（绿色版无需安装），目录找到ParkerBot.exe，运行即可。
-3.  实在不会编译或者需要安装版，加作者[QQ](https://gitee.com/jaffoo/ParkerBotV2#%E9%97%AE%E9%A2%98%E5%8F%8D%E9%A6%88)
-4.  仅支持Windows，不支持linux，macos等。推荐在Windows>=10，Windows Server>=2012上使用。
+1.  下载地址：[夸克云盘](https://pan.quark.cn/s/6d8e3a401056) 提取码：HpaT
+2.  不想使用云盘，可以自行编译或者加作者[QQ](https://gitee.com/jaffoo/ParkerBotV2#%E9%97%AE%E9%A2%98%E5%8F%8D%E9%A6%88)
+3.  自行编译下载源码编译或打包（推荐使用VS2022）（编译教程:下载代码后找到根目录/wwwroot/other/编译流程.docs或[在线浏览](https://gitee.com/jaffoo/ParkerBotV2/tree/master/Parker/wwwroot/other/编译流程.docx)）。
+4.  编译完成（绿色版无需安装），目录找到ParkerBot.exe，运行即可。
+5.  仅支持Windows，不支持linux，macos等。推荐在Windows>=10，Windows Server>=2012上使用。
 
 ## 主界面更多功能介绍
 1. 抓取微博，根据微博ID获取图片，进行识别保存上传。微博ID获取方式如图。打开具体某条微博点击右上角三个点，复制链接，得到链接`https://weibo.com/2689280541/4966195770163347`,最后的`4966195770163347`就是此条微博的ID
