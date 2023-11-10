@@ -1,0 +1,1 @@
+INSERT INTO config ("Name","Key","Value","ParentId") SELECT '·ç¿ØÄ£Ê½','WindStatus','false',0 WHERE NOT EXISTS (SELECT 1 FROM config WHERE ParentId=0 AND "Key"='WindStatus');
