@@ -26,7 +26,7 @@ namespace Helper
                 string msgType = result["type"]!.ToString();
                 string msbBody = "";
 
-                //if (roleId != 3) return;
+                if (roleId != 3) return;
                 #region ·ç¿ØÂß¼­
                 if (Const.WindStatus)
                 {
