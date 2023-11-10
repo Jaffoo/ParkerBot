@@ -16,6 +16,9 @@
 ## 软件架构
 基于 .NET 6 winform框架开源UI库[NanUI](https://gitee.com/dotnetchina/NanUI)开发。前端使用的是vite，Vue3，Ts，ElementUI。
 
+## 更新说明
+如果你需要更新，把下载好的包（免安装版）解压，将里面的所有内容替换到现有机器人的根目录，建议先删除除了data和wwwroot以外的所有文件及文件夹，然后在把新的文件粘贴进去。
+
 ## 安装教程
 
 1.  下载地址：[夸克云盘](https://pan.quark.cn/s/6d8e3a401056) 提取码：HpaT
