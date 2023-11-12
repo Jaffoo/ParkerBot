@@ -1,6 +1,7 @@
 ﻿using NetDimension.NanUI;
 using NetDimension.NanUI.HostWindow;
 using NetDimension.NanUI.JavaScript;
+using System.Windows.Forms;
 
 namespace ParkerBot
 {
@@ -59,15 +60,9 @@ namespace ParkerBot
 
         private void BeforeClosing(object? sender, NetDimension.NanUI.Browser.FormiumCloseEventArgs e)
         {
-            DialogResult res = MessageBox.Show("确认关闭！", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (res == DialogResult.Yes)
-            {
-                e.Canceled = false;
-            }
-            else
-            {
-                e.Canceled = true;
-            }
+            DialogResult res = MessageBox.Show(Owner, "确认关闭！", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (res == DialogResult.Yes) e.Canceled = false;
+            else e.Canceled = true;
         }
     }
 }

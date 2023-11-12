@@ -9,7 +9,8 @@
                 Mirai配置
             </el-button>
             <el-button v-if="useMirai" type="primary" native-type="button" @click="startMirai">启动Mirai机器人</el-button>
-            <el-button type="primary" native-type="button" @click="start">启动机器人</el-button>
+            <el-button v-if="!started" type="primary" native-type="button" @click="start">启动机器人</el-button>
+            <el-button v-else type="danger" native-type="button" @click="close">关闭机器人</el-button>
             <el-button v-if="useAli" type="primary" native-type="button" @click="startAli">启动阿里云盘</el-button>
         </el-header>
         <el-dropdown style="right: 1vw;position: fixed;">
@@ -33,7 +34,7 @@
         <el-main>
             <el-row :gutter="20">
                 <el-col :span="12">
-                    <h3 style="margin-left: 40%;">消息及日志</h3>
+                    <h3 style="margin-left: 40%;cursor: pointer;" @click="clear" title="点击清空日志">消息及日志</h3>
                     <div style="height: 530px;overflow:auto;" id="textArae">
                         <div v-for="(item, index) in log" style="margin:5px">
                             {{ (index + 1) + ':' }}
@@ -87,7 +88,8 @@ import type { LiveRoomMessage } from "@/component/messageType";
 import PocketMessage from "@/component/Type";
 import { ElMessage } from 'element-plus'
 
-const windStatus = ref<boolean>(false)
+const started = ref<boolean>(false);
+const windStatus = ref<boolean>(false);
 const baseConfig = ref({} as any);
 const mirai = ref({} as any);
 const useMirai = ref(false);
@@ -142,6 +144,9 @@ const start = async () => {
     if (qChat.value) {
         qChat.value.destroy()
     }
+    if (liveNim.value) {
+        liveNim.value.disconnect();
+    }
     const res = await getConfig();
     baseConfig.value = res.data.config;
     const myConfig = res.data.config.KD;
@@ -153,7 +158,6 @@ const start = async () => {
         }
     });
     if (useKd) {
-        console.log(myConfig)
         nim.value = new NIMSDK({
             appkey: atob(myConfig.appKey),
             account: myConfig.account,
@@ -187,10 +191,31 @@ const start = async () => {
         }
         setTimeout(() => {
             if (msg) log.value.push(new PocketMessage().add(msg));
-            log.value.push(new PocketMessage().add("机器人已启动"));
+            log.value.push(new PocketMessage().add("机器人已启动!"));
         }, 500);
     }
+    started.value = true;
 };
+
+const close = () => {
+    var msg = "机器人关闭中！";
+    log.value.push(new PocketMessage().add(msg));
+    if (nim.value) {
+        nim.value.destroy()
+    }
+    if (qChat.value) {
+        qChat.value.destroy()
+    }
+    if (liveNim.value) {
+        liveNim.value.disconnect();
+    }
+    if (ws.value) {
+        ws.value.close();
+    }
+    msg = "机器人已关闭！";
+    log.value.push(new PocketMessage().add(msg));
+    started.value = false;
+}
 
 const handleLogined = async function () {
     var msg = `口袋登录成功。订阅小偶像${baseConfig.value.KD.name}的房间。`;
@@ -462,5 +487,8 @@ const clearCache = () => {
             })
         }
     })
+}
+const clear = () => {
+    log.value.length = 0;
 }
 </script>
