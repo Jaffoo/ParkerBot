@@ -1,6 +1,4 @@
-﻿using Helper;
-using Mirai.Net.Sessions.Http.Managers;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using ParkerBot;
 
 namespace Helper
@@ -15,12 +13,16 @@ namespace Helper
         {
             try
             {
-                HttpClient client = new();
-                byte[] bytes = client.GetByteArrayAsync(url).Result;
-                var root = Directory.GetCurrentDirectory() + @"/wwwroot/images/";
-                if(!Directory.Exists(root)) Directory.CreateDirectory(root);
-                var path = root + "66-" + DateTime.Now.ToString("yyMMddHHmmssfff") + ".jpeg";
-                File.WriteAllBytes(path, bytes);
+                var path = url;
+                if (!Const.WindStatus)
+                {
+                    HttpClient client = new();
+                    byte[] bytes = client.GetByteArrayAsync(url).Result;
+                    var root = Directory.GetCurrentDirectory() + @"/wwwroot/images/";
+                    if (!Directory.Exists(root)) Directory.CreateDirectory(root);
+                    path = root + "66-" + DateTime.Now.ToString("yyMMddHHmmssfff") + ".jpeg";
+                    File.WriteAllBytes(path, bytes);
+                }
                 if (SaveAliyunDisk)
                 {
                     ThreadStart ts = new(async () =>
