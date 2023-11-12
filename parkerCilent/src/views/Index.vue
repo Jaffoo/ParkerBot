@@ -454,6 +454,7 @@ const saveBlogByid = () => {
         })
 }
 const windControl = () => {
+    close();
     windStatus.value = !windStatus.value
     ElMessage.success(windStatus.value ? "已开启风控模式" : "已关闭风控模式")
     axios.get('http://parkerbot.api/api/SetWindStatus', { params: { windStatus: windStatus.value } })
