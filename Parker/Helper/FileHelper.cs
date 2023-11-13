@@ -14,7 +14,7 @@ namespace Helper
             try
             {
                 var path = url;
-                if (!Const.WindStatus)
+                if (url.Contains("https://") || url.Contains("http://"))
                 {
                     HttpClient client = new();
                     byte[] bytes = client.GetByteArrayAsync(url).Result;

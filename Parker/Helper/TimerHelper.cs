@@ -11,7 +11,7 @@ namespace Helper
         {
             if (Const.EnableModule.wb)
             {
-                Schedule(async () => await Weibo.Seve()).WithName("WB").NonReentrant().ToRunEvery(Const.ConfigModel.WB.timeSpan.ToInt()).Minutes();
+                Schedule(async () => await Weibo.Save()).WithName("WB").NonReentrant().ToRunEvery(Const.ConfigModel.WB.timeSpan.ToInt()).Minutes();
                 Schedule(async () => await Weibo.ChiGua()).WithName("WBChiGua").NonReentrant().ToRunEvery(Const.ConfigModel.WB.timeSpan.ToInt()).Minutes();
             }
             if (Const.EnableModule.bz)
@@ -20,7 +20,7 @@ namespace Helper
             }
             if (Const.EnableModule.xhs)
             {
-
+                Schedule(async () => await Xhs.Save()).WithName("XHS").NonReentrant().ToRunEvery(Const.ConfigModel.WB.timeSpan.ToInt()).Minutes();
             }
             if (Const.EnableModule.dy)
             {
