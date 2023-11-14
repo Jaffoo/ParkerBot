@@ -3,6 +3,9 @@
 ## [更新日志或计划](https://gitee.com/jaffoo/ParkerBotV2/blob/master/UpdateDetail.md)
 ## [QQ机器人被风控使用看这](https://gitee.com/jaffoo/ParkerBotV2/blob/master/WindControl.md)
 
+## 更新说明
+如果你需要更新，把下载好的包（免安装版）解压，将里面的所有内容替换到现有机器人的根目录，建议先删除除了data和wwwroot以外的所有文件及文件夹，然后在把新的文件粘贴进去。
+
 ## 介绍
 主要用于SNH48系监听微博、口袋48、b站等偶像社交软件，新动态可通过qq消息通知。如果喜欢保存偶像的图片，可配置后通过人脸识别及对比，自动保存偶像图片至本地，也可选择上传至阿里云盘，彻底解放双手。
 
@@ -15,9 +18,6 @@
 
 ## 软件架构
 基于 .NET 6 winform框架开源UI库[NanUI](https://gitee.com/dotnetchina/NanUI)开发。前端使用的是vite，Vue3，Ts，ElementUI。
-
-## 更新说明
-如果你需要更新，把下载好的包（免安装版）解压，将里面的所有内容替换到现有机器人的根目录，建议先删除除了data和wwwroot以外的所有文件及文件夹，然后在把新的文件粘贴进去。
 
 ## 安装教程
 
