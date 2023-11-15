@@ -14,10 +14,10 @@ namespace Helper
             try
             {
                 var path = url;
-                if (url.Contains("https://") || url.Contains("http://"))
+                if (path.Contains("https://") || path.Contains("http://"))
                 {
                     HttpClient client = new();
-                    byte[] bytes = client.GetByteArrayAsync(url).Result;
+                    byte[] bytes = client.GetByteArrayAsync(path).Result;
                     var root = Directory.GetCurrentDirectory() + @"/wwwroot/images/";
                     if (!Directory.Exists(root)) Directory.CreateDirectory(root);
                     path = root + "66-" + DateTime.Now.ToString("yyMMddHHmmssfff") + ".jpeg";
