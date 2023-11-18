@@ -8,7 +8,8 @@
                 v-if="!windStatus">
                 Mirai配置
             </el-button>
-            <el-button v-if="useMirai" type="primary" native-type="button" @click="startMirai">启动Mirai机器人</el-button>
+            <el-button v-if="useMirai && !windStatus" type="primary" native-type="button"
+                @click="startMirai">启动Mirai机器人</el-button>
             <el-button v-if="!started" type="primary" native-type="button" @click="start">启动机器人</el-button>
             <el-button v-else type="danger" native-type="button" @click="close">关闭机器人</el-button>
             <el-button v-if="useAli" type="primary" native-type="button" @click="startAli">启动阿里云盘</el-button>
