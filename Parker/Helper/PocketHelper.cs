@@ -1,9 +1,7 @@
 using Mirai.Net.Utils.Scaffolds;
 using Newtonsoft.Json.Linq;
 using ParkerBot;
-using System.IO;
 using System.Net.Http.Headers;
-using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace Helper

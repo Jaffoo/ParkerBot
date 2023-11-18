@@ -39,7 +39,7 @@ namespace Helper
                 {"User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36" },
             };
         }
-        public static async Task Seve()
+        public static async Task Save()
         {
             string url = "";
             try
@@ -294,7 +294,7 @@ namespace Helper
                             }
                             mcb.Plain($"\n链接：https://m.weibo.cn/status/{blog["mid"]}");
                             //需要发送通知则发送通知
-                            if (Const.WindStatus)
+                            if (Const.WindStatus && Const.ConfigModel.WB.forwardGroup)
                                 msgModel.AddMsg();
                             else
                             {

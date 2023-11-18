@@ -342,7 +342,7 @@ namespace Helper
 
                         if (msgText == "#立即同步微博")
                         {
-                            await Weibo.Seve();
+                            await Weibo.Save();
                             return;
                         }
                         if (msgText.Contains("#同步微博#"))
