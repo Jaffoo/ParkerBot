@@ -105,5 +105,5 @@
 ![输入图片说明](images/star.png) 
 
 ## 问题反馈
-1. 此仓库提交Issue。
+1. 此仓库提交[Issue](https://gitee.com/jaffoo/ParkerBotV2/issues)。
 2. 加作者qq：1615842006，添加答案：gitee
