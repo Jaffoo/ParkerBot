@@ -25,7 +25,7 @@
 2.  不想使用云盘，可以自行编译或者加作者[QQ](https://gitee.com/jaffoo/ParkerBotV2#%E9%97%AE%E9%A2%98%E5%8F%8D%E9%A6%88)
 3.  自行编译下载源码编译或打包（推荐使用VS2022）（编译教程:下载代码后找到根目录/wwwroot/other/编译流程.docs或[在线浏览](https://gitee.com/jaffoo/ParkerBotV2/tree/master/Parker/wwwroot/other/编译流程.docx)）。
 4.  编译完成（绿色版无需安装），目录找到ParkerBot.exe，运行即可。
-5.  仅支持Windows，不支持linux，macos等。推荐在Windows>=10，Windows Server>=2012上使用。
+5.  仅支持Windows，不支持linux，macos等。推荐在Windows>=10，Windows Server>=2016上使用。
 
 ## 主界面更多功能介绍
 1. 抓取微博，根据微博ID获取图片，进行识别保存上传。微博ID获取方式如图。打开具体某条微博点击右上角三个点，复制链接，得到链接`https://weibo.com/2689280541/4966195770163347`,最后的`4966195770163347`就是此条微博的ID
