@@ -73,8 +73,8 @@
                         <el-form-item label="成员撤回消息">
                             <el-input></el-input>
                         </el-form-item> -->
-                        <el-form-item label="ChatGpt密钥">
-                            <el-input v-model="config.QQ.gptKey" placeholder="启用【问答功能时需要提供】"></el-input>
+                        <el-form-item label="Gpt密钥" :rules="rules.input" v-if="funcsChecked.find(e => e == '问答')">
+                            <el-input v-model="config.QQ.gptKey"></el-input>
                         </el-form-item>
                     </el-collapse-item>
                     <el-collapse-item title="微博" v-if="eable.wb" name="wb">

@@ -1,7 +1,7 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : config
+ Source Server         : debug-bin-config
  Source Server Type    : SQLite
  Source Server Version : 3035005
  Source Schema         : main
@@ -10,7 +10,7 @@
  Target Server Version : 3035005
  File Encoding         : 65001
 
- Date: 09/11/2023 18:10:37
+ Date: 27/11/2023 09:17:13
 */
 
 PRAGMA foreign_keys = false;
@@ -258,16 +258,10 @@ CREATE TABLE "sqlite_sequence" (
 -- Records of sqlite_sequence
 -- ----------------------------
 INSERT INTO "sqlite_sequence" VALUES ('config', 104);
-INSERT INTO "sqlite_sequence" VALUES ('log', 5797);
 
 -- ----------------------------
 -- Auto increment value for config
 -- ----------------------------
 UPDATE "sqlite_sequence" SET seq = 104 WHERE name = 'config';
-
--- ----------------------------
--- Auto increment value for log
--- ----------------------------
-UPDATE "sqlite_sequence" SET seq = 5797 WHERE name = 'log';
 
 PRAGMA foreign_keys = true;
