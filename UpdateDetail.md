@@ -13,3 +13,5 @@
 完成【[计划20231113](https://gitee.com/jaffoo/ParkerBotV2/blob/master/UpdateDetail.md#计划20231113)】的小红书监听功能
 ### 【说明20231117】
 由于腾讯官方机器人不能提供个人在群聊中使用机器人，所以【[计划20231113](https://gitee.com/jaffoo/ParkerBotV2/blob/master/UpdateDetail.md#计划20231113)】第1点将废弃。
+### 【计划20231129】
+兼容基于onebot协议的机器人框架。只要机器人框架是基于onebot协议开发的，大概率都能支持。
