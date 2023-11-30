@@ -1104,7 +1104,7 @@ namespace Helper
                             var msgModel = MsgQueue.Dequeue();
                             if (msgModel.Type == 3)
                             {
-                                Clipboard.SetText(msgModel.MsgStr);
+                                Clipboard.SetText(msgModel.MsgStr ?? "");
                                 KeyBoard.keyPressDown(KeyBoard.vKeyControl);
                                 Thread.Sleep(100);
                                 KeyBoard.keyPressDown(KeyBoard.vKeyV);
@@ -1114,20 +1114,23 @@ namespace Helper
                                 KeyBoard.keyPressUp(KeyBoard.vKeyControl);
                                 Thread.Sleep(100);
 
-                                Image image = Image.FromFile(msgModel.Url!);
-                                Clipboard.SetImage(image);
-                                KeyBoard.keyPressDown(KeyBoard.vKeyControl);
-                                Thread.Sleep(500);
-                                KeyBoard.keyPressDown(KeyBoard.vKeyV);
-                                Thread.Sleep(500);
-                                KeyBoard.keyPressUp(KeyBoard.vKeyV);
-                                Thread.Sleep(500);
-                                KeyBoard.keyPressUp(KeyBoard.vKeyControl);
-                                Thread.Sleep(500);
+                                if (!string.IsNullOrWhiteSpace(msgModel.Url))
+                                {
+                                    Image image = Image.FromFile(msgModel.Url);
+                                    Clipboard.SetImage(image);
+                                    KeyBoard.keyPressDown(KeyBoard.vKeyControl);
+                                    Thread.Sleep(500);
+                                    KeyBoard.keyPressDown(KeyBoard.vKeyV);
+                                    Thread.Sleep(500);
+                                    KeyBoard.keyPressUp(KeyBoard.vKeyV);
+                                    Thread.Sleep(500);
+                                    KeyBoard.keyPressUp(KeyBoard.vKeyControl);
+                                    Thread.Sleep(500);
+                                }
                             }
                             else
                             {
-                                Clipboard.SetText(msgModel.MsgStr);//复制内容到粘贴板
+                                Clipboard.SetText(msgModel.MsgStr ?? "");//复制内容到粘贴板
                                 Thread.Sleep(100);
                                 KeyBoard.keyPressDown(KeyBoard.vKeyControl);
                                 Thread.Sleep(100);
@@ -1142,7 +1145,7 @@ namespace Helper
                             KeyBoard.keyPress(KeyBoard.vKeyReturn);
                             _lastSendTime = DateTime.Now;
                         }
-                        Thread.Sleep(1);
+                        Thread.Sleep(100);
                     }
                     else
                     {
