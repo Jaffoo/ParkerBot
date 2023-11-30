@@ -5,11 +5,6 @@ VisualStudioVersion = 17.6.33717.318
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParkerBot", "ParkerBot.csproj", "{866A2969-7F2E-4552-8481-9B84C2E08A80}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B5B9D1C3-54C2-478D-B4CA-11E9142A667C}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginServer", "..\PluginServer\PluginServer.csproj", "{8BB2C8B2-B501-40C4-A90C-3E7B1F80CE13}"
 EndProject
 Global
