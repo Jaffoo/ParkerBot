@@ -1,6 +1,6 @@
 # ParkerBot(爬客机器人)
 
-## [更新日志或计划](/jaffoo/ParkerBotV2/blob/master/UpdateDetail.md)
+## [更新日志或计划](https://gitee.com/jaffoo/ParkerBotV2/blob/master/UpdateDetail.md)
 ## [QQ机器人被风控使用看这](https://gitee.com/jaffoo/ParkerBotV2/blob/master/WindControl.md)
 
 ## 更新说明
