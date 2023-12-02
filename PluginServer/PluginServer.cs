@@ -156,7 +156,12 @@ namespace PluginServer
     }
 }
 
-
+/// <summary>
+/// 使用实例
+/// </summary>
+/// <param name="n"></param>
+/// <param name="d"></param>
+/// <param name="v"></param>
 class Test(string n, string d, string v) : BasePlugin(n, d, v)
 {
 }
