@@ -23,7 +23,7 @@ namespace ParkerBot.Helper
         private readonly List<PluginHelper> _plugins = [];
         private string? Name { get; set; }
         private string? Description { get; set; }
-        private IBasePlugin? Plugin { get; set; }
+        private BasePlugin? Plugin { get; set; }
         private CustomAssemblyLoadContext? DLL { get; set; }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace ParkerBot.Helper
                 // 创建类型的实例
                 var type = types.FirstOrDefault(t => t.BaseType!.Name == "Object");
                 if (type == null) continue;
-                if (Activator.CreateInstance(type) is not IBasePlugin instance) continue;
+                if (Activator.CreateInstance(type) is not BasePlugin instance) continue;
                 if (_plugins.Exists(t => t.Name == instance.Name))
                 {
                     var model = _plugins.FirstOrDefault(t => t.Name == instance.Name);
@@ -105,12 +105,12 @@ namespace ParkerBot.Helper
         /// </summary>
         /// <param name="msgBase"></param>
         /// <param name="eventBase"></param>
-        public void Excute(MessageReceiverBase? msgBase = null, EventBase? eventBase = null)
+        public async Task Excute(MessageReceiverBase? msgBase = null, EventBase? eventBase = null)
         {
             foreach (var item in _plugins)
             {
                 if (item.Plugin == null) continue;
-                item.Plugin.Excute(msgBase, eventBase);
+                await item.Plugin.Excute(msgBase, eventBase);
             }
         }
 
