@@ -23,6 +23,7 @@ namespace ParkerBot.Helper
         private readonly List<PluginHelper> _plugins = [];
         private string? Name { get; set; }
         private string? Description { get; set; }
+        private bool Enable { get; set; }
         private BasePlugin? Plugin { get; set; }
         private CustomAssemblyLoadContext? DLL { get; set; }
 
@@ -101,15 +102,64 @@ namespace ParkerBot.Helper
         }
 
         /// <summary>
+        /// 禁用插件
+        /// </summary>
+        public void StopPlugin(string name)
+        {
+            var plugin = this[name];
+            if (plugin == null) return;
+            plugin.Enable = false;
+        }
+
+        /// <summary>
+        /// 启用插件
+        /// </summary>
+        public void EnablePlugin(string name)
+        {
+            var plugin = this[name];
+            if (plugin == null) return;
+            plugin.Enable = true;
+        }
+
+        /// <summary>
         /// 调用插件
         /// </summary>
         /// <param name="msgBase"></param>
-        /// <param name="eventBase"></param>
-        public async Task Excute(MessageReceiverBase? msgBase = null, EventBase? eventBase = null)
+        public async Task Excute(MessageReceiverBase msgBase)
         {
             foreach (var item in _plugins)
             {
                 if (item.Plugin == null) continue;
+                if (!item.Enable) continue;
+                await item.Plugin.Excute(msgBase);
+            }
+        }
+
+        /// <summary>
+        /// 调用插件
+        /// </summary>
+        /// <param name="eventBase"></param>
+        public async Task Excute(EventBase eventBase)
+        {
+            foreach (var item in _plugins)
+            {
+                if (item.Plugin == null) continue;
+                if (!item.Enable) continue;
+                await item.Plugin.Excute(eventBase);
+            }
+        }
+
+        /// <summary>
+        /// 调用插件
+        /// </summary>
+        /// <param name="msgBase"></param>
+        /// <param name="eventBase"></param>
+        public async Task Excute(MessageReceiverBase msgBase, EventBase eventBase)
+        {
+            foreach (var item in _plugins)
+            {
+                if (item.Plugin == null) continue;
+                if (!item.Enable) continue;
                 await item.Plugin.Excute(msgBase, eventBase);
             }
         }
