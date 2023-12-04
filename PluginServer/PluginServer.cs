@@ -36,7 +36,35 @@ namespace PluginServer
         /// <param name="msgBase">消息基类</param>
         /// <param name="eventBase">事件基类</param>
         /// <returns></returns>
-        public virtual async Task Excute(MessageReceiverBase? msgBase = null, EventBase? eventBase = null)
+        public virtual async Task Excute(MessageReceiverBase msgBase, EventBase eventBase)
+        {
+            switch (msgBase.Type)
+            {
+                case MessageReceivers.Friend:
+                    await FriendMessage((FriendMessageReceiver)msgBase!);
+                    break;
+                case MessageReceivers.Group:
+                    await GroupMessage((GroupMessageReceiver)msgBase!);
+                    break;
+                case MessageReceivers.Temp:
+                    await TempMessage((TempMessageReceiver)msgBase!);
+                    break;
+                case MessageReceivers.Stranger:
+                    await StrangerMessage((StrangerMessageReceiver)msgBase!);
+                    break;
+                default:
+                    await BaseMessage(msgBase);
+                    break;
+            }
+            await EventMessage(eventBase);
+        }
+
+        /// <summary>
+        /// 执行插件
+        /// </summary>
+        /// <param name="msgBase">消息基类</param>
+        /// <returns></returns>
+        public virtual async Task Excute(MessageReceiverBase msgBase)
         {
             if (msgBase != null)
             {
@@ -59,6 +87,15 @@ namespace PluginServer
                         break;
                 }
             }
+        }
+
+        /// <summary>
+        /// 执行插件
+        /// </summary>
+        /// <param name="eventBase">事件基类</param>
+        /// <returns></returns>
+        public virtual async Task Excute(EventBase eventBase)
+        {
             if (eventBase != null)
             {
                 await EventMessage(eventBase);
@@ -72,6 +109,7 @@ namespace PluginServer
         /// <returns></returns>
         public virtual async Task GroupMessage(GroupMessageReceiver gmr)
         {
+            await Task.Delay(1);
             return;
         }
 
@@ -82,6 +120,7 @@ namespace PluginServer
         /// <returns></returns>
         public virtual async Task FriendMessage(FriendMessageReceiver fmr)
         {
+            await Task.Delay(1);
             return;
         }
 
@@ -92,6 +131,7 @@ namespace PluginServer
         /// <returns></returns>
         public virtual async Task StrangerMessage(StrangerMessageReceiver smr)
         {
+            await Task.Delay(1);
             return;
         }
 
@@ -102,6 +142,7 @@ namespace PluginServer
         /// <returns></returns>
         public virtual async Task TempMessage(TempMessageReceiver tmr)
         {
+            await Task.Delay(1);
             return;
         }
 
@@ -112,6 +153,7 @@ namespace PluginServer
         /// <returns></returns>
         public virtual async Task BaseMessage(MessageReceiverBase mrb)
         {
+            await Task.Delay(1);
             return;
         }
 
@@ -122,6 +164,7 @@ namespace PluginServer
         /// <returns></returns>
         public virtual async Task EventMessage(EventBase e)
         {
+            await Task.Delay(1);
             return;
         }
 
