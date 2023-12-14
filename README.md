@@ -65,7 +65,7 @@
 - 转发至qq群和转发至qq好友，可将小偶像口袋房间和直播间发送的消息转发至指定的qq群或好友。
 5. 小红书（未测试稳定性，但不会使软件崩溃）
 - 具体使用和微博一样，不再说明。
-- 获取用户id，打开[小红书网页版](https://www.xiaohongshu.com/)，搜索找到用户，点击用户进入用户主页，地址栏`https://www.xiaohongshu.com/user/profile/616baeb7000000000201df36`中‘profile/’后面的`616baeb7000000000201df36`就是用户id。
+- 获取用户id，打开[小红书网页版](https://www.xiaohongshu.com/)，搜索找到用户，点击用户进入用户主页，地址栏`https://www.xiaohongshu.com/user/profile/616baeb7000000000201df36`，后面的`616baeb7000000000201df36`就是用户id。
 6. 抖音（暂未上线）
 7. 百度(用于人脸识别)
 - appKey和appSeret获取方式，打开[百度云](https://cloud.baidu.com/)右上角登陆，然后进行实名认证，选个人认证，完成后打开[领取免费资源](https://console.bce.baidu.com/ai/#/ai/face/overview/resource/getFree)，按图操作。
@@ -102,5 +102,5 @@
 ![输入图片说明](images/star.png) 
 
 ## 问题反馈
-1. 此仓库提交[Issue](/issues)。
+1. 此仓库提交[Issue](https://gitee.com/jaffoo/ParkerBot/issues)。
 2. 加作者qq：1615842006，添加答案：gitee
