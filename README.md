@@ -22,7 +22,7 @@
 ## 安装教程
 
 1.  下载地址：[夸克云盘](https://pan.quark.cn/s/6d8e3a401056) 提取码：HpaT
-2.  不想使用云盘，可以自行编译或者加作者[QQ](https://gitee.com/jaffoo/ParkerBotV2#%E9%97%AE%E9%A2%98%E5%8F%8D%E9%A6%88)
+2.  不想使用云盘，可以自行编译或者加作者[QQ](#%E9%97%AE%E9%A2%98%E5%8F%8D%E9%A6%88)
 3.  自行编译下载源码编译或打包（推荐使用VS2022）（编译教程:下载代码后找到根目录/wwwroot/other/编译流程.docs或[在线浏览](https://gitee.com/jaffoo/ParkerBotV2/tree/master/Parker/wwwroot/other/编译流程.docx)）。
 4.  编译完成（绿色版无需安装），目录找到ParkerBot.exe，运行即可。
 5.  仅支持Windows，不支持linux，macos等。推荐在Windows>=10，Windows Server>=2016上使用。
@@ -102,5 +102,5 @@
 ![输入图片说明](images/star.png) 
 
 ## 问题反馈
-1. 此仓库提交[Issue](https://gitee.com/jaffoo/ParkerBotV2/issues)。
+1. 此仓库提交[Issue](/issues)。
 2. 加作者qq：1615842006，添加答案：gitee
