@@ -17,7 +17,7 @@
 -images，此文档的说明图片。
 
 ## 软件架构
-基于 .NET 6 winform框架开源UI库[NanUI](https://gitee.com/dotnetchina/NanUI)开发。前端使用的是vite，Vue3，Ts，ElementUI。
+基于 .NET 6 winform框架开源UI库[NanUI](https://gitee.com/dotnetchina/NanUI)开发。前端主要使用的是vite，Vue3，Ts，ElementUI。
 
 ## 安装教程
 
