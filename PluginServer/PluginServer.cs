@@ -1,6 +1,7 @@
 ﻿using Mirai.Net.Data.Events;
 using Mirai.Net.Data.Messages;
 using Mirai.Net.Data.Messages.Receivers;
+using Mirai.Net.Utils.Scaffolds;
 using PluginServer;
 
 namespace PluginServer
@@ -11,7 +12,7 @@ namespace PluginServer
     /// <param name="name">插件名</param>
     /// <param name="version">插件版本</param>
     /// <param name="desc">插件描述</param>
-    public class BasePlugin(string name, string version, string desc) : IDisposable
+    public class BasePlugin(string name, double version, string desc) : IDisposable
     {
         private bool disposedValue;
 
@@ -28,7 +29,7 @@ namespace PluginServer
         /// <summary>
         /// 版本
         /// </summary>
-        public string Version { get; set; } = version;
+        public double Version { get; set; } = version;
 
         /// <summary>
         /// 执行插件
@@ -38,24 +39,7 @@ namespace PluginServer
         /// <returns></returns>
         public virtual async Task Excute(MessageReceiverBase msgBase, EventBase eventBase)
         {
-            switch (msgBase.Type)
-            {
-                case MessageReceivers.Friend:
-                    await FriendMessage((FriendMessageReceiver)msgBase!);
-                    break;
-                case MessageReceivers.Group:
-                    await GroupMessage((GroupMessageReceiver)msgBase!);
-                    break;
-                case MessageReceivers.Temp:
-                    await TempMessage((TempMessageReceiver)msgBase!);
-                    break;
-                case MessageReceivers.Stranger:
-                    await StrangerMessage((StrangerMessageReceiver)msgBase!);
-                    break;
-                default:
-                    await BaseMessage(msgBase);
-                    break;
-            }
+            await BaseMessage(msgBase);
             await EventMessage(eventBase);
         }
 
@@ -66,27 +50,7 @@ namespace PluginServer
         /// <returns></returns>
         public virtual async Task Excute(MessageReceiverBase msgBase)
         {
-            if (msgBase != null)
-            {
-                switch (msgBase.Type)
-                {
-                    case MessageReceivers.Friend:
-                        await FriendMessage((FriendMessageReceiver)msgBase!);
-                        break;
-                    case MessageReceivers.Group:
-                        await GroupMessage((GroupMessageReceiver)msgBase!);
-                        break;
-                    case MessageReceivers.Temp:
-                        await TempMessage((TempMessageReceiver)msgBase!);
-                        break;
-                    case MessageReceivers.Stranger:
-                        await StrangerMessage((StrangerMessageReceiver)msgBase!);
-                        break;
-                    default:
-                        await BaseMessage(msgBase);
-                        break;
-                }
-            }
+            await BaseMessage(msgBase);
         }
 
         /// <summary>
@@ -100,50 +64,6 @@ namespace PluginServer
             {
                 await EventMessage(eventBase);
             }
-        }
-
-        /// <summary>
-        /// 群消息
-        /// </summary>
-        /// <param name="gmr"></param>
-        /// <returns></returns>
-        public virtual async Task GroupMessage(GroupMessageReceiver gmr)
-        {
-            await Task.Delay(1);
-            return;
-        }
-
-        /// <summary>
-        /// 好友消息
-        /// </summary>
-        /// <param name="fmr"></param>
-        /// <returns></returns>
-        public virtual async Task FriendMessage(FriendMessageReceiver fmr)
-        {
-            await Task.Delay(1);
-            return;
-        }
-
-        /// <summary>
-        /// 陌生人消息
-        /// </summary>
-        /// <param name="fmr"></param>
-        /// <returns></returns>
-        public virtual async Task StrangerMessage(StrangerMessageReceiver smr)
-        {
-            await Task.Delay(1);
-            return;
-        }
-
-        /// <summary>
-        /// 临时消息
-        /// </summary>
-        /// <param name="fmr"></param>
-        /// <returns></returns>
-        public virtual async Task TempMessage(TempMessageReceiver tmr)
-        {
-            await Task.Delay(1);
-            return;
         }
 
         /// <summary>
@@ -205,6 +125,14 @@ namespace PluginServer
 /// <param name="n"></param>
 /// <param name="d"></param>
 /// <param name="v"></param>
-class Test(string n, string d, string v) : BasePlugin(n, d, v)
+class TestClass(string n, double d, string v) : BasePlugin(n, d, v)
 {
+    public override async Task Excute(MessageReceiverBase msgBase)
+    {
+        if (msgBase.Type == MessageReceivers.Friend)
+        {
+            var friendMsg = msgBase as FriendMessageReceiver;
+            await friendMsg.SendMessageAsync("test");
+        }
+    }
 }

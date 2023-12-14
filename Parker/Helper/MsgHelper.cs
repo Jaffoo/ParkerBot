@@ -35,6 +35,7 @@ namespace Helper
 
     public static class Msg
     {
+        private static PluginHelper? plugin;
         public static Queue<MsgModel> MsgQueue = new();
         private static DateTime _lastSendTime = DateTime.Now;
         private static double _interval = 3;//单位秒
@@ -65,6 +66,8 @@ namespace Helper
         {
             if (!Const.WindStatus)
             {
+                //插件，在下面接收事件中执行 plugin.Excute(e);
+                plugin = new();
                 _liteContext = new();
                 GroupMessageReceiver(bot!);
                 FriendMessageReceiver(bot!);
@@ -830,6 +833,7 @@ namespace Helper
             {
                 try
                 {
+                    //例如 plugin.Excute(e);
                     switch (e.Type)
                     {
                         case Events.NewFriendRequested:

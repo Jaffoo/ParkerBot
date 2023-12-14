@@ -14,6 +14,8 @@ namespace ParkerBot.Helper
         public PluginHelper()
         {
             if (!Directory.Exists(_path)) Directory.CreateDirectory(_path);
+            LoadPlugins();
+            EnableAllPlugin();
         }
         public PluginHelper? this[string name]
         {
@@ -22,6 +24,7 @@ namespace ParkerBot.Helper
         private static readonly string _path = Environment.CurrentDirectory + "/Plugin";
         private readonly List<PluginHelper> _plugins = [];
         private string? Name { get; set; }
+        private double Version { get; set; }
         private string? Description { get; set; }
         private bool Enable { get; set; }
         private BasePlugin? Plugin { get; set; }
@@ -43,13 +46,16 @@ namespace ParkerBot.Helper
                 var type = types.FirstOrDefault(t => t.BaseType!.Name == "Object");
                 if (type == null) continue;
                 if (Activator.CreateInstance(type) is not BasePlugin instance) continue;
-                if (_plugins.Exists(t => t.Name == instance.Name))
+                if (_plugins.Exists(t => t.Name == instance.Name && t.Version <= instance.Version))
                 {
-                    var model = _plugins.FirstOrDefault(t => t.Name == instance.Name);
-                    model?.DLL?.Dispose();
-                    model?.Plugin?.Dispose();
-                    model?.Dispose();
-                    _plugins.Remove(model!);
+                    var models = _plugins.Where(t => t.Name == instance.Name && t.Version <= instance.Version).ToList();
+                    foreach (var model in models)
+                    {
+                        model?.DLL?.Dispose();
+                        model?.Plugin?.Dispose();
+                        model?.Dispose();
+                        _plugins.Remove(model!);
+                    }
                 }
                 _plugins.Add(new()
                 {
@@ -57,6 +63,7 @@ namespace ParkerBot.Helper
                     Description = instance.Desc,
                     Plugin = instance,
                     DLL = dll,
+                    Version = instance.Version,
                 });
             }
         }
@@ -99,6 +106,7 @@ namespace ParkerBot.Helper
         {
             UnloadPlugins();
             LoadPlugins();
+            EnableAllPlugin();
         }
 
         /// <summary>
@@ -109,6 +117,28 @@ namespace ParkerBot.Helper
             var plugin = this[name];
             if (plugin == null) return;
             plugin.Enable = false;
+        }
+
+        /// <summary>
+        /// 禁用插件
+        /// </summary>
+        public void StopAllPlugin()
+        {
+            this._plugins.ForEach(item =>
+            {
+                item.Enable = false;
+            });
+        }
+
+        /// <summary>
+        /// 启用插件
+        /// </summary>
+        public void EnableAllPlugin()
+        {
+            this._plugins.ForEach(item =>
+            {
+                item.Enable = true;
+            });
         }
 
         /// <summary>
