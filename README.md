@@ -1,6 +1,6 @@
 # ParkerBot(爬客机器人)
 
-#  **船新版本，推荐使用，推荐原因，更好看的ui，更稳定的QQ机器人，地址：[StarBot(https://www.alipan.com/s/xxNd6zwFdqW)** 
+#  **船新版本，推荐使用，推荐原因，更好看的ui，更稳定的QQ机器人，地址：[StarBot](https://www.alipan.com/s/xxNd6zwFdqW)** 
 
 ## [更新日志或计划](https://gitee.com/jaffoo/ParkerBotV2/blob/master/UpdateDetail.md)
 ## [QQ机器人被风控使用看这](https://gitee.com/jaffoo/ParkerBotV2/blob/master/WindControl.md)
