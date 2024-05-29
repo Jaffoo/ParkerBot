@@ -1,6 +1,7 @@
 # ParkerBot(爬客机器人)
 
 #  **船新版本，推荐使用，推荐原因，更好看的ui，更稳定配置更简单的QQ机器人，再也不用担心被风控啦，下载地址：[StarBot](https://pan.quark.cn/s/dd90d150e6d7)** 
+[项目地址](https://github.com/Jaffoo/StarBot)
 界面展示
 ![输入图片说明](images/newui_image.png)
 
