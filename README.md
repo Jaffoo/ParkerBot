@@ -7,6 +7,8 @@
 ## [更新日志或计划](https://gitee.com/jaffoo/ParkerBotV2/blob/master/UpdateDetail.md)
 ## [QQ机器人被风控使用看这](https://gitee.com/jaffoo/ParkerBotV2/blob/master/WindControl.md)
 
+# **以下文档中仅有[配置教程](https://gitee.com/jaffoo/ParkerBot#%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B)和新版一样**
+
 ## 更新说明
 如果你需要更新，把下载好的包（免安装版）解压，将里面的所有内容替换到现有机器人的根目录，建议先删除除了data和wwwroot以外的所有文件及文件夹，然后在把新的文件粘贴进去。
 
