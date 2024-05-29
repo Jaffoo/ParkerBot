@@ -1,6 +1,8 @@
 # ParkerBot(爬客机器人)
 
-#  **船新版本，推荐使用，推荐原因，更好看的ui，更稳定的QQ机器人，下载地址：[StarBot](https://pan.quark.cn/s/dd90d150e6d7)** 
+#  **船新版本，推荐使用，推荐原因，更好看的ui，更稳定配置更简单的QQ机器人，再也不用担心被风控啦，下载地址：[StarBot](https://pan.quark.cn/s/dd90d150e6d7)** 
+界面展示
+![输入图片说明](images/newui_image.png)
 
 ## [更新日志或计划](https://gitee.com/jaffoo/ParkerBotV2/blob/master/UpdateDetail.md)
 ## [QQ机器人被风控使用看这](https://gitee.com/jaffoo/ParkerBotV2/blob/master/WindControl.md)
