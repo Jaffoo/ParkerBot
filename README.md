@@ -1,6 +1,6 @@
 # ParkerBot(帕克机器人)
 
-#  **船新版本，推荐使用，推荐原因，更好看的ui，更稳定配置更简单的QQ机器人，再也不用担心被风控啦，项目地址：[StarBot](https://github.com/Jaffoo/StarBot)** 
+#  **此项目已停止开发维护。推荐使用新版[StarBot](https://github.com/Jaffoo/StarBot)。** 
 
 界面展示
 ![输入图片说明](images/newui_image.png)
